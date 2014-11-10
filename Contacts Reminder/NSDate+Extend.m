@@ -120,9 +120,20 @@
 
 - (NSInteger)weekdayNumber{
     NSCalendar *cal = [NSCalendar currentCalendar];
-    NSInteger weekdayOfDate = [cal ordinalityOfUnit:NSWeekdayCalendarUnit inUnit:NSWeekCalendarUnit forDate:self];
+    NSInteger weekdayOfDate = [cal ordinalityOfUnit:NSCalendarUnitWeekday inUnit:NSCalendarUnitWeekOfMonth forDate:self];
     return weekdayOfDate - 1; //0:sunday ... 6:saturday
 }
+
+- (NSString *)weekday{
+	NSArray *weekdayArray = weekdays;
+	return weekdayArray[self.weekdayNumber];
+}
+-(NSString *)weekdayShort
+{
+	NSArray *weekdayArray = weekdayshort;
+	return weekdayArray[self.weekdayNumber];
+}
+
 
 - (NSDate *)nextOccurTime:(NSInteger)n withExtraSeconds:(NSInteger)seconds{
     NSDate *time = self;
@@ -168,18 +179,27 @@
     return time;
 }
 
-
 - (NSString *)timeInString{
-    NSCalendar *cal = [NSCalendar currentCalendar];
-    NSDateComponents *comp = [cal components:(NSHourCalendarUnit | NSMinuteCalendarUnit | NSWeekdayCalendarUnit) fromDate:self];
-    NSString *HHMM = [NSString stringWithFormat:@"%ld:%ld", (long)comp.hour, (long)comp.minute];
-    return HHMM;
+	NSCalendar *cal = [NSCalendar currentCalendar];
+	NSDateComponents *comp = [cal components:(NSCalendarUnitHour | NSCalendarUnitMinute | NSWeekdayCalendarUnit) fromDate:self];
+	NSString *HHMM = [NSString stringWithFormat:@"%ld:%ld", (long)comp.hour, (long)comp.minute];
+	return HHMM;
+}
+- (BOOL)isUpToDated{
+	BOOL upToDate = self.timeElapsed < 1800;
+	return upToDate;
+}
+
+- (NSDate *)nextAlarmIntervalTime{
+	NSDateComponents* delta = [[NSDateComponents alloc] init];
+	delta.second = 1800;
+	return [[NSCalendar currentCalendar] dateByAddingComponents:delta toDate:self options:0];
 }
 
 
 - (NSInteger)HHMM{
     NSCalendar *cal = [NSCalendar currentCalendar];
-    NSDateComponents *comp = [cal components:(NSHourCalendarUnit | NSMinuteCalendarUnit | NSWeekdayCalendarUnit) fromDate:self];
+    NSDateComponents *comp = [cal components:(NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitWeekday) fromDate:self];
     NSInteger hhmm = comp.hour*100 + comp.minute;
     return hhmm;
 }
@@ -200,7 +220,7 @@
 
 - (NSDate *)timeByMinutesFrom5am:(NSInteger)minutes{
     NSCalendar *cal = [NSCalendar currentCalendar];
-    NSDateComponents* deltaComps = [cal components:(NSYearCalendarUnit | NSMonthCalendarUnit | NSDayCalendarUnit) fromDate:self];
+    NSDateComponents* deltaComps = [cal components:(NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay) fromDate:self];
     deltaComps.minute = minutes % 60;
     deltaComps.hour = 5 + (NSInteger)minutes/60;
     
@@ -210,7 +230,7 @@
 
 - (NSInteger)minutesFrom5am{
     NSCalendar *cal = [NSCalendar currentCalendar];
-    NSDateComponents* deltaComps = [cal components:(NSHourCalendarUnit | NSMinuteCalendarUnit) fromDate:self];
+    NSDateComponents* deltaComps = [cal components:(NSCalendarUnitHour | NSCalendarUnitMinute) fromDate:self];
     NSInteger min = deltaComps.hour * 60 + deltaComps.minute;
     if (min % 10 != 0) {
         NSLog(@"Something wrong with the time input: %@", self.date2detailDateString);
@@ -220,7 +240,7 @@
 
 - (NSDateComponents *)dateComponents{
     NSCalendar *cal = [NSCalendar currentCalendar];
-    NSDateComponents* deltaComps = [cal components:(NSHourCalendarUnit | NSMinuteCalendarUnit | NSDayCalendarUnit | NSSecondCalendarUnit | NSYearCalendarUnit | NSMonthCalendarUnit) fromDate:self];
+    NSDateComponents* deltaComps = [cal components:(NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitDay | NSCalendarUnitSecond | NSCalendarUnitYear | NSCalendarUnitMonth) fromDate:self];
     return deltaComps;
 }
 
@@ -244,11 +264,11 @@
     float seconds = t % 60;
     
     if (days >=2) {
-        timeStr = [NSString stringWithFormat:@"%d days", (NSInteger)days];
+        timeStr = [NSString stringWithFormat:@"%ld days", (long)days];
 //    }else if (days >=1) {
 //        timeStr = [NSString stringWithFormat:@"1 day %d hours", (NSInteger)hours];
     }else if (hours > 10) {
-        timeStr = [NSString stringWithFormat:@"%d hours", (NSInteger)hours + (NSInteger)days*24];
+        timeStr = [NSString stringWithFormat:@"%ld hours", (NSInteger)hours + (NSInteger)days*24];
     }else if (hours >= 1){
         timeStr = [NSString stringWithFormat:@"%.1f hours", hours + minutes/60];
     }else if(minutes >= 1){
@@ -263,7 +283,7 @@
 -(NSString *)time2MonthDotDate
 {
     NSCalendar *cal = [NSCalendar currentCalendar];
-    NSDateComponents* deltaComps = [cal components:(NSMonthCalendarUnit|NSDayCalendarUnit) fromDate:self];
+    NSDateComponents* deltaComps = [cal components:(NSCalendarUnitMonth|NSCalendarUnitDay) fromDate:self];
     NSArray *monthArray = monthShort;
     NSString *str = [monthArray[deltaComps.month] stringByAppendingFormat:@"%ld", (long)deltaComps.day];
     
@@ -299,6 +319,17 @@
     com.second = 59;
     NSDate *EOD = [cal dateFromComponents:com];
     return EOD;
+}
+
+- (NSDate *)nextNoon{
+	NSCalendar *cal = [NSCalendar currentCalendar];
+	NSDateComponents *com = self.dateComponents;
+	com.hour = 12;
+	com.minute = 0;
+	com.second = 0;
+	com.day++;
+	NSDate *next = [cal dateFromComponents:com];
+	return next;
 }
 
 @end

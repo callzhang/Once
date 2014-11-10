@@ -10,6 +10,7 @@
 #import "NSDate+Extend.h"
 #import "RHAddressBook.h"
 #import "RHPerson.h"
+#import <AFNetworking/AFNetworking.h>
 
 @interface CRContactsManager()
 @property (nonatomic, strong) RHAddressBook *addressbook;
@@ -18,6 +19,8 @@
 @implementation CRContactsManager
 @synthesize lastUpdated = _lastUpdated;
 @synthesize lastChecked = _lastChecked;
+@synthesize lastOpened = _lastOpened;
+@synthesize lastOpenedOld = _lastOpenedOld;
 
 + (CRContactsManager *)sharedManager{
     static CRContactsManager *manager;
@@ -34,27 +37,34 @@
     self = [super init];
     if (self) {
         // load addressbook
-        RHAddressBook *ab = [[RHAddressBook alloc] init];
+        _addressbook = [[RHAddressBook alloc] init];
         
         //check addressbook access
         //query current status, pre iOS6 always returns Authorized
         if ([RHAddressBook authorizationStatus] == RHAuthorizationStatusNotDetermined){
             
             //request authorization
-            [ab requestAuthorizationWithCompletion:^(bool granted, NSError *error) {
-                _addressbook = ab;
-                //[self loadAddressBook];
+            [_addressbook requestAuthorizationWithCompletion:^(bool granted, NSError *error) {
                 
                 [[NSNotificationCenter defaultCenter] postNotificationName:kAdressbookReady object:nil];
             }];
-        }
-        
+		}else if ([RHAddressBook authorizationStatus] == RHAuthorizationStatusAuthorized){
+			[[NSNotificationCenter defaultCenter] postNotificationName:kAdressbookReady object:nil];
+		}
+			
         // start observing
         [[NSNotificationCenter defaultCenter]  addObserverForName:RHAddressBookExternalChangeNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-            
+			NSLog(@"Observed changes to AddressBook");
             _allContacts = nil;
+			//[self checkNewContactsAndNotify];
             
         }];
+		
+		//time stamp
+		[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidEnterBackgroundNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+			//update last opened
+			[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastOpened];
+		}];
     }
     
     return self;
@@ -80,6 +90,67 @@
 }
 
 
+#pragma mark - Check new
+- (void)checkNewContactsAndNotifyWithCompletion:(void (^)(UIBackgroundFetchResult result))block{
+	NSArray *newContacts = [self newContactsSinceLastCheck];
+	if (newContacts.count) {
+		//send notification
+#ifdef DEBUG
+		UILocalNotification *note = [UILocalNotification new];
+		note.alertBody = @"Found new alert! (Test local notification)";
+		note.soundName = @"default";
+		note.category = kReminderCategory;
+		[[UIApplication sharedApplication] scheduleLocalNotification:note];
+#endif
+		//schedule server push
+		NSArray *names = [newContacts valueForKey:@"firstName"];
+		NSString *reminderStr;
+		if (names.count > 1) {
+			reminderStr = [NSString stringWithFormat:@"You've met %@ and %ld other people. Add a quick memo?", names.firstObject, names.count-1];
+		} else {
+			reminderStr = [NSString stringWithFormat:@"You have met %@. Add a quick memo?", names.firstObject];
+		}
+		
+		
+		AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+		manager.requestSerializer = [AFJSONRequestSerializer serializer];
+		
+		[manager.requestSerializer setValue:kParseApplicationId forHTTPHeaderField:@"X-Parse-Application-Id"];
+		[manager.requestSerializer setValue:kParseRestAPIId forHTTPHeaderField:@"X-Parse-REST-API-Key"];
+		[manager.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+		
+		NSDate *nextNoon = [NSDate date].nextNoon;
+#ifdef DEBUG
+		nextNoon = [[NSDate date] dateByAddingTimeInterval:60];
+#endif
+		NSDictionary *dic = @{@"where":@{@"objectId":[PFInstallation currentInstallation].objectId},
+							  @"push_time":[NSNumber numberWithDouble:[nextNoon timeIntervalSince1970]],
+							  @"data":@{@"alert": reminderStr,
+										@"content-available":@1,
+										@"category": kReminderCategory,
+										@"bedge": @"Incremental"},
+							  };
+		
+		[manager POST:@"https://api.parse.com/1/push" parameters:dic
+			  success:^(AFHTTPRequestOperation *operation,id responseObject) {
+				  
+				  NSLog(@"SCHEDULED reminder PUSH success for time %@", nextNoon.date2detailDateString);
+				  if (block) {
+					  block(UIBackgroundFetchResultNewData);
+				  }
+			  }failure:^(AFHTTPRequestOperation *operation,NSError *error) {
+				  
+				  NSLog(@"Schedule Push Error: %@", error);
+				  if (block) {
+					  block(UIBackgroundFetchResultFailed);
+				  }
+			  }];
+	}else{
+		if (block) {
+			block(UIBackgroundFetchResultNoData);
+		}
+	}
+}
 
 - (NSArray *)newContactsSinceLastCheck{
     NSDate *lastChecked = self.lastChecked;
@@ -89,6 +160,8 @@
     
     if (newContacts.count > 0) {
         self.lastUpdated = [NSDate date];
+		//move the lastOpened old time to real last opened time
+		self.lastOpenedOld = self.lastOpened;
     }
     
     self.lastChecked = [NSDate date];
@@ -96,6 +169,21 @@
     return newContacts;
 }
 
+#pragma mark - reactivate
+- (void)scheduleReactivateLocalNotification{
+	UIApplication *app = [UIApplication sharedApplication];
+	for (UILocalNotification *note in app.scheduledLocalNotifications) {
+		if ([note.userInfo[@"type"] isEqual:kReactivateLocalNotification]) {
+			[app cancelLocalNotification:note];
+		}
+	}
+	UILocalNotification *note = [UILocalNotification new];
+	note.alertAction = @"Activate me";
+	note.alertBody = @"Activate me";
+	note.fireDate = [[NSDate date] dateByAddingTimeInterval:3600*24];
+	note.userInfo = @{@"type": kReactivateLocalNotification};
+	[app scheduleLocalNotification:note];
+}
 
 
 #pragma mark - time stamp
@@ -123,11 +211,40 @@
             self.lastUpdated = [NSDate date];
         }
     }
-    return _lastChecked;
+    return _lastUpdated;
 }
 
 - (void)setLastUpdated:(NSDate *)lastUpdate{
     _lastUpdated = lastUpdate;
     [[NSUserDefaults standardUserDefaults] setObject:lastUpdate forKey:kLastUpdated];
+}
+
+- (NSDate *)lastOpened{
+	_lastOpened = [[NSUserDefaults standardUserDefaults] objectForKey:kLastOpened];
+	if (!_lastOpened) {
+		_lastOpened = [NSDate date];
+		[[NSUserDefaults standardUserDefaults] setObject:_lastOpened forKey:kLastOpened];
+	}
+	return _lastOpened;
+}
+
+- (void)setLastOpened:(NSDate *)lastOpened{
+	[[NSUserDefaults standardUserDefaults] setObject:lastOpened forKey:kLastOpened];
+}
+
+- (NSDate *)lastOpenedOld{
+	
+	if (!_lastOpenedOld) {
+		_lastOpenedOld = [[NSUserDefaults standardUserDefaults] objectForKey:kLastOpenedOld];
+		if (!_lastOpenedOld) {
+			_lastOpenedOld = [NSDate date];
+			[[NSUserDefaults standardUserDefaults] setObject:_lastOpenedOld forKey:kLastOpenedOld];
+		}
+	}
+	return _lastOpenedOld;
+}
+
+- (void)setLastOpenedOld:(NSDate *)lastOpenedOld{
+	[[NSUserDefaults standardUserDefaults] setObject:lastOpenedOld forKey:kLastOpenedOld];
 }
 @end

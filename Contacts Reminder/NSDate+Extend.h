@@ -152,4 +152,6 @@
 - (NSDate *)endOfDay;
 
 + (NSString *)getStringFromTime:(float)time;
+
+- (NSDate *)nextNoon;
 @end

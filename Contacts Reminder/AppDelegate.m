@@ -24,7 +24,7 @@
     //[MagicalRecord setLoggingLevel:MagicalRecordLoggingLevelWarn];
     
     //parse
-    [Parse setApplicationId:@"xqiXF3hnqiLXFFkcE3pYs3b2oBORjSdJRiQdKCPK" clientKey:@"NOT06QA8LdXXLQjUmGKBHs6RWO1qPvrEyJUURxOI"];
+    [Parse setApplicationId:kParseApplicationId clientKey:kParseClientKey];
     
     //background fetch
     [application setMinimumBackgroundFetchInterval:3600*8];
@@ -72,14 +72,11 @@
 {
     NSLog(@"======== Launched in background due to background fetch event ==========");
     CRContactsManager *manager = [CRContactsManager sharedManager];
-    NSArray *newContacts = [manager newContactsSinceLastCheck];
-    if (newContacts) {
-        //find new!
-        UILocalNotification *note = [UILocalNotification new];
-        note.alertBody = @"Found new alert! This message will delay 24 hours in release mode.";
-        note.soundName = @"default";
-        [application scheduleLocalNotification:note];
-    }
+	[manager scheduleReactivateLocalNotification];
+    [manager checkNewContactsAndNotifyWithCompletion:^(UIBackgroundFetchResult result) {
+		completionHandler(result);
+	}];
+	
 }
 
 

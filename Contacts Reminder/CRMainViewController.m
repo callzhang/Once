@@ -29,7 +29,9 @@
     [[NSNotificationCenter defaultCenter] addObserverForName:kAdressbookReady object:nil queue:nil usingBlock:^(NSNotification *note) {
         [self loadAddressBook];
     }];
-    
+	
+	//load regardless
+	[self loadAddressBook];
 }
 
 
@@ -49,11 +51,13 @@
     
     for (RHPerson *contact in contacts) {
         if (!_showFullHistory) {
-            if ([contact.created timeIntervalSinceDate:_manager.lastUpdated] < 0) {
+            if ([contact.created timeIntervalSinceDate:_manager.lastOpenedOld] < 0) {
                 continue;
-            }
+			}else{
+				[self.contacts_recent addObject:contact];
+			}
         }
-        if (!contact.created) {
+        else if (!contact.created) {
             NSDate *lastWeek = [[NSDate date] dateByAddingTimeInterval:-3600*24*30];
             NSError *err;
             [contact setBasicValue:(__bridge CFTypeRef)lastWeek forPropertyID:kABPersonCreationDateProperty error:&err];
