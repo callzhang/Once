@@ -8,13 +8,25 @@
 
 #import "CRMainViewController.h"
 #import "APAddressBook.h"
+#import "APContact.h"
+#import "NSDate+Extend.h"
+@import AddressBook;
+
+NSString *const kLastChecked = @"last_checked";
 
 @interface CRMainViewController ()
 @property APAddressBook *addressbook;
-@property NSArray *contacts;
+@property (nonatomic, strong) NSMutableArray *contacts_week;
+@property (nonatomic, strong) NSMutableArray *contacts_month;
+@property (nonatomic, strong) NSMutableArray *contacts_3months;
+@property (nonatomic, strong) NSMutableArray *contacts_year;
+@property (nonatomic, strong) NSMutableArray *contacts_older;
+@property BOOL showFullHistory;
+@property NSDate *lastChecked;
 @end
 
 @implementation CRMainViewController
+@synthesize lastChecked = _lastChecked;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -26,15 +38,18 @@
     switch([APAddressBook access])
     {
         case APAddressBookAccessUnknown:
-            // Application didn't request address book access yet
+            NSLog(@"Application didn't request address book access yet");
+            [self requestForAddressBook];
             break;
             
         case APAddressBookAccessGranted:
-            // Access granted
+            NSLog(@"Access granted");
+            [self loadAddressBook];
             break;
             
         case APAddressBookAccessDenied:
-            // Access denied or restricted by privacy settings
+            NSLog(@"Access denied or restricted by privacy settings");
+            [self requestForAddressBook];
             break;
     }
     
@@ -42,6 +57,7 @@
     [_addressbook startObserveChangesWithCallback:^
     {
         NSLog(@"Address book changed!");
+        [self loadAddressBook];
     }];
     
     
@@ -58,49 +74,161 @@
     [_addressbook stopObserveChanges];
 }
 
-#pragma mark - Address Book loading
-- (void)loadAddressBook{
-    [_addressbook loadContacts:^(NSArray *contacts, NSError *error) {
-        if (error) {
-            NSLog(@"Failed loading address book!");
-        }else{
-            _contacts = contacts;
+#pragma mark - Address Book TOOLS
+- (void)requestForAddressBook{
+    CFErrorRef myError = NULL;
+    ABAddressBookRef myAddressBook = ABAddressBookCreateWithOptions(NULL, &myError);
+    ABAddressBookRequestAccessWithCompletion(myAddressBook, ^(bool granted, CFErrorRef error) {
+        if (granted) {
+            _addressbook = [[APAddressBook alloc] init];
+            [self loadAddressBook];
+        } else {
+            // Handle the case of being denied access and/or the error.
+            NSLog(@"Failed to get addressbook: %@", error);
         }
-    }];
+        CFRelease(myAddressBook);
+    });
 }
 
-/*
-#pragma mark - Navigation
+- (void)loadAddressBook{
+    NSDate *lastCheckedTime = self.lastChecked;
+    __block CRMainViewController *weakSelf = self;
+    if (_showFullHistory) {
+        _addressbook.filterBlock = nil;
+        [_addressbook loadContacts:^(NSArray *contacts, NSError *error) {
+            if (error) {
+                NSLog(@"Failed loading address book!");
+            }else{
+                for (APContact *contact in contacts) {
+                    if ([[NSDate date] timeIntervalSinceDate:contact.creationDate] < 3600*24*7) {
+                        [weakSelf.contacts_week addObject:contact];
+                        
+                    }else if ([[NSDate date] timeIntervalSinceDate:contact.creationDate] < 3600*24*30) {
+                        [weakSelf.contacts_month addObject:contact];
+                        
+                    }else if ([[NSDate date] timeIntervalSinceDate:contact.creationDate] < 3600*24*90) {
+                        [weakSelf.contacts_3months addObject:contact];
+                        
+                    }else if ([[NSDate date] timeIntervalSinceDate:contact.creationDate] < 3600*24*365) {
+                        [weakSelf.contacts_year addObject:contact];
+                        
+                    }else{
+                        [weakSelf.contacts_older addObject:contact];
+                    }
+                }
+            }
+            
+            //reload table
+            [self.tableView reloadData];
+        }];
+    }else{
+        _addressbook.filterBlock = ^BOOL(APContact *contact)
+        {
+            return  [contact.creationDate timeIntervalSinceDate:weakSelf.lastChecked] > 0;
+            
+        };
+        
+        [_addressbook loadContacts:^(NSArray *contacts, NSError *error) {
+            if (error) {
+                NSLog(@"Failed loading address book!");
+            }else{
+                _contacts_week = contacts.mutableCopy;
+            }
+            
+            //table reload
+            [self.tableView reloadData];
+        }];
+    }
+    
+}
 
+#pragma mark - time stamp
+- (NSDate *)lastChecked{
+    if (!_lastChecked) {
+        _lastChecked = [[NSUserDefaults standardUserDefaults] objectForKey:kLastChecked];
+        if (!_lastChecked) {
+            NSLog(@"first time check");
+            self.lastChecked = [NSDate date];
+        }
+    }
+    return _lastChecked;
+}
+
+- (void)setLastChecked:(NSDate *)lastChecked{
+    _lastChecked = lastChecked;
+    [[NSUserDefaults standardUserDefaults] setObject:lastChecked forKey:kLastChecked];
+}
+
+#pragma mark - navigation
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
 }
-*/
 
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
     // 1 week, 1 month, 3 months, 1 year, 1yr+
-    return 5;
+    return self.showFullHistory?5:1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
+    switch (section) {
+        case 0:
+            //week
+            return self.contacts_week.count;
+            
+        case 1:
+            return self.contacts_month.count;
+            
+        case 2:
+            return self.contacts_3months.count;
+            
+        case 3:
+            return self.contacts_year.count;
+            
+        case 4:
+            return self.contacts_older.count;
+            
+        default:
+            break;
+    }
     return 0;
 }
 
-/*
- - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
- UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"reuseIdentifier" forIndexPath:indexPath];
+    APContact *contact;
+    switch (indexPath.section) {
+        case 0:
+            //week
+            contact = self.contacts_week[indexPath.row];
+            break;
+        case 1:
+            contact = self.contacts_month[indexPath.row];
+            break;
+        case 2:
+            contact = self.contacts_3months[indexPath.row];
+            break;
+        case 3:
+            contact = self.contacts_year[indexPath.row];
+            break;
+        case 4:
+            contact = self.contacts_older[indexPath.row];
+            break;
+        default:
+            return cell;
+    }
+    
+    cell.textLabel.text = contact.compositeName;
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"Created on %@", contact.creationDate.date2dayString];
  
- // Configure the cell...
- 
- return cell;
- }
- */
+    return cell;
+}
 
 /*
  // Override to support conditional editing of the table view.

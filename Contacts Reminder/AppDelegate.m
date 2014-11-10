@@ -18,8 +18,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     //core data
-    [MagicalRecord setupCoreDataStack];
-    [MagicalRecord setLoggingLevel:MagicalRecordLoggingLevelWarn];
+    //[MagicalRecord setupCoreDataStack];
+    //[MagicalRecord setLoggingLevel:MagicalRecordLoggingLevelWarn];
     
     //parse
     [Parse setApplicationId:@"xqiXF3hnqiLXFFkcE3pYs3b2oBORjSdJRiQdKCPK"

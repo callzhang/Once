@@ -6,6 +6,20 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		9B9095FE1A106D4E00A2FA4A /* mogenerator */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 9B9095FF1A106D4E00A2FA4A /* Build configuration list for PBXAggregateTarget "mogenerator" */;
+			buildPhases = (
+				9B9096021A106D6A00A2FA4A /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = mogenerator;
+			productName = mogenerator;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		47FE71DD2166A0BFA813EDE4 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCC5B3D1D0A53728B40FF19 /* libPods.a */; };
 		9B9095EC1A105A2100A2FA4A /* CRMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B9095EB1A105A2000A2FA4A /* CRMainViewController.m */; };
@@ -16,6 +30,13 @@
 		9B9095F91A1068AB00A2FA4A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B9095F81A1068AB00A2FA4A /* libz.dylib */; };
 		9B9095FB1A1068B700A2FA4A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B9095FA1A1068B700A2FA4A /* MobileCoreServices.framework */; };
 		9B9095FD1A1068D600A2FA4A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B9095FC1A1068D600A2FA4A /* SystemConfiguration.framework */; };
+		9B9096101A106E2C00A2FA4A /* _CRContact.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B9096051A106E2C00A2FA4A /* _CRContact.m */; };
+		9B9096111A106E2C00A2FA4A /* _CRUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B9096071A106E2C00A2FA4A /* _CRUser.m */; };
+		9B9096121A106E2C00A2FA4A /* _ServerObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B9096091A106E2C00A2FA4A /* _ServerObject.m */; };
+		9B9096131A106E2C00A2FA4A /* CRContact.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B90960B1A106E2C00A2FA4A /* CRContact.m */; };
+		9B9096141A106E2C00A2FA4A /* CRUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B90960D1A106E2C00A2FA4A /* CRUser.m */; };
+		9B9096151A106E2C00A2FA4A /* ServerObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B90960F1A106E2C00A2FA4A /* ServerObject.m */; };
+		9B9096181A1079D900A2FA4A /* NSDate+Extend.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B9096171A1079D900A2FA4A /* NSDate+Extend.m */; };
 		9BFB23601A102E380012B81C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB235F1A102E380012B81C /* main.m */; };
 		9BFB23631A102E380012B81C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23621A102E380012B81C /* AppDelegate.m */; };
 		9BFB23661A102E380012B81C /* Contacts_Reminder.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23641A102E380012B81C /* Contacts_Reminder.xcdatamodeld */; };
@@ -48,6 +69,20 @@
 		9B9095F81A1068AB00A2FA4A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		9B9095FA1A1068B700A2FA4A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		9B9095FC1A1068D600A2FA4A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		9B9096041A106E2C00A2FA4A /* _CRContact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _CRContact.h; path = Model/_CRContact.h; sourceTree = "<group>"; };
+		9B9096051A106E2C00A2FA4A /* _CRContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _CRContact.m; path = Model/_CRContact.m; sourceTree = "<group>"; };
+		9B9096061A106E2C00A2FA4A /* _CRUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _CRUser.h; path = Model/_CRUser.h; sourceTree = "<group>"; };
+		9B9096071A106E2C00A2FA4A /* _CRUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _CRUser.m; path = Model/_CRUser.m; sourceTree = "<group>"; };
+		9B9096081A106E2C00A2FA4A /* _ServerObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = _ServerObject.h; path = Model/_ServerObject.h; sourceTree = "<group>"; };
+		9B9096091A106E2C00A2FA4A /* _ServerObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = _ServerObject.m; path = Model/_ServerObject.m; sourceTree = "<group>"; };
+		9B90960A1A106E2C00A2FA4A /* CRContact.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CRContact.h; path = Model/CRContact.h; sourceTree = "<group>"; };
+		9B90960B1A106E2C00A2FA4A /* CRContact.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CRContact.m; path = Model/CRContact.m; sourceTree = "<group>"; };
+		9B90960C1A106E2C00A2FA4A /* CRUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CRUser.h; path = Model/CRUser.h; sourceTree = "<group>"; };
+		9B90960D1A106E2C00A2FA4A /* CRUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CRUser.m; path = Model/CRUser.m; sourceTree = "<group>"; };
+		9B90960E1A106E2C00A2FA4A /* ServerObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ServerObject.h; path = Model/ServerObject.h; sourceTree = "<group>"; };
+		9B90960F1A106E2C00A2FA4A /* ServerObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ServerObject.m; path = Model/ServerObject.m; sourceTree = "<group>"; };
+		9B9096161A1079D900A2FA4A /* NSDate+Extend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Extend.h"; sourceTree = "<group>"; };
+		9B9096171A1079D900A2FA4A /* NSDate+Extend.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Extend.m"; sourceTree = "<group>"; };
 		9BFB235A1A102E380012B81C /* Contacts Reminder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Contacts Reminder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BFB235E1A102E380012B81C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9BFB235F1A102E380012B81C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -116,6 +151,25 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		9B9096031A106DC600A2FA4A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				9B90960A1A106E2C00A2FA4A /* CRContact.h */,
+				9B90960B1A106E2C00A2FA4A /* CRContact.m */,
+				9B90960C1A106E2C00A2FA4A /* CRUser.h */,
+				9B90960D1A106E2C00A2FA4A /* CRUser.m */,
+				9B90960E1A106E2C00A2FA4A /* ServerObject.h */,
+				9B90960F1A106E2C00A2FA4A /* ServerObject.m */,
+				9B9096041A106E2C00A2FA4A /* _CRContact.h */,
+				9B9096051A106E2C00A2FA4A /* _CRContact.m */,
+				9B9096061A106E2C00A2FA4A /* _CRUser.h */,
+				9B9096071A106E2C00A2FA4A /* _CRUser.m */,
+				9B9096081A106E2C00A2FA4A /* _ServerObject.h */,
+				9B9096091A106E2C00A2FA4A /* _ServerObject.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		9BFB23511A102E380012B81C = {
 			isa = PBXGroup;
 			children = (
@@ -145,10 +199,13 @@
 				9BFB23681A102E380012B81C /* ViewController.m */,
 				9B9095EA1A105A2000A2FA4A /* CRMainViewController.h */,
 				9B9095EB1A105A2000A2FA4A /* CRMainViewController.m */,
+				9B9096161A1079D900A2FA4A /* NSDate+Extend.h */,
+				9B9096171A1079D900A2FA4A /* NSDate+Extend.m */,
 				9BFB236A1A102E380012B81C /* Main.storyboard */,
 				9BFB236D1A102E380012B81C /* Images.xcassets */,
 				9BFB236F1A102E380012B81C /* LaunchScreen.xib */,
 				9BFB23641A102E380012B81C /* Contacts_Reminder.xcdatamodeld */,
+				9B9096031A106DC600A2FA4A /* Models */,
 				9BFB235D1A102E380012B81C /* Supporting Files */,
 			);
 			path = "Contacts Reminder";
@@ -230,6 +287,9 @@
 				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = Lee;
 				TargetAttributes = {
+					9B9095FE1A106D4E00A2FA4A = {
+						CreatedOnToolsVersion = 6.1;
+					};
 					9BFB23591A102E380012B81C = {
 						CreatedOnToolsVersion = 6.1;
 						DevelopmentTeam = SDR7T9YB58;
@@ -260,6 +320,7 @@
 			targets = (
 				9BFB23591A102E380012B81C /* Contacts Reminder */,
 				9BFB23751A102E380012B81C /* Contacts ReminderTests */,
+				9B9095FE1A106D4E00A2FA4A /* mogenerator */,
 			);
 		};
 /* End PBXProject section */
@@ -315,6 +376,19 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		9B9096021A106D6A00A2FA4A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mogenerator -m Contacts\\ Reminder/Contacts_Reminder.xcdatamodeld -O Contacts\\ Reminder/Model/ --template-var arc=true";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -322,11 +396,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B9096131A106E2C00A2FA4A /* CRContact.m in Sources */,
 				9B9095EC1A105A2100A2FA4A /* CRMainViewController.m in Sources */,
 				9BFB23661A102E380012B81C /* Contacts_Reminder.xcdatamodeld in Sources */,
+				9B9096111A106E2C00A2FA4A /* _CRUser.m in Sources */,
 				9BFB23631A102E380012B81C /* AppDelegate.m in Sources */,
+				9B9096101A106E2C00A2FA4A /* _CRContact.m in Sources */,
 				9BFB23691A102E380012B81C /* ViewController.m in Sources */,
 				9BFB23601A102E380012B81C /* main.m in Sources */,
+				9B9096181A1079D900A2FA4A /* NSDate+Extend.m in Sources */,
+				9B9096121A106E2C00A2FA4A /* _ServerObject.m in Sources */,
+				9B9096141A106E2C00A2FA4A /* CRUser.m in Sources */,
+				9B9096151A106E2C00A2FA4A /* ServerObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -368,6 +449,20 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		9B9096001A106D4E00A2FA4A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		9B9096011A106D4E00A2FA4A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		9BFB237E1A102E380012B81C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -514,6 +609,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		9B9095FF1A106D4E00A2FA4A /* Build configuration list for PBXAggregateTarget "mogenerator" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9B9096001A106D4E00A2FA4A /* Debug */,
+				9B9096011A106D4E00A2FA4A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		9BFB23551A102E380012B81C /* Build configuration list for PBXProject "Contacts Reminder" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
