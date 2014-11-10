@@ -21,6 +21,10 @@
     [MagicalRecord setupCoreDataStack];
     [MagicalRecord setLoggingLevel:MagicalRecordLoggingLevelWarn];
     
+    //parse
+    [Parse setApplicationId:@"xqiXF3hnqiLXFFkcE3pYs3b2oBORjSdJRiQdKCPK"
+                  clientKey:@"NOT06QA8LdXXLQjUmGKBHs6RWO1qPvrEyJUURxOI"];
+    
     //push
 #if !TARGET_IPHONE_SIMULATOR
     UIUserNotificationType types = UIUserNotificationTypeBadge |
@@ -39,6 +43,9 @@
 #pragma Push notification
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken{
     NSLog(@"Push token: %@", deviceToken);
+    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+    [currentInstallation setDeviceTokenFromData:deviceToken];
+    [currentInstallation saveInBackground];
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error{
@@ -47,6 +54,7 @@
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
     NSLog(@"Received push notification: %@", userInfo);
+    [PFPush handlePush:userInfo];
 }
 
 

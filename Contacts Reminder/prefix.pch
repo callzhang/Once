@@ -13,6 +13,6 @@
 // You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
 
 #import <MagicalRecord/CoreData+MagicalRecord.h>
-#import <BlocksKit.h>
-
+#import <BlocksKit/BlocksKit.h>
+#import <Parse/Parse.h>
 #endif

@@ -9,6 +9,13 @@
 /* Begin PBXBuildFile section */
 		47FE71DD2166A0BFA813EDE4 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCC5B3D1D0A53728B40FF19 /* libPods.a */; };
 		9B9095EC1A105A2100A2FA4A /* CRMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B9095EB1A105A2000A2FA4A /* CRMainViewController.m */; };
+		9B9095F21A1064FC00A2FA4A /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B9095F01A1064FC00A2FA4A /* AddressBook.framework */; };
+		9B9095F31A1064FC00A2FA4A /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B9095F11A1064FC00A2FA4A /* AddressBookUI.framework */; };
+		9B9095F51A10681A00A2FA4A /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B9095F41A10681A00A2FA4A /* CFNetwork.framework */; };
+		9B9095F71A10686300A2FA4A /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B9095F61A10686300A2FA4A /* CoreLocation.framework */; };
+		9B9095F91A1068AB00A2FA4A /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B9095F81A1068AB00A2FA4A /* libz.dylib */; };
+		9B9095FB1A1068B700A2FA4A /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B9095FA1A1068B700A2FA4A /* MobileCoreServices.framework */; };
+		9B9095FD1A1068D600A2FA4A /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B9095FC1A1068D600A2FA4A /* SystemConfiguration.framework */; };
 		9BFB23601A102E380012B81C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB235F1A102E380012B81C /* main.m */; };
 		9BFB23631A102E380012B81C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23621A102E380012B81C /* AppDelegate.m */; };
 		9BFB23661A102E380012B81C /* Contacts_Reminder.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23641A102E380012B81C /* Contacts_Reminder.xcdatamodeld */; };
@@ -34,6 +41,13 @@
 		6C824802E36CCE7014BABC05 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		9B9095EA1A105A2000A2FA4A /* CRMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRMainViewController.h; sourceTree = "<group>"; };
 		9B9095EB1A105A2000A2FA4A /* CRMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRMainViewController.m; sourceTree = "<group>"; };
+		9B9095F01A1064FC00A2FA4A /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
+		9B9095F11A1064FC00A2FA4A /* AddressBookUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBookUI.framework; path = System/Library/Frameworks/AddressBookUI.framework; sourceTree = SDKROOT; };
+		9B9095F41A10681A00A2FA4A /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		9B9095F61A10686300A2FA4A /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		9B9095F81A1068AB00A2FA4A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		9B9095FA1A1068B700A2FA4A /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		9B9095FC1A1068D600A2FA4A /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		9BFB235A1A102E380012B81C /* Contacts Reminder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Contacts Reminder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BFB235E1A102E380012B81C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9BFB235F1A102E380012B81C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -48,7 +62,7 @@
 		9BFB23761A102E380012B81C /* Contacts ReminderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Contacts ReminderTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BFB237B1A102E380012B81C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9BFB237C1A102E380012B81C /* Contacts_ReminderTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Contacts_ReminderTests.m; sourceTree = "<group>"; };
-		9BFB23861A103BBE0012B81C /* Contacts Reminder.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Contacts Reminder.pch"; sourceTree = "<group>"; };
+		9BFB23861A103BBE0012B81C /* prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = prefix.pch; sourceTree = "<group>"; };
 		D3CA03614464EDF992DA0BE0 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -57,6 +71,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B9095FD1A1068D600A2FA4A /* SystemConfiguration.framework in Frameworks */,
+				9B9095FB1A1068B700A2FA4A /* MobileCoreServices.framework in Frameworks */,
+				9B9095F91A1068AB00A2FA4A /* libz.dylib in Frameworks */,
+				9B9095F71A10686300A2FA4A /* CoreLocation.framework in Frameworks */,
+				9B9095F51A10681A00A2FA4A /* CFNetwork.framework in Frameworks */,
+				9B9095F21A1064FC00A2FA4A /* AddressBook.framework in Frameworks */,
+				9B9095F31A1064FC00A2FA4A /* AddressBookUI.framework in Frameworks */,
 				47FE71DD2166A0BFA813EDE4 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -83,6 +104,13 @@
 		906D60237CF5C7784D9BE24B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9B9095FC1A1068D600A2FA4A /* SystemConfiguration.framework */,
+				9B9095FA1A1068B700A2FA4A /* MobileCoreServices.framework */,
+				9B9095F81A1068AB00A2FA4A /* libz.dylib */,
+				9B9095F61A10686300A2FA4A /* CoreLocation.framework */,
+				9B9095F41A10681A00A2FA4A /* CFNetwork.framework */,
+				9B9095F01A1064FC00A2FA4A /* AddressBook.framework */,
+				9B9095F11A1064FC00A2FA4A /* AddressBookUI.framework */,
 				2CCC5B3D1D0A53728B40FF19 /* libPods.a */,
 			);
 			name = Frameworks;
@@ -131,7 +159,7 @@
 			children = (
 				9BFB235E1A102E380012B81C /* Info.plist */,
 				9BFB235F1A102E380012B81C /* main.m */,
-				9BFB23861A103BBE0012B81C /* Contacts Reminder.pch */,
+				9BFB23861A103BBE0012B81C /* prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -425,8 +453,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GCC_PREFIX_HEADER = "Contacts Reminder/prefix.pch";
 				INFOPLIST_FILE = "Contacts Reminder/Info.plist";
-				INFOPLIST_PREFIX_HEADER = "Contacts-Reminder.pch";
+				INFOPLIST_PREFIX_HEADER = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -439,8 +468,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GCC_PREFIX_HEADER = "Contacts Reminder/prefix.pch";
 				INFOPLIST_FILE = "Contacts Reminder/Info.plist";
-				INFOPLIST_PREFIX_HEADER = "Contacts-Reminder.pch";
+				INFOPLIST_PREFIX_HEADER = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
