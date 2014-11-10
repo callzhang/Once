@@ -14,12 +14,27 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Pods-BlocksKit.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-Bolts.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-CocoaLumberjack.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
 		<key>Pods-MagicalRecord.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-Parse.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -32,27 +47,42 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>1829EA84CDA725F147C5F291</key>
+		<key>0BF6606E46EA169FEB5510CA</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>42F3E9B8B780612213C52C77</key>
+		<key>517B66FD697E463A4C2A4C76</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>6A6E85B1C328EA34B0F87C97</key>
+		<key>523AD75227FFFCACBA1D11ED</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>81FE2EF2200EEADCC76CF0F8</key>
+		<key>61CAB39B858E106A8ABDDCBB</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>FC6EA25CC00CCBA00CED5197</key>
+		<key>8D9E352DE39442526EEFD0D1</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>A09D81D8F2FB790B10921492</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>CE472202D0E2E188BED7D8A7</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>EF8156E57721D34F165A10C6</key>
 		<dict>
 			<key>primary</key>
 			<true/>

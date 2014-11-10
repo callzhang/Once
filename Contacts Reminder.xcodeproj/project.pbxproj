@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		47FE71DD2166A0BFA813EDE4 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCC5B3D1D0A53728B40FF19 /* libPods.a */; };
+		9B9095EC1A105A2100A2FA4A /* CRMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B9095EB1A105A2000A2FA4A /* CRMainViewController.m */; };
 		9BFB23601A102E380012B81C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB235F1A102E380012B81C /* main.m */; };
 		9BFB23631A102E380012B81C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23621A102E380012B81C /* AppDelegate.m */; };
 		9BFB23661A102E380012B81C /* Contacts_Reminder.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23641A102E380012B81C /* Contacts_Reminder.xcdatamodeld */; };
@@ -31,6 +32,8 @@
 /* Begin PBXFileReference section */
 		2CCC5B3D1D0A53728B40FF19 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C824802E36CCE7014BABC05 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		9B9095EA1A105A2000A2FA4A /* CRMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRMainViewController.h; sourceTree = "<group>"; };
+		9B9095EB1A105A2000A2FA4A /* CRMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRMainViewController.m; sourceTree = "<group>"; };
 		9BFB235A1A102E380012B81C /* Contacts Reminder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Contacts Reminder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BFB235E1A102E380012B81C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9BFB235F1A102E380012B81C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -45,6 +48,7 @@
 		9BFB23761A102E380012B81C /* Contacts ReminderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Contacts ReminderTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BFB237B1A102E380012B81C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9BFB237C1A102E380012B81C /* Contacts_ReminderTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Contacts_ReminderTests.m; sourceTree = "<group>"; };
+		9BFB23861A103BBE0012B81C /* Contacts Reminder.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Contacts Reminder.pch"; sourceTree = "<group>"; };
 		D3CA03614464EDF992DA0BE0 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -111,6 +115,8 @@
 				9BFB23621A102E380012B81C /* AppDelegate.m */,
 				9BFB23671A102E380012B81C /* ViewController.h */,
 				9BFB23681A102E380012B81C /* ViewController.m */,
+				9B9095EA1A105A2000A2FA4A /* CRMainViewController.h */,
+				9B9095EB1A105A2000A2FA4A /* CRMainViewController.m */,
 				9BFB236A1A102E380012B81C /* Main.storyboard */,
 				9BFB236D1A102E380012B81C /* Images.xcassets */,
 				9BFB236F1A102E380012B81C /* LaunchScreen.xib */,
@@ -125,6 +131,7 @@
 			children = (
 				9BFB235E1A102E380012B81C /* Info.plist */,
 				9BFB235F1A102E380012B81C /* main.m */,
+				9BFB23861A103BBE0012B81C /* Contacts Reminder.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -197,6 +204,12 @@
 				TargetAttributes = {
 					9BFB23591A102E380012B81C = {
 						CreatedOnToolsVersion = 6.1;
+						DevelopmentTeam = SDR7T9YB58;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					9BFB23751A102E380012B81C = {
 						CreatedOnToolsVersion = 6.1;
@@ -281,6 +294,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B9095EC1A105A2100A2FA4A /* CRMainViewController.m in Sources */,
 				9BFB23661A102E380012B81C /* Contacts_Reminder.xcdatamodeld in Sources */,
 				9BFB23631A102E380012B81C /* AppDelegate.m in Sources */,
 				9BFB23691A102E380012B81C /* ViewController.m in Sources */,
@@ -343,6 +357,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -385,7 +400,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -409,7 +424,9 @@
 			baseConfigurationReference = D3CA03614464EDF992DA0BE0 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = "Contacts Reminder/Info.plist";
+				INFOPLIST_PREFIX_HEADER = "Contacts-Reminder.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -421,7 +438,9 @@
 			baseConfigurationReference = 6C824802E36CCE7014BABC05 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = "Contacts Reminder/Info.plist";
+				INFOPLIST_PREFIX_HEADER = "Contacts-Reminder.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
