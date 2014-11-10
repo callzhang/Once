@@ -37,6 +37,7 @@
 		9B9096141A106E2C00A2FA4A /* CRUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B90960D1A106E2C00A2FA4A /* CRUser.m */; };
 		9B9096151A106E2C00A2FA4A /* ServerObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B90960F1A106E2C00A2FA4A /* ServerObject.m */; };
 		9B9096181A1079D900A2FA4A /* NSDate+Extend.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B9096171A1079D900A2FA4A /* NSDate+Extend.m */; };
+		9B90961B1A10A6AA00A2FA4A /* CRContactsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B90961A1A10A6AA00A2FA4A /* CRContactsManager.m */; };
 		9BFB23601A102E380012B81C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB235F1A102E380012B81C /* main.m */; };
 		9BFB23631A102E380012B81C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23621A102E380012B81C /* AppDelegate.m */; };
 		9BFB23661A102E380012B81C /* Contacts_Reminder.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23641A102E380012B81C /* Contacts_Reminder.xcdatamodeld */; };
@@ -83,6 +84,8 @@
 		9B90960F1A106E2C00A2FA4A /* ServerObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ServerObject.m; path = Model/ServerObject.m; sourceTree = "<group>"; };
 		9B9096161A1079D900A2FA4A /* NSDate+Extend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Extend.h"; sourceTree = "<group>"; };
 		9B9096171A1079D900A2FA4A /* NSDate+Extend.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Extend.m"; sourceTree = "<group>"; };
+		9B9096191A10A6AA00A2FA4A /* CRContactsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRContactsManager.h; sourceTree = "<group>"; };
+		9B90961A1A10A6AA00A2FA4A /* CRContactsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRContactsManager.m; sourceTree = "<group>"; };
 		9BFB235A1A102E380012B81C /* Contacts Reminder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Contacts Reminder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BFB235E1A102E380012B81C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9BFB235F1A102E380012B81C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -197,6 +200,8 @@
 				9BFB23621A102E380012B81C /* AppDelegate.m */,
 				9BFB23671A102E380012B81C /* ViewController.h */,
 				9BFB23681A102E380012B81C /* ViewController.m */,
+				9B9096191A10A6AA00A2FA4A /* CRContactsManager.h */,
+				9B90961A1A10A6AA00A2FA4A /* CRContactsManager.m */,
 				9B9095EA1A105A2000A2FA4A /* CRMainViewController.h */,
 				9B9095EB1A105A2000A2FA4A /* CRMainViewController.m */,
 				9B9096161A1079D900A2FA4A /* NSDate+Extend.h */,
@@ -399,6 +404,7 @@
 				9B9096131A106E2C00A2FA4A /* CRContact.m in Sources */,
 				9B9095EC1A105A2100A2FA4A /* CRMainViewController.m in Sources */,
 				9BFB23661A102E380012B81C /* Contacts_Reminder.xcdatamodeld in Sources */,
+				9B90961B1A10A6AA00A2FA4A /* CRContactsManager.m in Sources */,
 				9B9096111A106E2C00A2FA4A /* _CRUser.m in Sources */,
 				9BFB23631A102E380012B81C /* AppDelegate.m in Sources */,
 				9B9096101A106E2C00A2FA4A /* _CRContact.m in Sources */,
@@ -616,6 +622,7 @@
 				9B9096011A106D4E00A2FA4A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		9BFB23551A102E380012B81C /* Build configuration list for PBXProject "Contacts Reminder" */ = {
 			isa = XCConfigurationList;

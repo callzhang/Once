@@ -8,6 +8,8 @@
 
 #import "AppDelegate.h"
 #import <MagicalRecord/CoreData+MagicalRecord.h>
+#import "CRContactsManager.h"
+
 
 @interface AppDelegate ()
 
@@ -22,8 +24,13 @@
     //[MagicalRecord setLoggingLevel:MagicalRecordLoggingLevelWarn];
     
     //parse
-    [Parse setApplicationId:@"xqiXF3hnqiLXFFkcE3pYs3b2oBORjSdJRiQdKCPK"
-                  clientKey:@"NOT06QA8LdXXLQjUmGKBHs6RWO1qPvrEyJUURxOI"];
+    [Parse setApplicationId:@"xqiXF3hnqiLXFFkcE3pYs3b2oBORjSdJRiQdKCPK" clientKey:@"NOT06QA8LdXXLQjUmGKBHs6RWO1qPvrEyJUURxOI"];
+    
+    //background fetch
+    [application setMinimumBackgroundFetchInterval:3600*8];
+    
+    //manager
+    [CRContactsManager sharedManager];
     
     //push
 #if !TARGET_IPHONE_SIMULATOR
@@ -55,6 +62,24 @@
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
     NSLog(@"Received push notification: %@", userInfo);
     [PFPush handlePush:userInfo];
+}
+
+#pragma mark - Background fetch
+
+
+#pragma mark - Background fetch method (this is called periodocially
+-(void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+{
+    NSLog(@"======== Launched in background due to background fetch event ==========");
+    CRContactsManager *manager = [CRContactsManager sharedManager];
+    NSArray *newContacts = [manager newContactsSinceLastCheck];
+    if (newContacts) {
+        //find new!
+        UILocalNotification *note = [UILocalNotification new];
+        note.alertBody = @"Found new alert! This message will delay 24 hours in release mode.";
+        note.soundName = @"default";
+        [application scheduleLocalNotification:note];
+    }
 }
 
 

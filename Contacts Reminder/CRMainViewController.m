@@ -7,93 +7,49 @@
 //
 
 #import "CRMainViewController.h"
-#import <RHAddressBook.h>
-#import "NSDate+Extend.h"
-#import "RHAddressBook.h"
 #import "RHPerson.h"
-@import AddressBook;
+#import "CRContactsManager.h"
+#import "NSDate+Extend.h"
 
-NSString *const kLastChecked = @"last_checked";
 
 @interface CRMainViewController ()
-@property RHAddressBook *addressbook;
 @property (nonatomic, strong) NSMutableArray *contacts_recent;
 @property (nonatomic, strong) NSMutableArray *contacts_month;
 @property (nonatomic, strong) NSMutableArray *contacts_earlier;
-@property BOOL showFullHistory;
-@property NSDate *lastChecked;
+@property (nonatomic) BOOL showFullHistory;
+@property (nonatomic, strong) CRContactsManager *manager;
 @end
 
 @implementation CRMainViewController
-@synthesize lastChecked = _lastChecked;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.contacts_recent = [NSMutableArray new];
-    self.contacts_month = [NSMutableArray new];
-    self.contacts_earlier = [NSMutableArray new];
     
-    // load addressbook
-    RHAddressBook *ab = [[RHAddressBook alloc] init];
-    
-    //check addressbook access
-    //query current status, pre iOS6 always returns Authorized
-    if ([RHAddressBook authorizationStatus] == RHAuthorizationStatusNotDetermined){
-        
-        //request authorization
-        [ab requestAuthorizationWithCompletion:^(bool granted, NSError *error) {
-            _addressbook = ab;
-            [self loadAddressBook];
-        }];
-    }else if ([RHAddressBook authorizationStatus] == RHAuthorizationStatusAuthorized){
-        _addressbook = ab;
+    _manager = [CRContactsManager sharedManager];
+    [[NSNotificationCenter defaultCenter] addObserverForName:kAdressbookReady object:nil queue:nil usingBlock:^(NSNotification *note) {
         [self loadAddressBook];
-    }
-    
-    // start observing
-    [[NSNotificationCenter defaultCenter]  addObserverForName:RHAddressBookExternalChangeNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-        
-        [self loadAddressBook];
-        
     }];
     
-    
 }
 
-
-- (void)dealloc{
-    
-    // stop observing
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
 
 - (void)viewDidAppear:(BOOL)animated{
     //add show history button
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"History" style:UIBarButtonItemStylePlain target:self action:@selector(showHistory:)];
 }
 
-#pragma mark - Address Book TOOLS
-- (void)requestForAddressBook{
-    CFErrorRef myError = NULL;
-    ABAddressBookRef myAddressBook = ABAddressBookCreateWithOptions(NULL, &myError);
-    ABAddressBookRequestAccessWithCompletion(myAddressBook, ^(bool granted, CFErrorRef error) {
-        if (granted) {
-            _addressbook = [[RHAddressBook alloc] init];
-            [self loadAddressBook];
-        } else {
-            // Handle the case of being denied access and/or the error.
-            NSLog(@"Failed to get addressbook: %@", error);
-        }
-        CFRelease(myAddressBook);
-    });
-}
 
 - (void)loadAddressBook{
-    NSArray *contacts = [_addressbook people];
+    
+    self.contacts_recent = [NSMutableArray new];
+    self.contacts_month = [NSMutableArray new];
+    self.contacts_earlier = [NSMutableArray new];
+    
+    NSArray *contacts = _manager.allContacts;
     
     for (RHPerson *contact in contacts) {
         if (!_showFullHistory) {
-            if ([contact.created timeIntervalSinceDate:self.lastChecked] < 0) {
+            if ([contact.created timeIntervalSinceDate:_manager.lastUpdated] < 0) {
                 continue;
             }
         }
@@ -123,22 +79,6 @@ NSString *const kLastChecked = @"last_checked";
     
 }
 
-#pragma mark - time stamp
-- (NSDate *)lastChecked{
-    if (!_lastChecked) {
-        _lastChecked = [[NSUserDefaults standardUserDefaults] objectForKey:kLastChecked];
-        if (!_lastChecked) {
-            NSLog(@"first time check");
-            self.lastChecked = [NSDate date];
-        }
-    }
-    return _lastChecked;
-}
-
-- (void)setLastChecked:(NSDate *)lastChecked{
-    _lastChecked = lastChecked;
-    [[NSUserDefaults standardUserDefaults] setObject:lastChecked forKey:kLastChecked];
-}
 
 #pragma mark - UI
 // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -182,9 +122,6 @@ NSString *const kLastChecked = @"last_checked";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainViewCellIdentifier"];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"MainViewCellIdentifier"];
-    }
     
     RHPerson *contact;
     switch (indexPath.section) {
@@ -213,6 +150,28 @@ NSString *const kLastChecked = @"last_checked";
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
     return YES;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+    NSString *header;
+    switch (section) {
+        case 0:
+            header = @"Recent";
+            break;
+            
+            
+        case 1:
+            header = @"Last 30 days";
+            break;
+            
+        case 2:
+            header = @"Earlier";
+            break;
+            
+        default:
+            break;
+    }
+    return header;
 }
 
 
