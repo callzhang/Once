@@ -56,7 +56,7 @@
         [[NSNotificationCenter defaultCenter]  addObserverForName:RHAddressBookExternalChangeNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
 			NSLog(@"Observed changes to AddressBook");
             _allContacts = nil;
-			//[self checkNewContactsAndNotify];
+			[self checkNewContactsAndNotifyWithCompletion:nil];
             
         }];
 		
@@ -81,7 +81,7 @@
 
 //contacts added since last updates, used as default view
 - (NSArray *)recentContacts{
-    NSDate *lastUpdated = [[NSUserDefaults standardUserDefaults] objectForKey:kLastUpdated];
+    NSDate *lastUpdated = self.lastUpdated;
     NSArray *recents = [[_addressbook people] bk_select:^BOOL(RHPerson *person) {
         return [person.created timeIntervalSinceDate:lastUpdated] > 0;
     }];
@@ -94,23 +94,27 @@
 - (void)checkNewContactsAndNotifyWithCompletion:(void (^)(UIBackgroundFetchResult result))block{
 	NSArray *newContacts = [self newContactsSinceLastCheck];
 	if (newContacts.count) {
-		//send notification
-#ifdef DEBUG
-		UILocalNotification *note = [UILocalNotification new];
-		note.alertBody = @"Found new alert! (Test local notification)";
-		note.soundName = @"default";
-		note.category = kReminderCategory;
-		[[UIApplication sharedApplication] scheduleLocalNotification:note];
-#endif
-		//schedule server push
+		//name
 		NSArray *names = [newContacts valueForKey:@"firstName"];
 		NSString *reminderStr;
 		if (names.count > 1) {
-			reminderStr = [NSString stringWithFormat:@"You've met %@ and %ld other people. Add a quick memo?", names.firstObject, names.count-1];
+			reminderStr = [NSString stringWithFormat:@"You recently met %@ and %ld other people. Add a quick memo?", names.firstObject, names.count-1];
 		} else {
-			reminderStr = [NSString stringWithFormat:@"You have met %@. Add a quick memo?", names.firstObject];
+			reminderStr = [NSString stringWithFormat:@"You recently met %@. Add a quick memo?", names.firstObject];
 		}
 		
+		//send notification
+		UILocalNotification *note = [UILocalNotification new];
+		note.alertBody = reminderStr;
+		note.soundName = @"reminder.caf";
+		note.category = kReminderCategory;
+		note.fireDate = [NSDate date].nextNoon;
+#ifdef DEBUG
+		note.fireDate = [[NSDate date] dateByAddingTimeInterval:10];
+#endif
+		[[UIApplication sharedApplication] scheduleLocalNotification:note];
+		
+		//schedule server push
 		
 		AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
 		manager.requestSerializer = [AFJSONRequestSerializer serializer];
@@ -121,13 +125,14 @@
 		
 		NSDate *nextNoon = [NSDate date].nextNoon;
 #ifdef DEBUG
-		nextNoon = [[NSDate date] dateByAddingTimeInterval:60];
+		nextNoon = [[NSDate date] dateByAddingTimeInterval:10];
 #endif
 		NSDictionary *dic = @{@"where":@{@"objectId":[PFInstallation currentInstallation].objectId},
 							  @"push_time":[NSNumber numberWithDouble:[nextNoon timeIntervalSince1970]],
 							  @"data":@{@"alert": reminderStr,
 										@"content-available":@1,
 										@"category": kReminderCategory,
+										@"sound": @"reminder.caf",
 										@"bedge": @"Incremental"},
 							  };
 		
@@ -159,9 +164,11 @@
     }];
     
     if (newContacts.count > 0) {
+		NSLog(@"Found %ld new contacts", newContacts.count);
         self.lastUpdated = [NSDate date];
 		//move the lastOpened old time to real last opened time
 		self.lastOpenedOld = self.lastOpened;
+		[[NSUserDefaults standardUserDefaults] synchronize];
     }
     
     self.lastChecked = [NSDate date];
@@ -229,6 +236,7 @@
 }
 
 - (void)setLastOpened:(NSDate *)lastOpened{
+	NSLog(@"Last opened set to: %@", lastOpened.date2detailDateString);
 	[[NSUserDefaults standardUserDefaults] setObject:lastOpened forKey:kLastOpened];
 }
 
@@ -236,6 +244,7 @@
 	
 	if (!_lastOpenedOld) {
 		_lastOpenedOld = [[NSUserDefaults standardUserDefaults] objectForKey:kLastOpenedOld];
+		NSLog(@"Last opened old: %@", _lastOpenedOld.date2detailDateString);
 		if (!_lastOpenedOld) {
 			_lastOpenedOld = [NSDate date];
 			[[NSUserDefaults standardUserDefaults] setObject:_lastOpenedOld forKey:kLastOpenedOld];

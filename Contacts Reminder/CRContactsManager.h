@@ -11,15 +11,16 @@
 #define kParseApplicationId	@"xqiXF3hnqiLXFFkcE3pYs3b2oBORjSdJRiQdKCPK"
 #define kParseClientKey		@"NOT06QA8LdXXLQjUmGKBHs6RWO1qPvrEyJUURxOI"
 #define kParseRestAPIId		@"NTWLFE2HunWRIeGGKjBwT29Gm4QahR6Gpztiugxt"
-
+//time
 #define kLastChecked		@"last_checked"
 #define kLastUpdated		@"last_updated"
 #define kLastOpened			@"last_opened"
 #define kLastOpenedOld		@"last_opened_old"
+//event
 #define kAdressbookReady	@"addressbook_ready"
-
+//notification category
 #define kReminderCategory	@"quick_memo"
-
+//local notification user info
 #define kReactivateLocalNotification	@"reactivate"
 
 @interface CRContactsManager : NSObject

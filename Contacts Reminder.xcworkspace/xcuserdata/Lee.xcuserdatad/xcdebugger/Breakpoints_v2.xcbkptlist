@@ -9,13 +9,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Contacts Reminder/AppDelegate.m"
-            timestampString = "437352674.58119"
+            filePath = "Contacts Reminder/CRContactsManager.m"
+            timestampString = "437435227.831092"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "73"
-            endingLineNumber = "73"
-            landmarkName = "-application:performFetchWithCompletionHandler:"
+            startingLineNumber = "167"
+            endingLineNumber = "167"
+            landmarkName = "-newContactsSinceLastCheck"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

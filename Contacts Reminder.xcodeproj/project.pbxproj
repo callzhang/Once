@@ -38,6 +38,7 @@
 		9B9096151A106E2C00A2FA4A /* ServerObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B90960F1A106E2C00A2FA4A /* ServerObject.m */; };
 		9B9096181A1079D900A2FA4A /* NSDate+Extend.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B9096171A1079D900A2FA4A /* NSDate+Extend.m */; };
 		9B90961B1A10A6AA00A2FA4A /* CRContactsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B90961A1A10A6AA00A2FA4A /* CRContactsManager.m */; };
+		9BA1F4301A12B25E00A9E12C /* reminder.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9BA1F42F1A12B25E00A9E12C /* reminder.caf */; };
 		9BFB23601A102E380012B81C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB235F1A102E380012B81C /* main.m */; };
 		9BFB23631A102E380012B81C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23621A102E380012B81C /* AppDelegate.m */; };
 		9BFB23661A102E380012B81C /* Contacts_Reminder.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23641A102E380012B81C /* Contacts_Reminder.xcdatamodeld */; };
@@ -86,6 +87,7 @@
 		9B9096171A1079D900A2FA4A /* NSDate+Extend.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Extend.m"; sourceTree = "<group>"; };
 		9B9096191A10A6AA00A2FA4A /* CRContactsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRContactsManager.h; sourceTree = "<group>"; };
 		9B90961A1A10A6AA00A2FA4A /* CRContactsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRContactsManager.m; sourceTree = "<group>"; };
+		9BA1F42F1A12B25E00A9E12C /* reminder.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = reminder.caf; sourceTree = "<group>"; };
 		9BFB235A1A102E380012B81C /* Contacts Reminder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Contacts Reminder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BFB235E1A102E380012B81C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9BFB235F1A102E380012B81C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -173,10 +175,19 @@
 			name = Models;
 			sourceTree = "<group>";
 		};
+		9BA1F42E1A12AEC500A9E12C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				9BA1F42F1A12B25E00A9E12C /* reminder.caf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		9BFB23511A102E380012B81C = {
 			isa = PBXGroup;
 			children = (
 				9BFB235C1A102E380012B81C /* Contacts Reminder */,
+				9BA1F42E1A12AEC500A9E12C /* Resources */,
 				9BFB23791A102E380012B81C /* Contacts ReminderTests */,
 				9BFB235B1A102E380012B81C /* Products */,
 				0FE5BC83CBB565A1D63ABEAE /* Pods */,
@@ -337,6 +348,7 @@
 			files = (
 				9BFB236C1A102E380012B81C /* Main.storyboard in Resources */,
 				9BFB23711A102E380012B81C /* LaunchScreen.xib in Resources */,
+				9BA1F4301A12B25E00A9E12C /* reminder.caf in Resources */,
 				9BFB236E1A102E380012B81C /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
