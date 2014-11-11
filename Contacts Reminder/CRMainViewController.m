@@ -11,7 +11,6 @@
 #import "CRContactsManager.h"
 #import "NSDate+Extend.h"
 
-
 @interface CRMainViewController ()
 @property (nonatomic, strong) NSMutableArray *contacts_recent;
 @property (nonatomic, strong) NSMutableArray *contacts_month;
@@ -178,32 +177,36 @@
     return header;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+	RHPerson *contact;
+	switch (indexPath.section) {
+		case 0:
+			contact = self.contacts_recent[indexPath.row];
+			break;
+		case 1:
+			contact = self.contacts_month[indexPath.row];
+			break;
+		case 2:
+			contact = self.contacts_earlier[indexPath.row];
+			break;
+		default:
+			return;
+	}
+	ABRecordRef personRef = contact.recordRef;
+	if (personRef) {
+		ABPersonViewController *picker = [[ABPersonViewController alloc] init];
+		picker.personViewDelegate = self;
+		picker.displayedPerson = personRef;
+		// Allow users to edit the person’s information
+		picker.allowsEditing = YES;
+		[self.navigationController pushViewController:picker animated:YES];
+	}
+}
 
-/*
- // Override to support editing the table view.
- - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
- if (editingStyle == UITableViewCellEditingStyleDelete) {
- // Delete the row from the data source
- [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
- } else if (editingStyle == UITableViewCellEditingStyleInsert) {
- // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
- }
- }
- */
+- (BOOL)personViewController:(ABPersonViewController *)personViewController shouldPerformDefaultActionForPerson:(ABRecordRef)person property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier{
+	return NO;
+}
 
-/*
- // Override to support rearranging the table view.
- - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
- }
- */
-
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
- }
- */
 
 /*
  #pragma mark - Navigation

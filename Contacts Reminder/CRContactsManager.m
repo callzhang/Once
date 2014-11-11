@@ -162,9 +162,9 @@
     NSArray *newContacts = [[_addressbook people] bk_select:^BOOL(RHPerson *person) {
         return [person.created timeIntervalSinceDate:lastChecked] > 0;
     }];
-    
+	
     if (newContacts.count > 0) {
-		NSLog(@"Found %ld new contacts", newContacts.count);
+		NSLog(@"Found %ld new contacts", (unsigned long)newContacts.count);
         self.lastUpdated = [NSDate date];
 		//move the lastOpened old time to real last opened time
 		self.lastOpenedOld = self.lastOpened;
