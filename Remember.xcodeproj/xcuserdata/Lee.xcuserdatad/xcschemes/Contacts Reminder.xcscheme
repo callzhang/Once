@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "9BFB23591A102E380012B81C"
-               BuildableName = "Contacts Reminder.app"
-               BlueprintName = "Contacts Reminder"
-               ReferencedContainer = "container:Contacts Reminder.xcodeproj">
+               BuildableName = "Remember.app"
+               BlueprintName = "Remember"
+               ReferencedContainer = "container:Remember.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "9BFB23751A102E380012B81C"
-               BuildableName = "Contacts ReminderTests.xctest"
-               BlueprintName = "Contacts ReminderTests"
-               ReferencedContainer = "container:Contacts Reminder.xcodeproj">
+               BuildableName = "RememberTests.xctest"
+               BlueprintName = "RememberTests"
+               ReferencedContainer = "container:Remember.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -47,9 +47,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "9BFB23751A102E380012B81C"
-               BuildableName = "Contacts ReminderTests.xctest"
-               BlueprintName = "Contacts ReminderTests"
-               ReferencedContainer = "container:Contacts Reminder.xcodeproj">
+               BuildableName = "RememberTests.xctest"
+               BlueprintName = "RememberTests"
+               ReferencedContainer = "container:Remember.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -57,9 +57,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9BFB23591A102E380012B81C"
-            BuildableName = "Contacts Reminder.app"
-            BlueprintName = "Contacts Reminder"
-            ReferencedContainer = "container:Contacts Reminder.xcodeproj">
+            BuildableName = "Remember.app"
+            BlueprintName = "Remember"
+            ReferencedContainer = "container:Remember.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -76,9 +76,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9BFB23591A102E380012B81C"
-            BuildableName = "Contacts Reminder.app"
-            BlueprintName = "Contacts Reminder"
-            ReferencedContainer = "container:Contacts Reminder.xcodeproj">
+            BuildableName = "Remember.app"
+            BlueprintName = "Remember"
+            ReferencedContainer = "container:Remember.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -94,9 +94,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9BFB23591A102E380012B81C"
-            BuildableName = "Contacts Reminder.app"
-            BlueprintName = "Contacts Reminder"
-            ReferencedContainer = "container:Contacts Reminder.xcodeproj">
+            BuildableName = "Remember.app"
+            BlueprintName = "Remember"
+            ReferencedContainer = "container:Remember.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

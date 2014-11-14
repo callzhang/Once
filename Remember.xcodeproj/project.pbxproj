@@ -88,7 +88,7 @@
 		9B9096191A10A6AA00A2FA4A /* CRContactsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRContactsManager.h; sourceTree = "<group>"; };
 		9B90961A1A10A6AA00A2FA4A /* CRContactsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRContactsManager.m; sourceTree = "<group>"; };
 		9BA1F42F1A12B25E00A9E12C /* reminder.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = reminder.caf; sourceTree = "<group>"; };
-		9BFB235A1A102E380012B81C /* Contacts Reminder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Contacts Reminder.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9BFB235A1A102E380012B81C /* Remember.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Remember.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BFB235E1A102E380012B81C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9BFB235F1A102E380012B81C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		9BFB23611A102E380012B81C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -99,7 +99,7 @@
 		9BFB236B1A102E380012B81C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9BFB236D1A102E380012B81C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		9BFB23701A102E380012B81C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		9BFB23761A102E380012B81C /* Contacts ReminderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Contacts ReminderTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9BFB23761A102E380012B81C /* RememberTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RememberTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BFB237B1A102E380012B81C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9BFB237C1A102E380012B81C /* Contacts_ReminderTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Contacts_ReminderTests.m; sourceTree = "<group>"; };
 		9BFB23861A103BBE0012B81C /* prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = prefix.pch; sourceTree = "<group>"; };
@@ -198,8 +198,8 @@
 		9BFB235B1A102E380012B81C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				9BFB235A1A102E380012B81C /* Contacts Reminder.app */,
-				9BFB23761A102E380012B81C /* Contacts ReminderTests.xctest */,
+				9BFB235A1A102E380012B81C /* Remember.app */,
+				9BFB23761A102E380012B81C /* RememberTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -257,9 +257,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		9BFB23591A102E380012B81C /* Contacts Reminder */ = {
+		9BFB23591A102E380012B81C /* Remember */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9BFB23801A102E380012B81C /* Build configuration list for PBXNativeTarget "Contacts Reminder" */;
+			buildConfigurationList = 9BFB23801A102E380012B81C /* Build configuration list for PBXNativeTarget "Remember" */;
 			buildPhases = (
 				570C31B4D113161F5826C11B /* Check Pods Manifest.lock */,
 				9BFB23561A102E380012B81C /* Sources */,
@@ -271,14 +271,14 @@
 			);
 			dependencies = (
 			);
-			name = "Contacts Reminder";
+			name = Remember;
 			productName = "Contacts Reminder";
-			productReference = 9BFB235A1A102E380012B81C /* Contacts Reminder.app */;
+			productReference = 9BFB235A1A102E380012B81C /* Remember.app */;
 			productType = "com.apple.product-type.application";
 		};
-		9BFB23751A102E380012B81C /* Contacts ReminderTests */ = {
+		9BFB23751A102E380012B81C /* RememberTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9BFB23831A102E380012B81C /* Build configuration list for PBXNativeTarget "Contacts ReminderTests" */;
+			buildConfigurationList = 9BFB23831A102E380012B81C /* Build configuration list for PBXNativeTarget "RememberTests" */;
 			buildPhases = (
 				9BFB23721A102E380012B81C /* Sources */,
 				9BFB23731A102E380012B81C /* Frameworks */,
@@ -289,9 +289,9 @@
 			dependencies = (
 				9BFB23781A102E380012B81C /* PBXTargetDependency */,
 			);
-			name = "Contacts ReminderTests";
+			name = RememberTests;
 			productName = "Contacts ReminderTests";
-			productReference = 9BFB23761A102E380012B81C /* Contacts ReminderTests.xctest */;
+			productReference = 9BFB23761A102E380012B81C /* RememberTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -321,7 +321,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 9BFB23551A102E380012B81C /* Build configuration list for PBXProject "Contacts Reminder" */;
+			buildConfigurationList = 9BFB23551A102E380012B81C /* Build configuration list for PBXProject "Remember" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -334,8 +334,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				9BFB23591A102E380012B81C /* Contacts Reminder */,
-				9BFB23751A102E380012B81C /* Contacts ReminderTests */,
+				9BFB23591A102E380012B81C /* Remember */,
+				9BFB23751A102E380012B81C /* RememberTests */,
 				9B9095FE1A106D4E00A2FA4A /* mogenerator */,
 			);
 		};
@@ -442,7 +442,7 @@
 /* Begin PBXTargetDependency section */
 		9BFB23781A102E380012B81C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 9BFB23591A102E380012B81C /* Contacts Reminder */;
+			target = 9BFB23591A102E380012B81C /* Remember */;
 			targetProxy = 9BFB23771A102E380012B81C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -571,7 +571,7 @@
 				INFOPLIST_PREFIX_HEADER = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Remember;
 			};
 			name = Debug;
 		};
@@ -586,7 +586,7 @@
 				INFOPLIST_PREFIX_HEADER = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Remember;
 			};
 			name = Release;
 		};
@@ -604,7 +604,7 @@
 				);
 				INFOPLIST_FILE = "Contacts ReminderTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = RememberTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Contacts Reminder.app/Contacts Reminder";
 			};
 			name = Debug;
@@ -619,7 +619,7 @@
 				);
 				INFOPLIST_FILE = "Contacts ReminderTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = RememberTests;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Contacts Reminder.app/Contacts Reminder";
 			};
 			name = Release;
@@ -636,7 +636,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9BFB23551A102E380012B81C /* Build configuration list for PBXProject "Contacts Reminder" */ = {
+		9BFB23551A102E380012B81C /* Build configuration list for PBXProject "Remember" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9BFB237E1A102E380012B81C /* Debug */,
@@ -645,7 +645,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9BFB23801A102E380012B81C /* Build configuration list for PBXNativeTarget "Contacts Reminder" */ = {
+		9BFB23801A102E380012B81C /* Build configuration list for PBXNativeTarget "Remember" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9BFB23811A102E380012B81C /* Debug */,
@@ -654,7 +654,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9BFB23831A102E380012B81C /* Build configuration list for PBXNativeTarget "Contacts ReminderTests" */ = {
+		9BFB23831A102E380012B81C /* Build configuration list for PBXNativeTarget "RememberTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9BFB23841A102E380012B81C /* Debug */,
