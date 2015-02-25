@@ -7,8 +7,8 @@
 //
 
 #import "AppDelegate.h"
-#import <MagicalRecord/CoreData+MagicalRecord.h>
-#import "CRContactsManager.h"
+//#import <MagicalRecord/CoreData+MagicalRecord.h>
+//#import "CRContactsManager.h"
 
 
 @interface AppDelegate ()

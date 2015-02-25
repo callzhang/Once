@@ -17,5 +17,7 @@
 #import <Parse/Parse.h>
 #import "GCDSingleton.h"
 #import <CocoaLumberjack/DDLog.h>
+#import "CRContactsManager.h"
+
 static NSUInteger ddLogLevel = LOG_LEVEL_VERBOSE;
 #endif
