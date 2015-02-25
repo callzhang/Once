@@ -34,3 +34,8 @@ GCD_SYNTHESIZE_SINGLETON_FOR_CLASS_HEADER(EWUtil)
 @interface NSArray(Extend)
 - (NSString *)string;
 @end
+
+
+@interface UIView(Extend)
+- (void)rounden;
+@end

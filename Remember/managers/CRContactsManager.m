@@ -53,7 +53,7 @@
 			
         // start observing
         [[NSNotificationCenter defaultCenter]  addObserverForName:RHAddressBookExternalChangeNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-			NSLog(@"Observed changes to AddressBook");
+			DDLogInfo(@"Observed changes to AddressBook");
             _allContacts = nil;
 			[self checkNewContactsAndNotifyWithCompletion:nil];
             
@@ -61,6 +61,7 @@
 		
 		//time stamp
 		[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidEnterBackgroundNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+			DDLogInfo(@"Observed app enter background");
 			//update last opened
 			[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastOpened];
 		}];
@@ -162,7 +163,7 @@
     }];
 	
     if (newContacts.count > 0) {
-		NSLog(@"Found %ld new contacts", (unsigned long)newContacts.count);
+		DDLogInfo(@"Found %ld new contacts since last checked %@", (unsigned long)newContacts.count, lastChecked.date2detailDateString);
         self.lastUpdated = [NSDate date];
 		//move the lastOpened old time to real last opened time
 		self.lastOpenedOld = self.lastOpened;

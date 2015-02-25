@@ -43,7 +43,6 @@
 		9BFB23601A102E380012B81C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB235F1A102E380012B81C /* main.m */; };
 		9BFB23631A102E380012B81C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23621A102E380012B81C /* AppDelegate.m */; };
 		9BFB23661A102E380012B81C /* Remember.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23641A102E380012B81C /* Remember.xcdatamodeld */; };
-		9BFB23691A102E380012B81C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23681A102E380012B81C /* ViewController.m */; };
 		9BFB236C1A102E380012B81C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB236A1A102E380012B81C /* Main.storyboard */; };
 		9BFB236E1A102E380012B81C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB236D1A102E380012B81C /* Images.xcassets */; };
 		9BFB23711A102E380012B81C /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB236F1A102E380012B81C /* LaunchScreen.xib */; };
@@ -98,8 +97,6 @@
 		9BFB23611A102E380012B81C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		9BFB23621A102E380012B81C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		9BFB23651A102E380012B81C /* Remember.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Remember.xcdatamodel; sourceTree = "<group>"; };
-		9BFB23671A102E380012B81C /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		9BFB23681A102E380012B81C /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		9BFB236B1A102E380012B81C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9BFB236D1A102E380012B81C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "Contacts Reminder/Images.xcassets"; sourceTree = "<group>"; };
 		9BFB23701A102E380012B81C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -177,8 +174,6 @@
 			children = (
 				9B9095EA1A105A2000A2FA4A /* CRMainViewController.h */,
 				9B9095EB1A105A2000A2FA4A /* CRMainViewController.m */,
-				9BFB23671A102E380012B81C /* ViewController.h */,
-				9BFB23681A102E380012B81C /* ViewController.m */,
 			);
 			name = Controllers;
 			path = controllers;
@@ -461,7 +456,6 @@
 				9B9096111A106E2C00A2FA4A /* _CRUser.m in Sources */,
 				9BFB23631A102E380012B81C /* AppDelegate.m in Sources */,
 				9B9096101A106E2C00A2FA4A /* _CRContact.m in Sources */,
-				9BFB23691A102E380012B81C /* ViewController.m in Sources */,
 				9BFB23601A102E380012B81C /* main.m in Sources */,
 				9B9096181A1079D900A2FA4A /* NSDate+Extend.m in Sources */,
 				9B9096121A106E2C00A2FA4A /* _ServerObject.m in Sources */,

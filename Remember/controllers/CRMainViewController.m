@@ -29,14 +29,18 @@
         [self loadAddressBook];
     }];
 	
+	//show history in default
+	self.showFullHistory = YES;
+	
 	//load regardless
 	[self loadAddressBook];
 }
 
 
-- (void)viewDidAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated{
+	[super viewWillAppear:animated];
     //add show history button
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"History" style:UIBarButtonItemStylePlain target:self action:@selector(showHistory:)];
+	//self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"History" style:UIBarButtonItemStylePlain target:self action:@selector(showHistory:)];
 }
 
 
@@ -142,29 +146,28 @@
             return cell;
     }
     
-    cell.textLabel.text = contact.compositeName ?: [NSString stringWithFormat:@"%@ %@", contact.firstName, contact.lastName];
+    cell.textLabel.text = contact.compositeName ?: [NSString stringWithFormat:@"%@", contact.name];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"Created on %@", contact.created.date2dayString];
- 
+	cell.imageView.image = contact.thumbnail ?: [UIImage imageNamed:@"profileImage"];
+	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     return cell;
 }
 
 
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
+- (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
+	[cell.imageView rounden];
 }
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
     NSString *header;
     switch (section) {
         case 0:
-            header = @"Recent";
+            header = @"Recent week";
             break;
             
             
         case 1:
-            header = @"Last 30 days";
+            header = @"Recent month";
             break;
             
         case 2:
