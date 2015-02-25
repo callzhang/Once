@@ -47,7 +47,7 @@
 		9BFB236C1A102E380012B81C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB236A1A102E380012B81C /* Main.storyboard */; };
 		9BFB236E1A102E380012B81C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB236D1A102E380012B81C /* Images.xcassets */; };
 		9BFB23711A102E380012B81C /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB236F1A102E380012B81C /* LaunchScreen.xib */; };
-		9BFB237D1A102E380012B81C /* Contacts_ReminderTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB237C1A102E380012B81C /* Contacts_ReminderTests.m */; };
+		9BFB237D1A102E380012B81C /* RememberTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB237C1A102E380012B81C /* RememberTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,7 +105,7 @@
 		9BFB23701A102E380012B81C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		9BFB23761A102E380012B81C /* RememberTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RememberTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BFB237B1A102E380012B81C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9BFB237C1A102E380012B81C /* Contacts_ReminderTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Contacts_ReminderTests.m; sourceTree = "<group>"; };
+		9BFB237C1A102E380012B81C /* RememberTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RememberTests.m; sourceTree = "<group>"; };
 		9BFB23861A103BBE0012B81C /* prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = prefix.pch; sourceTree = "<group>"; };
 		D3CA03614464EDF992DA0BE0 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -235,9 +235,9 @@
 		9BFB23511A102E380012B81C = {
 			isa = PBXGroup;
 			children = (
-				9BFB235C1A102E380012B81C /* Contacts Reminder */,
+				9BFB235C1A102E380012B81C /* Remember */,
 				9BA1F42E1A12AEC500A9E12C /* Resources */,
-				9BFB23791A102E380012B81C /* Contacts ReminderTests */,
+				9BFB23791A102E380012B81C /* RememberTests */,
 				9BFB235B1A102E380012B81C /* Products */,
 				0FE5BC83CBB565A1D63ABEAE /* Pods */,
 				906D60237CF5C7784D9BE24B /* Frameworks */,
@@ -253,7 +253,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		9BFB235C1A102E380012B81C /* Contacts Reminder */ = {
+		9BFB235C1A102E380012B81C /* Remember */ = {
 			isa = PBXGroup;
 			children = (
 				9BFB23611A102E380012B81C /* AppDelegate.h */,
@@ -265,7 +265,7 @@
 				9B9096031A106DC600A2FA4A /* Models */,
 				9BFB235D1A102E380012B81C /* Supporting Files */,
 			);
-			path = "Contacts Reminder";
+			path = Remember;
 			sourceTree = "<group>";
 		};
 		9BFB235D1A102E380012B81C /* Supporting Files */ = {
@@ -278,13 +278,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		9BFB23791A102E380012B81C /* Contacts ReminderTests */ = {
+		9BFB23791A102E380012B81C /* RememberTests */ = {
 			isa = PBXGroup;
 			children = (
-				9BFB237C1A102E380012B81C /* Contacts_ReminderTests.m */,
+				9BFB237C1A102E380012B81C /* RememberTests.m */,
 				9BFB237A1A102E380012B81C /* Supporting Files */,
 			);
-			path = "Contacts ReminderTests";
+			path = RememberTests;
 			sourceTree = "<group>";
 		};
 		9BFB237A1A102E380012B81C /* Supporting Files */ = {
@@ -475,7 +475,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9BFB237D1A102E380012B81C /* Contacts_ReminderTests.m in Sources */,
+				9BFB237D1A102E380012B81C /* RememberTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
