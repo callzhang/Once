@@ -24,6 +24,21 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>Pods-CrashlyticsFramework.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-CrashlyticsLumberjack.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-JGProgressHUD.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-MagicalRecord.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -47,42 +62,57 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>0B8F770C8591D79FE62E4416</key>
+		<key>0247C335190268E463E6FDBC</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>12889ECD95049CFB63DC6F8B</key>
+		<key>025EFE56E994A4C006073022</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>1E0918759497B1FA02D31FF6</key>
+		<key>3996DDA06D003EB00FC5EBD4</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>52FA13B66C14296F206DF63E</key>
+		<key>3B456519E63B6D1082381CC4</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>575260BF46186323E2736B14</key>
+		<key>80BAC19F0706AC80FA9828CA</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>7B937F736C3B9E65C573939B</key>
+		<key>93E5BE045543662340D7066B</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>CEC6DCF357906A8103154FA6</key>
+		<key>9B51836E62E185CBD468081D</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>D43C114DA9F63428A9C0B053</key>
+		<key>C3777C20E02E8639DE7F0523</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>CD61E782C7211F79D1091F5D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D35F766DF4D644F2A98EE9A6</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>F36B4A7E0640CC3B73497F58</key>
 		<dict>
 			<key>primary</key>
 			<true/>

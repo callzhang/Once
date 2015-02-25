@@ -10,6 +10,8 @@
 	<string>Contacts Reminder</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
+		<key>55628C687A39F9A4DE15E22BD83F76A91216C65A</key>
+		<string>https://github.com/callzhang/WokeAlarm.git</string>
 		<key>EA4BC292AEDB55CE448A6BE6A409B11198AFE2E1</key>
 		<string>https://github.com/callzhang/Contacts-Reminder.git</string>
 	</dict>
@@ -17,6 +19,8 @@
 	<string>Contacts Reminder.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
+		<key>55628C687A39F9A4DE15E22BD83F76A91216C65A</key>
+		<string>../../WokeAlarm</string>
 		<key>EA4BC292AEDB55CE448A6BE6A409B11198AFE2E1</key>
 		<string>..</string>
 	</dict>
@@ -35,6 +39,14 @@
 			<string>EA4BC292AEDB55CE448A6BE6A409B11198AFE2E1</string>
 			<key>IDESourceControlWCCName</key>
 			<string>Contacts%20Reminder</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>55628C687A39F9A4DE15E22BD83F76A91216C65A</string>
+			<key>IDESourceControlWCCName</key>
+			<string>WokeAlarm</string>
 		</dict>
 	</array>
 </dict>

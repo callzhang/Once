@@ -36,23 +36,29 @@
     //manager
     [CRContactsManager sharedManager];
     
+    //logging
+    [EWUtil initLogging];
+    
     //push
 #if !TARGET_IPHONE_SIMULATOR
     UIUserNotificationType types = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeNone;
-	UIMutableUserNotificationAction *reply = [UIMutableUserNotificationAction new];
-	reply.activationMode = UIUserNotificationActivationModeForeground;
-	reply.authenticationRequired = NO;
+	UIMutableUserNotificationAction *notes = [UIMutableUserNotificationAction new];
+	notes.activationMode = UIUserNotificationActivationModeForeground;
+	notes.authenticationRequired = NO;
+    notes.title = @"Notes";
 	//this button doesn't bring the app to theh foreground but activates the app in background
 	UIMutableUserNotificationAction *later = [UIMutableUserNotificationAction new];
 	later.activationMode = UIUserNotificationActivationModeBackground;
 	later.authenticationRequired = NO;
+    later.title = @"Later";
 	UIMutableUserNotificationAction *cancel = [UIMutableUserNotificationAction new];
 	cancel.activationMode = UIUserNotificationActivationModeBackground;
 	cancel.authenticationRequired = NO;
 	cancel.destructive = YES;
+    cancel.title = @"Cancel";
 	UIMutableUserNotificationCategory *category = [UIMutableUserNotificationCategory new];
-	[category setActions:@[reply, later, cancel] forContext:UIUserNotificationActionContextDefault];
-	[category setActions:@[reply, cancel] forContext:UIUserNotificationActionContextMinimal];
+	[category setActions:@[notes, later, cancel] forContext:UIUserNotificationActionContextDefault];
+	[category setActions:@[notes, cancel] forContext:UIUserNotificationActionContextMinimal];
     UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:[NSSet setWithObjects:category, nil]];
     
     [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
@@ -65,18 +71,18 @@
 
 #pragma Push notification
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken{
-    NSLog(@"Push token: %@", deviceToken);
+    DDLogInfo(@"Push token: %@", deviceToken);
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:deviceToken];
     [currentInstallation saveInBackground];
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error{
-    NSLog(@"Failed to register push: %@", error.description);
+    DDLogInfo(@"Failed to register push: %@", error.description);
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-    NSLog(@"Received push notification: %@", userInfo);
+    DDLogInfo(@"Received push notification: %@", userInfo);
     [PFPush handlePush:userInfo];
 }
 
@@ -86,13 +92,12 @@
 #pragma mark - Background fetch method (this is called periodocially
 -(void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-    NSLog(@"======== Launched in background due to background fetch event ==========");
+    DDLogInfo(@"======== Launched in background due to background fetch event ==========");
     CRContactsManager *manager = [CRContactsManager sharedManager];
-	[manager scheduleReactivateLocalNotification];
+	//[manager scheduleReactivateLocalNotification];
     [manager checkNewContactsAndNotifyWithCompletion:^(UIBackgroundFetchResult result) {
 		completionHandler(result);
 	}];
-	
 }
 
 

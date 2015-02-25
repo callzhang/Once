@@ -15,4 +15,7 @@
 #import <MagicalRecord/CoreData+MagicalRecord.h>
 #import <BlocksKit/BlocksKit.h>
 #import <Parse/Parse.h>
+#import "GCDSingleton.h"
+#import <CocoaLumberjack/DDLog.h>
+static NSUInteger ddLogLevel = LOG_LEVEL_VERBOSE;
 #endif

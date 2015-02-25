@@ -22,6 +22,7 @@
 
 /* Begin PBXBuildFile section */
 		47FE71DD2166A0BFA813EDE4 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCC5B3D1D0A53728B40FF19 /* libPods.a */; };
+		9B7D31301A9DA820000E8A9F /* EWUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B7D312F1A9DA820000E8A9F /* EWUtil.m */; };
 		9B9095EC1A105A2100A2FA4A /* CRMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B9095EB1A105A2000A2FA4A /* CRMainViewController.m */; };
 		9B9095F21A1064FC00A2FA4A /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B9095F01A1064FC00A2FA4A /* AddressBook.framework */; };
 		9B9095F31A1064FC00A2FA4A /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B9095F11A1064FC00A2FA4A /* AddressBookUI.framework */; };
@@ -41,7 +42,7 @@
 		9BA1F4301A12B25E00A9E12C /* reminder.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9BA1F42F1A12B25E00A9E12C /* reminder.caf */; };
 		9BFB23601A102E380012B81C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB235F1A102E380012B81C /* main.m */; };
 		9BFB23631A102E380012B81C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23621A102E380012B81C /* AppDelegate.m */; };
-		9BFB23661A102E380012B81C /* Contacts_Reminder.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23641A102E380012B81C /* Contacts_Reminder.xcdatamodeld */; };
+		9BFB23661A102E380012B81C /* Remember.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23641A102E380012B81C /* Remember.xcdatamodeld */; };
 		9BFB23691A102E380012B81C /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23681A102E380012B81C /* ViewController.m */; };
 		9BFB236C1A102E380012B81C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB236A1A102E380012B81C /* Main.storyboard */; };
 		9BFB236E1A102E380012B81C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9BFB236D1A102E380012B81C /* Images.xcassets */; };
@@ -62,6 +63,9 @@
 /* Begin PBXFileReference section */
 		2CCC5B3D1D0A53728B40FF19 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C824802E36CCE7014BABC05 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		9B7D312C1A9DA616000E8A9F /* GCDSingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GCDSingleton.h; sourceTree = "<group>"; };
+		9B7D312E1A9DA820000E8A9F /* EWUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWUtil.h; sourceTree = "<group>"; };
+		9B7D312F1A9DA820000E8A9F /* EWUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWUtil.m; sourceTree = "<group>"; };
 		9B9095EA1A105A2000A2FA4A /* CRMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRMainViewController.h; sourceTree = "<group>"; };
 		9B9095EB1A105A2000A2FA4A /* CRMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRMainViewController.m; sourceTree = "<group>"; };
 		9B9095F01A1064FC00A2FA4A /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
@@ -93,11 +97,11 @@
 		9BFB235F1A102E380012B81C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		9BFB23611A102E380012B81C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		9BFB23621A102E380012B81C /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		9BFB23651A102E380012B81C /* Contacts_Reminder.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Contacts_Reminder.xcdatamodel; sourceTree = "<group>"; };
+		9BFB23651A102E380012B81C /* Remember.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Remember.xcdatamodel; sourceTree = "<group>"; };
 		9BFB23671A102E380012B81C /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		9BFB23681A102E380012B81C /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		9BFB236B1A102E380012B81C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		9BFB236D1A102E380012B81C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		9BFB236D1A102E380012B81C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = "Contacts Reminder/Images.xcassets"; sourceTree = "<group>"; };
 		9BFB23701A102E380012B81C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		9BFB23761A102E380012B81C /* RememberTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RememberTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BFB237B1A102E380012B81C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -156,9 +160,53 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		9B7D31261A9DA2BA000E8A9F /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				9B7D312E1A9DA820000E8A9F /* EWUtil.h */,
+				9B7D312F1A9DA820000E8A9F /* EWUtil.m */,
+				9B7D312C1A9DA616000E8A9F /* GCDSingleton.h */,
+				9B9096161A1079D900A2FA4A /* NSDate+Extend.h */,
+				9B9096171A1079D900A2FA4A /* NSDate+Extend.m */,
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
+		9B7D31271A9DA2C2000E8A9F /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				9B9095EA1A105A2000A2FA4A /* CRMainViewController.h */,
+				9B9095EB1A105A2000A2FA4A /* CRMainViewController.m */,
+				9BFB23671A102E380012B81C /* ViewController.h */,
+				9BFB23681A102E380012B81C /* ViewController.m */,
+			);
+			name = Controllers;
+			path = controllers;
+			sourceTree = "<group>";
+		};
+		9B7D31281A9DA2CA000E8A9F /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				9B9096191A10A6AA00A2FA4A /* CRContactsManager.h */,
+				9B90961A1A10A6AA00A2FA4A /* CRContactsManager.m */,
+			);
+			name = Managers;
+			path = managers;
+			sourceTree = "<group>";
+		};
+		9B7D312D1A9DA649000E8A9F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				9BFB236A1A102E380012B81C /* Main.storyboard */,
+				9BFB236F1A102E380012B81C /* LaunchScreen.xib */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
 		9B9096031A106DC600A2FA4A /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				9BFB23641A102E380012B81C /* Remember.xcdatamodeld */,
 				9B90960A1A106E2C00A2FA4A /* CRContact.h */,
 				9B90960B1A106E2C00A2FA4A /* CRContact.m */,
 				9B90960C1A106E2C00A2FA4A /* CRUser.h */,
@@ -178,6 +226,7 @@
 		9BA1F42E1A12AEC500A9E12C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				9BFB236D1A102E380012B81C /* Images.xcassets */,
 				9BA1F42F1A12B25E00A9E12C /* reminder.caf */,
 			);
 			name = Resources;
@@ -209,18 +258,10 @@
 			children = (
 				9BFB23611A102E380012B81C /* AppDelegate.h */,
 				9BFB23621A102E380012B81C /* AppDelegate.m */,
-				9BFB23671A102E380012B81C /* ViewController.h */,
-				9BFB23681A102E380012B81C /* ViewController.m */,
-				9B9096191A10A6AA00A2FA4A /* CRContactsManager.h */,
-				9B90961A1A10A6AA00A2FA4A /* CRContactsManager.m */,
-				9B9095EA1A105A2000A2FA4A /* CRMainViewController.h */,
-				9B9095EB1A105A2000A2FA4A /* CRMainViewController.m */,
-				9B9096161A1079D900A2FA4A /* NSDate+Extend.h */,
-				9B9096171A1079D900A2FA4A /* NSDate+Extend.m */,
-				9BFB236A1A102E380012B81C /* Main.storyboard */,
-				9BFB236D1A102E380012B81C /* Images.xcassets */,
-				9BFB236F1A102E380012B81C /* LaunchScreen.xib */,
-				9BFB23641A102E380012B81C /* Contacts_Reminder.xcdatamodeld */,
+				9B7D31281A9DA2CA000E8A9F /* Managers */,
+				9B7D31271A9DA2C2000E8A9F /* Controllers */,
+				9B7D31261A9DA2BA000E8A9F /* Util */,
+				9B7D312D1A9DA649000E8A9F /* Views */,
 				9B9096031A106DC600A2FA4A /* Models */,
 				9BFB235D1A102E380012B81C /* Supporting Files */,
 			);
@@ -415,7 +456,7 @@
 			files = (
 				9B9096131A106E2C00A2FA4A /* CRContact.m in Sources */,
 				9B9095EC1A105A2100A2FA4A /* CRMainViewController.m in Sources */,
-				9BFB23661A102E380012B81C /* Contacts_Reminder.xcdatamodeld in Sources */,
+				9BFB23661A102E380012B81C /* Remember.xcdatamodeld in Sources */,
 				9B90961B1A10A6AA00A2FA4A /* CRContactsManager.m in Sources */,
 				9B9096111A106E2C00A2FA4A /* _CRUser.m in Sources */,
 				9BFB23631A102E380012B81C /* AppDelegate.m in Sources */,
@@ -426,6 +467,7 @@
 				9B9096121A106E2C00A2FA4A /* _ServerObject.m in Sources */,
 				9B9096141A106E2C00A2FA4A /* CRUser.m in Sources */,
 				9B9096151A106E2C00A2FA4A /* ServerObject.m in Sources */,
+				9B7D31301A9DA820000E8A9F /* EWUtil.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -666,13 +708,13 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		9BFB23641A102E380012B81C /* Contacts_Reminder.xcdatamodeld */ = {
+		9BFB23641A102E380012B81C /* Remember.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				9BFB23651A102E380012B81C /* Contacts_Reminder.xcdatamodel */,
+				9BFB23651A102E380012B81C /* Remember.xcdatamodel */,
 			);
-			currentVersion = 9BFB23651A102E380012B81C /* Contacts_Reminder.xcdatamodel */;
-			path = Contacts_Reminder.xcdatamodeld;
+			currentVersion = 9BFB23651A102E380012B81C /* Remember.xcdatamodel */;
+			path = Remember.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
 		};
