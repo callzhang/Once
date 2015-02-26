@@ -90,7 +90,7 @@
 		9B9096171A1079D900A2FA4A /* NSDate+Extend.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Extend.m"; sourceTree = "<group>"; };
 		9B9096191A10A6AA00A2FA4A /* CRContactsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRContactsManager.h; sourceTree = "<group>"; };
 		9B90961A1A10A6AA00A2FA4A /* CRContactsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRContactsManager.m; sourceTree = "<group>"; };
-		9BA1F42F1A12B25E00A9E12C /* reminder.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = reminder.caf; sourceTree = "<group>"; };
+		9BA1F42F1A12B25E00A9E12C /* reminder.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = reminder.caf; path = Recources/reminder.caf; sourceTree = "<group>"; };
 		9BFB235A1A102E380012B81C /* Remember.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Remember.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BFB235E1A102E380012B81C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9BFB235F1A102E380012B81C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };

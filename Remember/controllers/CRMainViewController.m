@@ -24,8 +24,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.title = @"Remember";
-    
     _manager = [CRContactsManager sharedManager];
     [[NSNotificationCenter defaultCenter] addObserverForName:kAdressbookReady object:nil queue:nil usingBlock:^(NSNotification *note) {
         DDLogInfo(@"AddressBook ready");
@@ -110,6 +108,37 @@
     return self.showFullHistory?3:1;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 60;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 60;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
+    return 60;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
+    UITableViewCell *secionHeader = [tableView dequeueReusableCellWithIdentifier:@"sectionHeader"];
+    UILabel *title = (UILabel *)[secionHeader viewWithTag:89];
+    switch (section) {
+        case 0:
+            title.text = @"Recent week";
+            break;
+        case 1:
+            title.text = @"Recent month";
+            break;
+        case 2:
+            title.text = @"Earlier";
+            break;
+        default:
+            break;
+    }
+    return secionHeader;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
     switch (section) {
@@ -161,27 +190,27 @@
 	[cell.imageView rounden];
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-    NSString *header;
-    switch (section) {
-        case 0:
-            header = @"Recent week";
-            break;
-            
-            
-        case 1:
-            header = @"Recent month";
-            break;
-            
-        case 2:
-            header = @"Earlier";
-            break;
-            
-        default:
-            break;
-    }
-    return header;
-}
+//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
+//    NSString *header;
+//    switch (section) {
+//        case 0:
+//            header = @"Recent week";
+//            break;
+//            
+//            
+//        case 1:
+//            header = @"Recent month";
+//            break;
+//            
+//        case 2:
+//            header = @"Earlier";
+//            break;
+//            
+//        default:
+//            break;
+//    }
+//    return header;
+//}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	RHPerson *contact;
