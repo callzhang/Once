@@ -22,6 +22,7 @@
 
 /* Begin PBXBuildFile section */
 		47FE71DD2166A0BFA813EDE4 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCC5B3D1D0A53728B40FF19 /* libPods.a */; };
+		9B3F2B681A9FB8F7009D4E7B /* ENPersonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B3F2B671A9FB8F7009D4E7B /* ENPersonCell.m */; };
 		9B7D31301A9DA820000E8A9F /* EWUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B7D312F1A9DA820000E8A9F /* EWUtil.m */; };
 		9B9095EC1A105A2100A2FA4A /* CRMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B9095EB1A105A2000A2FA4A /* CRMainViewController.m */; };
 		9B9095F21A1064FC00A2FA4A /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B9095F01A1064FC00A2FA4A /* AddressBook.framework */; };
@@ -62,6 +63,8 @@
 /* Begin PBXFileReference section */
 		2CCC5B3D1D0A53728B40FF19 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C824802E36CCE7014BABC05 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		9B3F2B661A9FB8F7009D4E7B /* ENPersonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ENPersonCell.h; path = Views/ENPersonCell.h; sourceTree = "<group>"; };
+		9B3F2B671A9FB8F7009D4E7B /* ENPersonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ENPersonCell.m; path = Views/ENPersonCell.m; sourceTree = "<group>"; };
 		9B7D312C1A9DA616000E8A9F /* GCDSingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GCDSingleton.h; sourceTree = "<group>"; };
 		9B7D312E1A9DA820000E8A9F /* EWUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWUtil.h; sourceTree = "<group>"; };
 		9B7D312F1A9DA820000E8A9F /* EWUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWUtil.m; sourceTree = "<group>"; };
@@ -192,6 +195,8 @@
 		9B7D312D1A9DA649000E8A9F /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				9B3F2B661A9FB8F7009D4E7B /* ENPersonCell.h */,
+				9B3F2B671A9FB8F7009D4E7B /* ENPersonCell.m */,
 				9BFB236A1A102E380012B81C /* Main.storyboard */,
 				9BFB236F1A102E380012B81C /* LaunchScreen.xib */,
 			);
@@ -458,6 +463,7 @@
 				9B9096101A106E2C00A2FA4A /* _CRContact.m in Sources */,
 				9BFB23601A102E380012B81C /* main.m in Sources */,
 				9B9096181A1079D900A2FA4A /* NSDate+Extend.m in Sources */,
+				9B3F2B681A9FB8F7009D4E7B /* ENPersonCell.m in Sources */,
 				9B9096121A106E2C00A2FA4A /* _ServerObject.m in Sources */,
 				9B9096141A106E2C00A2FA4A /* CRUser.m in Sources */,
 				9B9096151A106E2C00A2FA4A /* ServerObject.m in Sources */,

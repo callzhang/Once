@@ -10,6 +10,7 @@
 #import "RHPerson.h"
 #import "CRContactsManager.h"
 #import "NSDate+Extend.h"
+#import "ENPersonCell.h"
 
 @interface CRMainViewController ()
 @property (nonatomic, strong) NSMutableArray *contacts_recent;
@@ -35,6 +36,8 @@
 	
 	//load regardless
 	[self loadAddressBook];
+	
+	[self.tableView registerClass:[ENPersonCell class] forCellReuseIdentifier:@"personCell"];
 }
 
 
@@ -108,10 +111,6 @@
     return self.showFullHistory?3:1;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView estimatedHeightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 60;
-}
-
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 60;
 }
@@ -160,8 +159,8 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainViewCellIdentifier"];
-    
+	//ENPersonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"personCell"];
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainViewCellIdentifier"];
     RHPerson *contact;
     switch (indexPath.section) {
         case 0:
@@ -182,35 +181,20 @@
     cell.detailTextLabel.text = [NSString stringWithFormat:@"Created on %@", contact.created.date2dayString];
 	cell.imageView.image = contact.thumbnail ?: [UIImage imageNamed:@"profileImage"];
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+	//[cell.disclosure addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
     return cell;
 }
 
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath{
-	[cell.imageView rounden];
+	if ([cell isKindOfClass:[ENPersonCell class]]) {
+		ENPersonCell *personCell = (ENPersonCell *)cell;
+		[personCell.profile rounden];
+	}else{
+		[cell.imageView rounden];
+	}
+	
 }
-
-//- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
-//    NSString *header;
-//    switch (section) {
-//        case 0:
-//            header = @"Recent week";
-//            break;
-//            
-//            
-//        case 1:
-//            header = @"Recent month";
-//            break;
-//            
-//        case 2:
-//            header = @"Earlier";
-//            break;
-//            
-//        default:
-//            break;
-//    }
-//    return header;
-//}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
 	RHPerson *contact;

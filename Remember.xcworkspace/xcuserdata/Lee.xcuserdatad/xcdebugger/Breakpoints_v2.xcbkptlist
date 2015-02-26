@@ -11,11 +11,11 @@
             condition = "!cell"
             continueAfterRunningActions = "No"
             filePath = "Remember/controllers/CRMainViewController.m"
-            timestampString = "446626247.17727"
+            timestampString = "446676239.063274"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "165"
-            endingLineNumber = "165"
+            startingLineNumber = "164"
+            endingLineNumber = "164"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
