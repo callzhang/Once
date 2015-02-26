@@ -24,8 +24,11 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.title = @"Remember";
+    
     _manager = [CRContactsManager sharedManager];
     [[NSNotificationCenter defaultCenter] addObserverForName:kAdressbookReady object:nil queue:nil usingBlock:^(NSNotification *note) {
+        DDLogInfo(@"AddressBook ready");
         [self loadAddressBook];
     }];
 	

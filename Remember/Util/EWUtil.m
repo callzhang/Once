@@ -107,10 +107,10 @@ GCD_SYNTHESIZE_SINGLETON_FOR_CLASS(EWUtil)
 
 @implementation UIView(Extend)
 - (void)rounden{
-	float radius = MIN(self.frame.size.height, self.frame.size.width)/2;
+    float radius = MIN(self.frame.size.height, self.frame.size.width)/2 ?: 22;
 	self.layer.masksToBounds = YES;
 	self.layer.cornerRadius = radius;
-	self.layer.borderColor = [UIColor colorWithWhite:1 alpha:0.4].CGColor;
+	self.layer.borderColor = [UIColor colorWithWhite:1 alpha:0.5].CGColor;
 	self.layer.borderWidth = 1.0;
 }
 @end
