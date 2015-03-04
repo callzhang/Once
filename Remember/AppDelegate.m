@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "NSDate+Extend.h"
 //#import <MagicalRecord/CoreData+MagicalRecord.h>
 //#import "CRContactsManager.h"
 
@@ -96,6 +97,15 @@
     CRContactsManager *manager = [CRContactsManager sharedManager];
 	//[manager scheduleReactivateLocalNotification];
     [manager checkNewContactsAndNotifyWithCompletion:^(UIBackgroundFetchResult result) {
+#ifdef DEBUG
+        UILocalNotification *note = [UILocalNotification new];
+        NSMutableString *str = [NSMutableString stringWithFormat:@"Remember checked new contact at %@.", [NSDate date].date2detailDateString];
+        if (manager.recentContacts.count > 0) {
+            [str stringByAppendingFormat:@"\nAnd found %ld new contacts", (long)manager.recentContacts.count];
+        }
+        note.alertBody = str;
+        [[UIApplication sharedApplication] scheduleLocalNotification:note];
+#endif
 		completionHandler(result);
 	}];
 }

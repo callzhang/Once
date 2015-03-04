@@ -37,7 +37,13 @@
 	//load regardless
 	[self loadAddressBook];
 	
+    //tableview
 	[self.tableView registerClass:[ENPersonCell class] forCellReuseIdentifier:@"personCell"];
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+    
+    //color
+    //[self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:0.278 green:0.522 blue:0.886 alpha:1.000]];
 }
 
 
@@ -92,10 +98,8 @@
 
 
 #pragma mark - UI
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (IBAction)reload:(id)sender {
+    [self loadAddressBook];
 }
 
 - (void)showHistory:(id)sender{
@@ -112,7 +116,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return 60;
+    return 70;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
@@ -178,10 +182,13 @@
     }
     
     cell.textLabel.text = contact.compositeName ?: [NSString stringWithFormat:@"%@", contact.name];
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"Created on %@", contact.created.date2dayString];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"Met on %@", contact.created.date2dayString];
 	cell.imageView.image = contact.thumbnail ?: [UIImage imageNamed:@"profileImage"];
 	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-	//[cell.disclosure addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+//    cell.title.text = contact.compositeName ?: [NSString stringWithFormat:@"%@", contact.name];
+//    cell.detail.text = [NSString stringWithFormat:@"Met on %@", contact.created.date2dayString];
+//    cell.profile.image = contact.thumbnail ?: [UIImage imageNamed:@"profileImage"];
+//	[cell.disclosure addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
     return cell;
 }
 
@@ -193,7 +200,6 @@
 	}else{
 		[cell.imageView rounden];
 	}
-	
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{

@@ -2,27 +2,37 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <navigationController id="Fh6-bq-a2l">
+        <viewController id="1V1-ZX-QsP">
+            <layoutGuides>
+                <viewControllerLayoutGuide type="top" id="lmC-Tw-1s1"/>
+                <viewControllerLayoutGuide type="bottom" id="QOc-RX-EH0"/>
+            </layoutGuides>
+            <view key="view" contentMode="scaleToFill" id="cwa-cI-s4G">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="icon" translatesAutoresizingMaskIntoConstraints="NO" id="LBL-Bl-j6q">
+                        <rect key="frame" x="96" y="80" width="128" height="408"/>
+                    </imageView>
+                </subviews>
+                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                <constraints>
+                    <constraint firstItem="LBL-Bl-j6q" firstAttribute="top" secondItem="cwa-cI-s4G" secondAttribute="topMargin" constant="80" id="JDo-hz-40n"/>
+                    <constraint firstItem="QOc-RX-EH0" firstAttribute="top" secondItem="LBL-Bl-j6q" secondAttribute="bottom" constant="80" id="cJV-qv-XF7"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="LBL-Bl-j6q" secondAttribute="trailing" constant="80" id="gn6-zC-g7u"/>
+                    <constraint firstItem="LBL-Bl-j6q" firstAttribute="leading" secondItem="cwa-cI-s4G" secondAttribute="leadingMargin" constant="80" id="jvp-rg-3YC"/>
+                </constraints>
+            </view>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-            <navigationBar key="navigationBar" contentMode="scaleToFill" id="Qpr-kc-b7h">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                <autoresizingMask key="autoresizingMask"/>
-            </navigationBar>
-            <viewControllers>
-                <tableViewController id="zhI-rW-nD9">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Ozx-hl-Jct">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Remember" id="NCL-5P-DuV"/>
-                </tableViewController>
-            </viewControllers>
-            <point key="canvasLocation" x="405" y="351"/>
-        </navigationController>
+            <point key="canvasLocation" x="207" y="529"/>
+        </viewController>
     </objects>
+    <resources>
+        <image name="icon" width="1024" height="1024"/>
+    </resources>
 </document>
