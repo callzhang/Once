@@ -11,6 +11,7 @@
 #import "CRContactsManager.h"
 #import "NSDate+Extend.h"
 #import "ENPersonCell.h"
+#import "RHAddressBook.h"
 
 @interface CRMainViewController ()
 @property (nonatomic, strong) NSMutableArray *contacts_recent;
@@ -223,6 +224,10 @@
 	ABRecordRef personRef = contact.recordRef;
 	if (personRef) {
 		ABPersonViewController *picker = [[ABPersonViewController alloc] init];
+		//tell the view controller to user our underlying address book
+		[contact.addressBook performAddressBookAction:^(ABAddressBookRef addressBookRef) {
+			picker.addressBook = addressBookRef;
+		} waitUntilDone:YES];
 		picker.personViewDelegate = self;
 		picker.displayedPerson = personRef;
 		// Allow users to edit the person’s information

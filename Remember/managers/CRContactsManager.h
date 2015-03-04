@@ -20,6 +20,9 @@
 #define kAdressbookReady	@"addressbook_ready"
 //notification category
 #define kReminderCategory	@"quick_memo"
+//OriginalCrated
+#define kOriginalCreated	@"CR_created"
+
 @class RHPerson;
 
 @interface CRContactsManager : NSObject
@@ -48,6 +51,7 @@
 
 /**
  *  Contacts created that are newer than last checked time, meaning they should be notified.
+ *	It is the slices of new contacts that are not repeating.
  *
  *  @return list of new contacts
  */

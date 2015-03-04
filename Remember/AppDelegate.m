@@ -26,8 +26,8 @@
     
     //core data
     //[MagicalRecord setupCoreDataStack];
-    //[MagicalRecord setLoggingLevel:MagicalRecordLoggingLevelWarn];
-    
+	//[MagicalRecord setLoggingLevel:MagicalRecordLoggingLevelWarn];
+	
     //parse
     [Parse setApplicationId:kParseApplicationId clientKey:kParseClientKey];
     
@@ -95,15 +95,13 @@
     CRContactsManager *manager = [CRContactsManager sharedManager];
 	//[manager scheduleReactivateLocalNotification];
     [manager checkNewContactsAndNotifyWithCompletion:^(NSArray *newContacts) {
-#ifdef DEBUG
-        UILocalNotification *note = [UILocalNotification new];
-        NSMutableString *str = [NSMutableString stringWithFormat:@"Remember checked new contact at %@.", [NSDate date].string];
+		//log info
+        NSMutableString *str = [NSMutableString stringWithFormat:@"=====> Remember checked new contact at %@.", [NSDate date].string];
         if (newContacts.count > 0) {
             [str appendFormat:@" And found %ld new contacts", (long)newContacts.count];
         }
-        note.alertBody = str;
-        [[UIApplication sharedApplication] scheduleLocalNotification:note];
-#endif
+		DDLogInfo(str);
+
         if (newContacts.count) {
             completionHandler(UIBackgroundFetchResultNewData);
         }else{

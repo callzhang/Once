@@ -59,10 +59,11 @@
         }];
 		
 		//time stamp
-		[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidEnterBackgroundNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-			DDLogInfo(@"Observed app enter background");
+		[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillTerminateNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+			DDLogInfo(@"App is going to be terminated, save last opened date!");
 			//update last opened
             self.lastOpened = [NSDate date];
+			[[NSUserDefaults standardUserDefaults] synchronize];
 		}];
         
         //print out all times
@@ -84,7 +85,7 @@
             NSParameterAssert(!person.created);
             NSDate *lastWeek = [[NSDate date] dateByAddingTimeInterval:-3600*24*30];
             [person setBasicValue:(__bridge CFTypeRef)lastWeek forPropertyID:kABPersonCreationDateProperty error:nil];
-            DDLogVerbose(@"Set created for person %@", person.name);
+            DDLogInfo(@"Set created for person %@", person.name);
         }
     }
     return _allContacts;
@@ -93,9 +94,10 @@
 #pragma mark - Perspective
 //contacts added since last updates, used as default view
 - (NSArray *)recentContacts{
-    NSDate *lastOpenedOld = self.lastOpenedOld;
+	NSDate *chekDate = [self.lastOpenedOld isEarlierThan:self.lastUpdated] ? self.lastOpenedOld : self.lastUpdated;
+	DDLogVerbose(@"Searching for recent contacts since %@", chekDate.string);
     NSArray *recents = [[_addressbook people] bk_select:^BOOL(RHPerson *person) {
-        return [person.created timeIntervalSinceDate:lastOpenedOld] > 0;
+        return [person.created timeIntervalSinceDate:chekDate] > 0;
     }];
     
     return [recents sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:NO]]];
@@ -122,8 +124,19 @@
     
     
 	if (newContacts.count) {
-        DDLogInfo(@"Found %ld new contacts since last checked %@", (unsigned long)newContacts.count, _lastChecked.string);
-        self.lastUpdated = [NSDate date];//doesn't matter
+		DDLogInfo(@"Found %ld new contacts since last checked %@", (unsigned long)newContacts.count, _lastChecked.string);
+		NSDate *oldestCreated = [NSDate date];
+		for (RHPerson *person in newContacts) {
+			DDLogDebug(@"Examing new person: %@", person.name);
+			DDLogDebug(@"Related people: %@", person.linkedPeople);
+			DDLogDebug(@"Social Profile: %@", person.socialProfiles);
+			if ([person.created isEarlierThan:oldestCreated]) {
+				oldestCreated = person.created;
+			}
+		}
+		
+        self.lastUpdated = oldestCreated;
+		
         //move the lastOpened old time to real last opened time, so the user will see newly updated contacts
         self.lastOpenedOld = self.lastOpened;
         [[NSUserDefaults standardUserDefaults] synchronize];
