@@ -12,6 +12,8 @@
 #import "RHPerson.h"
 #import <AFNetworking/AFNetworking.h>
 
+#define TESTING		YES
+
 @interface CRContactsManager()
 @property (nonatomic, strong) RHAddressBook *addressbook;
 @end
@@ -71,6 +73,10 @@
         DDLogInfo(@"Last updated: %@", self.lastUpdated.string);
         DDLogInfo(@"Last opened: %@", self.lastOpened.string);
         DDLogInfo(@"Last second opened: %@", self.lastOpenedOld.string);
+		
+		if (TESTING) {
+			[self testCheckNewContacts];
+		}
     }
     
     return self;
@@ -98,20 +104,48 @@
 	DDLogVerbose(@"Searching for recent contacts since %@", chekDate.string);
     NSArray *recents = [[_addressbook people] bk_select:^BOOL(RHPerson *person) {
         return [person.created timeIntervalSinceDate:chekDate] > 0;
-    }];
-    
-    return [recents sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:NO]]];
+	}];
+	NSArray *newContacts = [self filterOutExistingContactsFromNewContacts:recents withDate:chekDate];
+	
+    return [newContacts sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:NO]]];
 }
 
 
 
 - (NSArray *)newContactsSinceLastCheck{
     NSDate *lastChecked = self.lastChecked;
-    NSArray *newContacts = [[_addressbook people] bk_select:^BOOL(RHPerson *person) {
+    NSArray *contacts = [[_addressbook people] bk_select:^BOOL(RHPerson *person) {
         return [person.created timeIntervalSinceDate:lastChecked] > 0;
     }];
-    
-    return newContacts;
+	
+	NSArray *newContacts = [self filterOutExistingContactsFromNewContacts:contacts withDate:_lastChecked];
+	
+	return newContacts;
+}
+
+- (NSArray *)filterOutExistingContactsFromNewContacts:(NSArray *)contacts withDate:(NSDate *)time{
+	//check each new contact's linkedContacts, to make sure that they indeed are created new
+	NSMutableArray *newContacts = [NSMutableArray arrayWithArray:contacts];
+	NSMutableArray *existingPerson = [NSMutableArray new];
+	for (RHPerson *person in newContacts) {
+		NSArray *linked = person.linkedPeople;
+		if (linked.count > 1) {
+			RHPerson *originalPerson = [linked sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]]].firstObject;
+			if ([originalPerson.created isEarlierThan:time]) {
+				[existingPerson addObject:person];
+			}
+		}
+	}
+	[newContacts removeObjectsInArray:existingPerson];
+	DDLogInfo(@"Out of %ld contacts, found %ld exisitng contacts, resulting %ld new contacts", contacts.count, existingPerson.count, newContacts.count);
+	
+	return newContacts.copy;
+}
+
+- (void)testCheckNewContacts{
+	self.lastChecked = [NSDate dateWithTimeIntervalSinceNow:-3600*8];
+	NSArray *newContacts = [self newContactsSinceLastCheck];
+	DDLogDebug(@"Found new contacts from 8 hours ago: %@", [newContacts valueForKey:@"name"]);
 }
 
 
@@ -127,9 +161,6 @@
 		DDLogInfo(@"Found %ld new contacts since last checked %@", (unsigned long)newContacts.count, _lastChecked.string);
 		NSDate *oldestCreated = [NSDate date];
 		for (RHPerson *person in newContacts) {
-			DDLogDebug(@"Examing new person: %@", person.name);
-			DDLogDebug(@"Related people: %@", person.linkedPeople);
-			DDLogDebug(@"Social Profile: %@", person.socialProfiles);
 			if ([person.created isEarlierThan:oldestCreated]) {
 				oldestCreated = person.created;
 			}

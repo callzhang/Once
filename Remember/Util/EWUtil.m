@@ -118,5 +118,6 @@ GCD_SYNTHESIZE_SINGLETON_FOR_CLASS(EWUtil)
 	self.layer.cornerRadius = radius;
 	//self.layer.borderColor = [UIColor colorWithWhite:1 alpha:0.5].CGColor;
 	//self.layer.borderWidth = 1.0;
+	//self.transform = CGAffineTransformMakeScale(0.9, 0.9);
 }
 @end
