@@ -150,6 +150,11 @@
                                 <constraint firstAttribute="trailing" secondItem="aYR-sL-OcE" secondAttribute="trailing" id="tyQ-KI-U3F"/>
                             </constraints>
                         </view>
+                        <barButtonItem key="rightBarButtonItem" title="History" id="1mJ-cg-oJD">
+                            <connections>
+                                <action selector="showHistory:" destination="cYj-4O-Vuh" id="FJq-FO-DkP"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hjC-Te-Qt3" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -165,6 +170,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="6oi-0d-o7z">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <color key="barTintColor" red="0.27843137254901962" green="0.52156862745098043" blue="0.88627450980392153" alpha="1" colorSpace="calibratedRGB"/>
                         <textAttributes key="titleTextAttributes">
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

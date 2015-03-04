@@ -55,16 +55,21 @@
         [[NSNotificationCenter defaultCenter]  addObserverForName:RHAddressBookExternalChangeNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
 			DDLogInfo(@"Observed changes to AddressBook");
             _allContacts = nil;
-			[self checkNewContactsAndNotifyWithCompletion:nil];
-            
+			//[self checkNewContactsAndNotifyWithCompletion:nil];
         }];
 		
 		//time stamp
 		[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidEnterBackgroundNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
 			DDLogInfo(@"Observed app enter background");
 			//update last opened
-			[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kLastOpened];
+            self.lastOpened = [NSDate date];
 		}];
+        
+        //print out all times
+        DDLogInfo(@"Last checked: %@", self.lastChecked.string);
+        DDLogInfo(@"Last updated: %@", self.lastUpdated.string);
+        DDLogInfo(@"Last opened: %@", self.lastOpened.string);
+        DDLogInfo(@"Last second opened: %@", self.lastOpenedOld.string);
     }
     
     return self;
@@ -73,6 +78,13 @@
 
 - (NSArray *)allContacts{
     if (!_allContacts) {
+        NSArray *peopleWithoutCreationDate = [[_addressbook people] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"created = nil"]];
+        for (RHPerson  *person in peopleWithoutCreationDate) {
+            NSParameterAssert(!person.created);
+            NSDate *lastWeek = [[NSDate date] dateByAddingTimeInterval:-3600*24*30];
+            [person setBasicValue:(__bridge CFTypeRef)lastWeek forPropertyID:kABPersonCreationDateProperty error:nil];
+            DDLogVerbose(@"Set created for person %@", person.name);
+        }
         _allContacts = [[_addressbook people] sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:NO]]];
     }
     return _allContacts;
@@ -81,9 +93,9 @@
 
 //contacts added since last updates, used as default view
 - (NSArray *)recentContacts{
-    NSDate *lastUpdated = self.lastUpdated;
+    NSDate *lastOpenedOld = self.lastOpenedOld;
     NSArray *recents = [[_addressbook people] bk_select:^BOOL(RHPerson *person) {
-        return [person.created timeIntervalSinceDate:lastUpdated] > 0;
+        return [person.created timeIntervalSinceDate:lastOpenedOld] > 0;
     }];
     
     return [recents sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:NO]]];
@@ -91,16 +103,27 @@
 
 
 #pragma mark - Check new
-- (void)checkNewContactsAndNotifyWithCompletion:(void (^)(UIBackgroundFetchResult result))block{
+- (void)checkNewContactsAndNotifyWithCompletion:(void (^)(NSArray *newContacts))block{
+    //check
 	NSArray *newContacts = [self newContactsSinceLastCheck];
+    //update time
+    self.lastChecked = [NSDate date];
+    
+    
 	if (newContacts.count) {
+        DDLogInfo(@"Found %ld new contacts since last checked %@", (unsigned long)newContacts.count, _lastChecked.string);
+        self.lastUpdated = [NSDate date];//doesn't matter
+        //move the lastOpened old time to real last opened time, so the user will see newly updated contacts
+        self.lastOpenedOld = self.lastOpened;
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
 		//name
-		NSArray *names = [newContacts valueForKey:@"firstName"];
+		NSArray *names = [newContacts valueForKey:@"name"];
 		NSString *reminderStr;
 		if (names.count > 1) {
-			reminderStr = [NSString stringWithFormat:@"You recently met %@ and %ld other people. Add a quick memo?", names.firstObject, names.count-1];
+			reminderStr = [NSString stringWithFormat:@"You recently met %@ and %ld other people. Add a quick note?", names.firstObject, names.count-1];
 		} else {
-			reminderStr = [NSString stringWithFormat:@"You recently met %@. Add a quick memo?", names.firstObject];
+			reminderStr = [NSString stringWithFormat:@"You recently met %@. Add a quick note?", names.firstObject];
 		}
 		
 		//send notification
@@ -108,52 +131,55 @@
 		note.alertBody = reminderStr;
 		note.soundName = @"reminder.caf";
 		note.category = kReminderCategory;
-		note.fireDate = [NSDate date].nextNoon;
-#ifdef DEBUG
-		note.fireDate = [[NSDate date] dateByAddingTimeInterval:10];
-#endif
+		note.fireDate = [NSDate date].nextNoon;//TODO: use created time
+
 		[[UIApplication sharedApplication] scheduleLocalNotification:note];
-		
-		//schedule server push
-		
-		AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
-		manager.requestSerializer = [AFJSONRequestSerializer serializer];
-		[manager.requestSerializer setValue:kParseApplicationId forHTTPHeaderField:@"X-Parse-Application-Id"];
-		[manager.requestSerializer setValue:kParseRestAPIId forHTTPHeaderField:@"X-Parse-REST-API-Key"];
-		[manager.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-		
-		NSDate *nextNoon = [NSDate date].nextNoon;
-#ifdef DEBUG
-		nextNoon = [[NSDate date] dateByAddingTimeInterval:10];
-#endif
-		NSDictionary *dic = @{@"where":@{@"objectId":[PFInstallation currentInstallation].objectId},
-							  @"push_time":[NSNumber numberWithDouble:[nextNoon timeIntervalSince1970]],
-							  @"data":@{@"alert": reminderStr,
-										@"content-available":@1,
-										@"category": kReminderCategory,
-										@"sound": @"reminder.caf",
-										@"bedge": @"Incremental"},
-							  };
-		
-		[manager POST:@"https://api.parse.com/1/push" parameters:dic
-			  success:^(AFHTTPRequestOperation *operation,id responseObject) {
-				  
-				  NSLog(@"SCHEDULED reminder PUSH success for time %@", nextNoon.date2detailDateString);
-				  if (block) {
-					  block(UIBackgroundFetchResultNewData);
-				  }
-			  }failure:^(AFHTTPRequestOperation *operation,NSError *error) {
-				  
-				  NSLog(@"Schedule Push Error: %@", error);
-				  if (block) {
-					  block(UIBackgroundFetchResultFailed);
-				  }
-			  }];
-	}else{
-		if (block) {
-			block(UIBackgroundFetchResultNoData);
-		}
+        
+        //schedule on server push
+        [self sendNewContactsReminderPush:reminderStr];
+        
+        
 	}
+    
+    if (block) {
+        block(newContacts);
+    }
+}
+
+- (void)sendNewContactsReminderPush:(NSString *)string{
+    //schedule server push
+    if (![PFInstallation currentInstallation].objectId) {
+        return;
+    }
+    
+    AFHTTPRequestOperationManager *manager = [AFHTTPRequestOperationManager manager];
+    manager.requestSerializer = [AFJSONRequestSerializer serializer];
+    [manager.requestSerializer setValue:kParseApplicationId forHTTPHeaderField:@"X-Parse-Application-Id"];
+    [manager.requestSerializer setValue:kParseRestAPIId forHTTPHeaderField:@"X-Parse-REST-API-Key"];
+    [manager.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    
+    NSDate *nextNoon = [NSDate date].nextNoon;
+#ifdef DEBUG
+    nextNoon = [[NSDate date] dateByAddingTimeInterval:10];
+#endif
+    NSDictionary *dic = @{@"where":@{@"objectId":[PFInstallation currentInstallation].objectId},
+                          @"push_time":[NSNumber numberWithDouble:[nextNoon timeIntervalSince1970]],
+                          @"data":@{@"alert": string,
+                                    @"content-available":@1,
+                                    @"category": kReminderCategory,
+                                    @"sound": @"reminder.caf",
+                                    @"bedge": @"Incremental"},
+                          };
+    
+    [manager POST:@"https://api.parse.com/1/push" parameters:dic
+          success:^(AFHTTPRequestOperation *operation,id responseObject) {
+              
+              NSLog(@"SCHEDULED reminder PUSH success for time %@", nextNoon.string);
+              
+          }failure:^(AFHTTPRequestOperation *operation,NSError *error) {
+              
+              NSLog(@"Schedule Push Error: %@", error);
+          }];
 }
 
 - (NSArray *)newContactsSinceLastCheck{
@@ -161,61 +187,31 @@
     NSArray *newContacts = [[_addressbook people] bk_select:^BOOL(RHPerson *person) {
         return [person.created timeIntervalSinceDate:lastChecked] > 0;
     }];
-	
-    if (newContacts.count > 0) {
-		DDLogInfo(@"Found %ld new contacts since last checked %@", (unsigned long)newContacts.count, lastChecked.date2detailDateString);
-        self.lastUpdated = [NSDate date];
-		//move the lastOpened old time to real last opened time
-		self.lastOpenedOld = self.lastOpened;
-		[[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    
-    self.lastChecked = [NSDate date];
     
     return newContacts;
-}
-
-#pragma mark - reactivate
-- (void)scheduleReactivateLocalNotification{
-	UIApplication *app = [UIApplication sharedApplication];
-	for (UILocalNotification *note in app.scheduledLocalNotifications) {
-		if ([note.userInfo[@"type"] isEqual:kReactivateLocalNotification]) {
-			[app cancelLocalNotification:note];
-		}
-	}
-	UILocalNotification *note = [UILocalNotification new];
-	note.alertAction = @"Activate me";
-	note.alertBody = @"Activate me";
-	note.fireDate = [[NSDate date] dateByAddingTimeInterval:3600*24];
-	note.userInfo = @{@"type": kReactivateLocalNotification};
-	[app scheduleLocalNotification:note];
 }
 
 
 #pragma mark - time stamp
 - (NSDate *)lastChecked{
+    _lastChecked = [[NSUserDefaults standardUserDefaults] objectForKey:kLastChecked];
     if (!_lastChecked) {
-        _lastChecked = [[NSUserDefaults standardUserDefaults] objectForKey:kLastChecked];
-        if (!_lastChecked) {
-            NSLog(@"first time check");
-            self.lastChecked = [NSDate date];
-        }
+        DDLogInfo(@"first time check");
+        self.lastChecked = [NSDate date];
     }
     return _lastChecked;
 }
 
 - (void)setLastChecked:(NSDate *)lastChecked{
     _lastChecked = lastChecked;
-    [[NSUserDefaults standardUserDefaults] setObject:lastChecked forKey:kLastUpdated];
+    [[NSUserDefaults standardUserDefaults] setObject:lastChecked forKey:kLastChecked];
 }
 
 - (NSDate *)lastUpdated{
+    _lastUpdated = [[NSUserDefaults standardUserDefaults] objectForKey:kLastUpdated];
     if (!_lastUpdated) {
-        _lastUpdated = [[NSUserDefaults standardUserDefaults] objectForKey:kLastUpdated];
-        if (!_lastUpdated) {
-            NSLog(@"first time update");
-            self.lastUpdated = [NSDate date];
-        }
+        DDLogInfo(@"first time update");
+        self.lastUpdated = [NSDate date];
     }
     return _lastUpdated;
 }
@@ -234,25 +230,22 @@
 }
 
 - (void)setLastOpened:(NSDate *)lastOpened{
-	NSLog(@"Last opened set to: %@", lastOpened.date2detailDateString);
+	DDLogInfo(@"Last opened set to: %@", lastOpened.string);
     _lastOpened = lastOpened;
 	[[NSUserDefaults standardUserDefaults] setObject:_lastOpened forKey:kLastOpened];
 }
 
 - (NSDate *)lastOpenedOld{
-	
-	if (!_lastOpenedOld) {
-		_lastOpenedOld = [[NSUserDefaults standardUserDefaults] objectForKey:kLastOpenedOld];
-		NSLog(@"Last opened old: %@", _lastOpenedOld.date2detailDateString);
-		if (!_lastOpenedOld) {
-			self.lastOpenedOld = [NSDate date];
-		}
-	}
+    _lastOpenedOld = [[NSUserDefaults standardUserDefaults] objectForKey:kLastOpenedOld];
+    if (!_lastOpenedOld) {
+        self.lastOpenedOld = [NSDate date];
+    }
 	return _lastOpenedOld;
 }
 
 - (void)setLastOpenedOld:(NSDate *)lastOpenedOld{
-    _lastOpenedOld = [NSDate date];
+    _lastOpenedOld = lastOpenedOld;
+    DDLogInfo(@"Last opened old set to: %@", lastOpenedOld.string);
 	[[NSUserDefaults standardUserDefaults] setObject:_lastOpenedOld forKey:kLastOpenedOld];
 }
 @end

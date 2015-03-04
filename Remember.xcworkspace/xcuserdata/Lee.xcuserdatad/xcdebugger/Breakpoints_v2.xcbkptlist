@@ -11,11 +11,11 @@
             condition = "!cell"
             continueAfterRunningActions = "No"
             filePath = "Remember/controllers/CRMainViewController.m"
-            timestampString = "447136187.397794"
+            timestampString = "447146308.927092"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "168"
-            endingLineNumber = "168"
+            startingLineNumber = "175"
+            endingLineNumber = "175"
             landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
@@ -26,29 +26,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Remember/controllers/CRMainViewController.m"
-            timestampString = "447135312.039115"
+            filePath = "Remember/managers/CRContactsManager.m"
+            timestampString = "447144558.963883"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "74"
-            endingLineNumber = "74"
-            landmarkName = "-loadAddressBook"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Remember/AppDelegate.m"
-            timestampString = "447134964.839387"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "102"
-            endingLineNumber = "102"
-            landmarkName = "-application:performFetchWithCompletionHandler:"
+            startingLineNumber = "86"
+            endingLineNumber = "86"
+            landmarkName = "-allContacts"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

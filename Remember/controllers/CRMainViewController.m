@@ -16,7 +16,7 @@
 @property (nonatomic, strong) NSMutableArray *contacts_recent;
 @property (nonatomic, strong) NSMutableArray *contacts_month;
 @property (nonatomic, strong) NSMutableArray *contacts_earlier;
-@property (nonatomic) BOOL showFullHistory;
+@property (nonatomic) BOOL showHistory;
 @property (nonatomic, strong) CRContactsManager *manager;
 @end
 
@@ -31,26 +31,30 @@
         [self loadAddressBook];
     }];
 	
-	//show history in default
-	self.showFullHistory = YES;
-	
-	//load regardless
-	[self loadAddressBook];
-	
     //tableview
 	[self.tableView registerClass:[ENPersonCell class] forCellReuseIdentifier:@"personCell"];
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
-    //color
-    //[self.navigationController.navigationBar setBarTintColor:[UIColor colorWithRed:0.278 green:0.522 blue:0.886 alpha:1.000]];
-}
-
-
-- (void)viewWillAppear:(BOOL)animated{
-	[super viewWillAppear:animated];
-    //add show history button
-	//self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"History" style:UIBarButtonItemStylePlain target:self action:@selector(showHistory:)];
+    
+    //data
+    if ([CRContactsManager sharedManager].recentContacts.count) {
+        self.showHistory = NO;
+    } else {
+        self.showHistory = YES;
+    }
+    [self loadAddressBook];
+    
+    //observe application state
+    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+        DDLogInfo(@"Application will enter foreground, refresh the view");
+        if ([CRContactsManager sharedManager].recentContacts.count) {
+            self.showHistory = NO;
+        } else {
+            self.showHistory = YES;
+        }
+        [self loadAddressBook];
+    }];
 }
 
 
@@ -63,32 +67,28 @@
     NSArray *contacts = _manager.allContacts;
     
     for (RHPerson *contact in contacts) {
-        if (!_showFullHistory) {
+        if (!_showHistory) {
+            self.navigationItem.rightBarButtonItem.title = @"History";
             if ([contact.created timeIntervalSinceDate:_manager.lastOpenedOld] < 0) {
                 continue;
 			}else{
 				[self.contacts_recent addObject:contact];
 			}
-        }
-        else if (!contact.created) {
-            NSDate *lastWeek = [[NSDate date] dateByAddingTimeInterval:-3600*24*30];
-            NSError *err;
-            [contact setBasicValue:(__bridge CFTypeRef)lastWeek forPropertyID:kABPersonCreationDateProperty error:&err];
-            if (err) {
-                NSLog(@"Error in saving created: %@", err);
-            }
-            [self.contacts_earlier addObject:contact];
-        }
-        else if ([[NSDate date] timeIntervalSinceDate:contact.created] < 3600*24*7) {
-            [self.contacts_recent addObject:contact];
-            
-        }
-        else if ([[NSDate date] timeIntervalSinceDate:contact.created] < 3600*24*30) {
-            [self.contacts_month addObject:contact];
-            
+            self.contacts_recent = [CRContactsManager sharedManager].recentContacts.mutableCopy;
         }
         else{
-            [self.contacts_earlier addObject:contact];
+            self.navigationItem.rightBarButtonItem.title = @"Recent";
+            if ([[NSDate date] timeIntervalSinceDate:contact.created] < 3600*24*7) {
+                [self.contacts_recent addObject:contact];
+                
+            }
+            else if ([[NSDate date] timeIntervalSinceDate:contact.created] < 3600*24*30) {
+                [self.contacts_month addObject:contact];
+                
+            }
+            else{
+                [self.contacts_earlier addObject:contact];
+            }
         }
     }
     //reload table
@@ -98,12 +98,14 @@
 
 
 #pragma mark - UI
-- (IBAction)reload:(id)sender {
-    [self loadAddressBook];
-}
 
-- (void)showHistory:(id)sender{
-    self.showFullHistory = !self.showFullHistory;
+- (IBAction)showHistory:(id)sender{
+    self.showHistory = !self.showHistory;
+    if (_showHistory) {
+        self.navigationItem.rightBarButtonItem.title = @"Recent";
+    }else{
+        self.navigationItem.rightBarButtonItem.title = @"History";
+    }
     [self loadAddressBook];
 }
 
@@ -112,7 +114,7 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
     // 1 week, 1 month, 3 months, 1 year, 1yr+
-    return self.showFullHistory?3:1;
+    return self.showHistory?3:1;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -128,10 +130,15 @@
     UILabel *title = (UILabel *)[secionHeader viewWithTag:89];
     switch (section) {
         case 0:
-            title.text = @"Recent week";
+            if (_showHistory) {
+                title.text = @"Recent Week";
+            }else{
+                title.text = @"Recent Contacts";
+            }
+            
             break;
         case 1:
-            title.text = @"Recent month";
+            title.text = @"Recent Month";
             break;
         case 2:
             title.text = @"Earlier";

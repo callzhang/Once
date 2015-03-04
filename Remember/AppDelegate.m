@@ -20,6 +20,10 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    //logging
+    [EWUtil initLogging];
+    
     //core data
     //[MagicalRecord setupCoreDataStack];
     //[MagicalRecord setLoggingLevel:MagicalRecordLoggingLevelWarn];
@@ -37,11 +41,7 @@
     //manager
     [CRContactsManager sharedManager];
     
-    //logging
-    [EWUtil initLogging];
-    
     //push
-#if !TARGET_IPHONE_SIMULATOR
     UIUserNotificationType types = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeNone;
 	UIMutableUserNotificationAction *notes = [UIMutableUserNotificationAction new];
 	notes.activationMode = UIUserNotificationActivationModeForeground;
@@ -61,11 +61,9 @@
 	[category setActions:@[notes, later, cancel] forContext:UIUserNotificationActionContextDefault];
 	[category setActions:@[notes, cancel] forContext:UIUserNotificationActionContextMinimal];
     UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:[NSSet setWithObjects:category, nil]];
-    
     [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
-    
     [[UIApplication sharedApplication] registerForRemoteNotifications];
-#endif
+
     return YES;
 }
 
@@ -96,17 +94,21 @@
     DDLogInfo(@"======== Launched in background due to background fetch event ==========");
     CRContactsManager *manager = [CRContactsManager sharedManager];
 	//[manager scheduleReactivateLocalNotification];
-    [manager checkNewContactsAndNotifyWithCompletion:^(UIBackgroundFetchResult result) {
+    [manager checkNewContactsAndNotifyWithCompletion:^(NSArray *newContacts) {
 #ifdef DEBUG
         UILocalNotification *note = [UILocalNotification new];
-        NSMutableString *str = [NSMutableString stringWithFormat:@"Remember checked new contact at %@.", [NSDate date].date2detailDateString];
-        if (manager.recentContacts.count > 0) {
-            [str stringByAppendingFormat:@"\nAnd found %ld new contacts", (long)manager.recentContacts.count];
+        NSMutableString *str = [NSMutableString stringWithFormat:@"Remember checked new contact at %@.", [NSDate date].string];
+        if (newContacts.count > 0) {
+            [str appendFormat:@" And found %ld new contacts", (long)newContacts.count];
         }
         note.alertBody = str;
         [[UIApplication sharedApplication] scheduleLocalNotification:note];
 #endif
-		completionHandler(result);
+        if (newContacts.count) {
+            completionHandler(UIBackgroundFetchResultNewData);
+        }else{
+            completionHandler(UIBackgroundFetchResultNoData);
+        }
 	}];
 }
 

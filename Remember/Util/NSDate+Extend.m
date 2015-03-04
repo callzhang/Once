@@ -51,10 +51,17 @@
     return string;
 }
 
-- (NSString *)date2detailDateString{
+- (NSString *)detailedString{
     NSDateFormatter *parseFormatter = [[NSDateFormatter alloc] init];
     parseFormatter.timeZone = [NSTimeZone defaultTimeZone];
-    parseFormatter.dateFormat = @"EEE, dd MMM yyyy HH:mm";
+    parseFormatter.dateFormat = @"EEE, MMM dd yyyy HH:mm";
+    return [parseFormatter stringFromDate:self];
+}
+
+- (NSString *)string{
+    NSDateFormatter *parseFormatter = [[NSDateFormatter alloc] init];
+    parseFormatter.timeZone = [NSTimeZone defaultTimeZone];
+    parseFormatter.dateFormat = @"EEE, MMM dd, HH:mm";
     return [parseFormatter stringFromDate:self];
 }
 
@@ -215,7 +222,7 @@
     NSDateComponents* deltaComps = [cal components:(NSCalendarUnitHour | NSCalendarUnitMinute) fromDate:self];
     NSInteger min = deltaComps.hour * 60 + deltaComps.minute;
     if (min % 10 != 0) {
-        DDLogError(@"Something wrong with the time input: %@", self.date2detailDateString);
+        DDLogError(@"Something wrong with the time input: %@", self.string);
     }
     return min;
 }
