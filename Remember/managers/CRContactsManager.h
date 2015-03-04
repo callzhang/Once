@@ -20,6 +20,7 @@
 #define kAdressbookReady	@"addressbook_ready"
 //notification category
 #define kReminderCategory	@"quick_memo"
+@class RHPerson;
 
 @interface CRContactsManager : NSObject
 
@@ -54,5 +55,6 @@
 
 #pragma mark - Actions
 - (void)checkNewContactsAndNotifyWithCompletion:(void (^)(NSArray *newContacts))block;
+- (BOOL)removeContact:(RHPerson *)contact;
 
 @end

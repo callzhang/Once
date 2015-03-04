@@ -28,7 +28,7 @@
     _manager = [CRContactsManager sharedManager];
     [[NSNotificationCenter defaultCenter] addObserverForName:kAdressbookReady object:nil queue:nil usingBlock:^(NSNotification *note) {
         DDLogInfo(@"AddressBook ready");
-        [self loadAddressBook];
+        [self loadData];
     }];
 	
     //tableview
@@ -38,46 +38,42 @@
     
     
     //data
-    if ([CRContactsManager sharedManager].recentContacts.count) {
-        self.showHistory = NO;
-    } else {
-        self.showHistory = YES;
-    }
-    [self loadAddressBook];
+    [self setMode];
+    [self loadData];
     
     //observe application state
     [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
         DDLogInfo(@"Application will enter foreground, refresh the view");
-        if ([CRContactsManager sharedManager].recentContacts.count) {
-            self.showHistory = NO;
-        } else {
-            self.showHistory = YES;
-        }
-        [self loadAddressBook];
+        [self setMode];
+        [self loadData];
     }];
 }
 
+- (void)setMode{
+    
+    if ([CRContactsManager sharedManager].recentContacts.count) {
+        self.showHistory = NO;
+        self.navigationItem.rightBarButtonItem.title = @"History";
+    } else {
+        self.showHistory = YES;
+        self.navigationItem.rightBarButtonItem.title = @"Recent";
+    }
+}
 
-- (void)loadAddressBook{
+
+- (void)loadData{
     
     self.contacts_recent = [NSMutableArray new];
     self.contacts_month = [NSMutableArray new];
     self.contacts_earlier = [NSMutableArray new];
     
-    NSArray *contacts = _manager.allContacts;
     
-    for (RHPerson *contact in contacts) {
-        if (!_showHistory) {
-            self.navigationItem.rightBarButtonItem.title = @"History";
-            if ([contact.created timeIntervalSinceDate:_manager.lastOpenedOld] < 0) {
-                continue;
-			}else{
-				[self.contacts_recent addObject:contact];
-			}
-            self.contacts_recent = [CRContactsManager sharedManager].recentContacts.mutableCopy;
-        }
-        else{
-            self.navigationItem.rightBarButtonItem.title = @"Recent";
+    if (!_showHistory) {
+        self.contacts_recent = _manager.recentContacts.mutableCopy;
+    }
+    else{
+        NSArray *contacts = _manager.allContacts;
+        for (RHPerson *contact in contacts) {
             if ([[NSDate date] timeIntervalSinceDate:contact.created] < 3600*24*7) {
                 [self.contacts_recent addObject:contact];
                 
@@ -106,7 +102,7 @@
     }else{
         self.navigationItem.rightBarButtonItem.title = @"History";
     }
-    [self loadAddressBook];
+    [self loadData];
 }
 
 #pragma mark - Table view data source
@@ -133,7 +129,7 @@
             if (_showHistory) {
                 title.text = @"Recent Week";
             }else{
-                title.text = @"Recent Contacts";
+                title.text = @"Since last view";
             }
             
             break;
@@ -191,7 +187,7 @@
     cell.textLabel.text = contact.compositeName ?: [NSString stringWithFormat:@"%@", contact.name];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"Met on %@", contact.created.date2dayString];
 	cell.imageView.image = contact.thumbnail ?: [UIImage imageNamed:@"profileImage"];
-	cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+    
 //    cell.title.text = contact.compositeName ?: [NSString stringWithFormat:@"%@", contact.name];
 //    cell.detail.text = [NSString stringWithFormat:@"Met on %@", contact.created.date2dayString];
 //    cell.profile.image = contact.thumbnail ?: [UIImage imageNamed:@"profileImage"];
@@ -235,19 +231,44 @@
 	}
 }
 
-- (BOOL)personViewController:(ABPersonViewController *)personViewController shouldPerformDefaultActionForPerson:(ABRecordRef)person property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier{
-	return NO;
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
+    [tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
 }
 
 
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        RHPerson *contact;
+        switch (indexPath.section) {
+            case 0:
+                contact = self.contacts_recent[indexPath.row];
+                break;
+            case 1:
+                contact = self.contacts_month[indexPath.row];
+                break;
+            case 2:
+                contact = self.contacts_earlier[indexPath.row];
+                break;
+            default:
+                return;
+        }
+        //remove from view with animation
+        [[CRContactsManager sharedManager] removeContact:contact];
+        [self.contacts_recent removeObject:contact];
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self loadData];
+        });
+    }
+}
+
+
+#pragma mark - ABAdressbookViewController delegate
+- (BOOL)personViewController:(ABPersonViewController *)personViewController shouldPerformDefaultActionForPerson:(ABRecordRef)person property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier{
+	return YES;
+}
+
+
 
 @end

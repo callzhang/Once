@@ -78,19 +78,19 @@
 
 - (NSArray *)allContacts{
     if (!_allContacts) {
-        NSArray *peopleWithoutCreationDate = [[_addressbook people] filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"created = nil"]];
+        _allContacts = [_addressbook people];
+        NSArray *peopleWithoutCreationDate = [_allContacts filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"created = nil"]];
         for (RHPerson  *person in peopleWithoutCreationDate) {
             NSParameterAssert(!person.created);
             NSDate *lastWeek = [[NSDate date] dateByAddingTimeInterval:-3600*24*30];
             [person setBasicValue:(__bridge CFTypeRef)lastWeek forPropertyID:kABPersonCreationDateProperty error:nil];
             DDLogVerbose(@"Set created for person %@", person.name);
         }
-        _allContacts = [[_addressbook people] sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:NO]]];
     }
     return _allContacts;
 }
 
-
+#pragma mark - Perspective
 //contacts added since last updates, used as default view
 - (NSArray *)recentContacts{
     NSDate *lastOpenedOld = self.lastOpenedOld;
@@ -102,7 +102,18 @@
 }
 
 
-#pragma mark - Check new
+
+- (NSArray *)newContactsSinceLastCheck{
+    NSDate *lastChecked = self.lastChecked;
+    NSArray *newContacts = [[_addressbook people] bk_select:^BOOL(RHPerson *person) {
+        return [person.created timeIntervalSinceDate:lastChecked] > 0;
+    }];
+    
+    return newContacts;
+}
+
+
+#pragma mark - Actions
 - (void)checkNewContactsAndNotifyWithCompletion:(void (^)(NSArray *newContacts))block{
     //check
 	NSArray *newContacts = [self newContactsSinceLastCheck];
@@ -182,15 +193,21 @@
           }];
 }
 
-- (NSArray *)newContactsSinceLastCheck{
-    NSDate *lastChecked = self.lastChecked;
-    NSArray *newContacts = [[_addressbook people] bk_select:^BOOL(RHPerson *person) {
-        return [person.created timeIntervalSinceDate:lastChecked] > 0;
-    }];
-    
-    return newContacts;
-}
 
+- (BOOL)removeContact:(RHPerson *)contact{
+    DDLogInfo(@"Deleting contact %@", contact.name);
+    NSError *error;
+    BOOL success = [self.addressbook removePerson:contact error:&error];
+    if (!success) {
+        DDLogError(@"Failed to remove contact: %@ error: %@", contact, error.localizedDescription);
+    }
+    success = [self.addressbook saveWithError:&error];
+    if (!success) {
+        DDLogError(@"Failed to save addressBook: %@", error.localizedDescription);
+    }
+    self.allContacts = nil;
+    return success;
+}
 
 #pragma mark - time stamp
 - (NSDate *)lastChecked{
