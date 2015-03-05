@@ -112,8 +112,8 @@ GCD_SYNTHESIZE_SINGLETON_FOR_CLASS(EWUtil)
     }
     float mySize = MIN(self.frame.size.height, self.frame.size.width);
     float superSize = MIN(self.superview.frame.size.height, self.superview.frame.size.width);
-    float size = MAX(mySize, superSize);
-    float radius = size/2 ?: 30;
+    float size = mySize>1?mySize:superSize-5;
+    float radius = size/2;
 	self.layer.masksToBounds = YES;
 	self.layer.cornerRadius = radius;
 	//self.layer.borderColor = [UIColor colorWithWhite:1 alpha:0.5].CGColor;

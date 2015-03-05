@@ -12,7 +12,7 @@
 #import "RHPerson.h"
 #import <AFNetworking/AFNetworking.h>
 
-#define TESTING		YES
+#define TESTING		NO
 
 @interface CRContactsManager()
 @property (nonatomic, strong) RHAddressBook *addressbook;
@@ -143,6 +143,7 @@
 }
 
 - (void)testCheckNewContacts{
+    DDLogInfo(@"Start testing checking new contacts");
 	self.lastChecked = [NSDate dateWithTimeIntervalSinceNow:-3600*8];
 	NSArray *newContacts = [self newContactsSinceLastCheck];
 	DDLogDebug(@"Found new contacts from 8 hours ago: %@", [newContacts valueForKey:@"name"]);

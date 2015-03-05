@@ -22,6 +22,7 @@
 
 /* Begin PBXBuildFile section */
 		47FE71DD2166A0BFA813EDE4 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCC5B3D1D0A53728B40FF19 /* libPods.a */; };
+		9B346C181AA7DC3900B98E23 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9B346C171AA7DC3900B98E23 /* Entypo.ttf */; };
 		9B3F2B681A9FB8F7009D4E7B /* ENPersonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B3F2B671A9FB8F7009D4E7B /* ENPersonCell.m */; };
 		9B7D31301A9DA820000E8A9F /* EWUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B7D312F1A9DA820000E8A9F /* EWUtil.m */; };
 		9B8EADC51AA6A9FE003F2174 /* NSDate+Extend.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B8EADC41AA6A9FE003F2174 /* NSDate+Extend.m */; };
@@ -64,6 +65,7 @@
 /* Begin PBXFileReference section */
 		2CCC5B3D1D0A53728B40FF19 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C824802E36CCE7014BABC05 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		9B346C171AA7DC3900B98E23 /* Entypo.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Entypo.ttf; sourceTree = "<group>"; };
 		9B3F2B661A9FB8F7009D4E7B /* ENPersonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ENPersonCell.h; path = Views/ENPersonCell.h; sourceTree = "<group>"; };
 		9B3F2B671A9FB8F7009D4E7B /* ENPersonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ENPersonCell.m; path = Views/ENPersonCell.m; sourceTree = "<group>"; };
 		9B7D312C1A9DA616000E8A9F /* GCDSingleton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GCDSingleton.h; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 			isa = PBXGroup;
 			children = (
 				9BFB236D1A102E380012B81C /* Images.xcassets */,
+				9B346C171AA7DC3900B98E23 /* Entypo.ttf */,
 				9BA1F42F1A12B25E00A9E12C /* reminder.caf */,
 			);
 			name = Resources;
@@ -395,6 +398,7 @@
 				9BFB236C1A102E380012B81C /* Main.storyboard in Resources */,
 				9BFB23711A102E380012B81C /* LaunchScreen.xib in Resources */,
 				9BA1F4301A12B25E00A9E12C /* reminder.caf in Resources */,
+				9B346C181AA7DC3900B98E23 /* Entypo.ttf in Resources */,
 				9BFB236E1A102E380012B81C /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

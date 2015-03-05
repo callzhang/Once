@@ -33,7 +33,7 @@
     }];
 	
     //tableview
-	[self.tableView registerClass:[ENPersonCell class] forCellReuseIdentifier:@"personCell"];
+	//[self.tableView registerClass:[ENPersonCell class] forCellReuseIdentifier:@"personCell"];
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
@@ -167,8 +167,8 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	//ENPersonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"personCell"];
-	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainViewCellIdentifier"];
+	ENPersonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"personCell"];
+	//UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainViewCellIdentifier"];
     RHPerson *contact;
     switch (indexPath.section) {
         case 0:
@@ -185,14 +185,17 @@
             return cell;
     }
     
-    cell.textLabel.text = contact.compositeName ?: [NSString stringWithFormat:@"%@", contact.name];
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"Met on %@", contact.created.date2dayString];
-	cell.imageView.image = contact.thumbnail ?: [UIImage imageNamed:@"profileImage"];
+    NSString *notes = contact.note;
     
-//    cell.title.text = contact.compositeName ?: [NSString stringWithFormat:@"%@", contact.name];
-//    cell.detail.text = [NSString stringWithFormat:@"Met on %@", contact.created.date2dayString];
-//    cell.profile.image = contact.thumbnail ?: [UIImage imageNamed:@"profileImage"];
-//	[cell.disclosure addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+//    cell.textLabel.text = contact.compositeName ?: [NSString stringWithFormat:@"%@", contact.name];
+//    cell.detailTextLabel.text = [NSString stringWithFormat:@"Met on %@", contact.created.date2dayString];
+//	cell.imageView.image = contact.thumbnail ?: [UIImage imageNamed:@"profileImage"];
+    
+    cell.title.text = contact.compositeName ?: [NSString stringWithFormat:@"%@", contact.name];
+    cell.detail.text = notes ?: [NSString stringWithFormat:@"Met on %@", contact.created.date2dayString];
+    cell.profile.image = contact.thumbnail ?: [UIImage imageNamed:@"profileImage"];
+	[cell.disclosure addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     return cell;
 }
 
@@ -207,37 +210,37 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-	RHPerson *contact;
-	switch (indexPath.section) {
-		case 0:
-			contact = self.contacts_recent[indexPath.row];
-			break;
-		case 1:
-			contact = self.contacts_month[indexPath.row];
-			break;
-		case 2:
-			contact = self.contacts_earlier[indexPath.row];
-			break;
-		default:
-			return;
-	}
-	ABRecordRef personRef = contact.recordRef;
-	if (personRef) {
-		ABPersonViewController *picker = [[ABPersonViewController alloc] init];
-		//tell the view controller to user our underlying address book
-		[contact.addressBook performAddressBookAction:^(ABAddressBookRef addressBookRef) {
-			picker.addressBook = addressBookRef;
-		} waitUntilDone:YES];
-		picker.personViewDelegate = self;
-		picker.displayedPerson = personRef;
-		// Allow users to edit the person’s information
-		picker.allowsEditing = YES;
-		[self.navigationController pushViewController:picker animated:YES];
-	}
+    RHPerson *contact;
+    switch (indexPath.section) {
+        case 0:
+            contact = self.contacts_recent[indexPath.row];
+            break;
+        case 1:
+            contact = self.contacts_month[indexPath.row];
+            break;
+        case 2:
+            contact = self.contacts_earlier[indexPath.row];
+            break;
+        default:
+            return;
+    }
+    ABRecordRef personRef = contact.recordRef;
+    if (personRef) {
+        ABPersonViewController *picker = [[ABPersonViewController alloc] init];
+        //tell the view controller to user our underlying address book
+        [contact.addressBook performAddressBookAction:^(ABAddressBookRef addressBookRef) {
+            picker.addressBook = addressBookRef;
+        } waitUntilDone:YES];
+        picker.personViewDelegate = self;
+        picker.displayedPerson = personRef;
+        // Allow users to edit the person’s information
+        picker.allowsEditing = YES;
+        [self.navigationController pushViewController:picker animated:YES];
+    }
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
-    [tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+    //
 }
 
 
