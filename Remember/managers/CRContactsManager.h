@@ -30,8 +30,6 @@
 + (CRContactsManager *)sharedManager;
 
 #pragma mark - TIME
-@property (nonatomic, strong) NSArray *recentContacts;
-@property (nonatomic, strong) NSArray *allContacts;
 @property (nonatomic, strong) NSDate *lastChecked;//last checked time, keep updating
 @property (nonatomic, strong) NSDate *lastUpdated;//last time checked and found new contacts. 
 @property (nonatomic, strong) NSDate *lastOpened;//last app opened time (at app going to background)
@@ -43,11 +41,16 @@
 
 #pragma mark - Perspectives
 /**
+ *  All contacts from address book. If set MERGE_LINKED_PERSON to yes, it merged into unique entity with in linked contacts.
+ */
+@property (nonatomic, strong) NSArray *allContacts;
+
+/**
  *  Recent created contacts. Specifically, newer than lastOpenedOld.
  *
  *  @return list of recent contacts
  */
-- (NSArray *)recentContacts;
+@property (nonatomic, strong) NSArray *recentContacts;
 
 /**
  *  Contacts created that are newer than last checked time, meaning they should be notified.
@@ -55,7 +58,7 @@
  *
  *  @return list of new contacts
  */
-- (NSArray *)newContactsSinceLastCheck;
+@property (nonatomic, strong) NSArray *newContactsSinceLastCheck;
 
 #pragma mark - Actions
 - (void)checkNewContactsAndNotifyWithCompletion:(void (^)(NSArray *newContacts))block;

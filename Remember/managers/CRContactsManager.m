@@ -12,7 +12,8 @@
 #import "RHPerson.h"
 #import <AFNetworking/AFNetworking.h>
 
-#define TESTING		NO
+#define TESTING                 NO
+#define MERGE_LINKED_PERSON     YES
 
 @interface CRContactsManager()
 @property (nonatomic, strong) RHAddressBook *addressbook;
@@ -61,8 +62,8 @@
         }];
 		
 		//time stamp
-		[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillTerminateNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-			DDLogInfo(@"App is going to be terminated, save last opened date!");
+		[[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidEnterBackgroundNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+			DDLogInfo(@"App is going to background, save last opened date!");
 			//update last opened
             self.lastOpened = [NSDate date];
 			[[NSUserDefaults standardUserDefaults] synchronize];
@@ -83,29 +84,61 @@
 }
 
 
+
+#pragma mark - Perspective
 - (NSArray *)allContacts{
     if (!_allContacts) {
-        _allContacts = [_addressbook people];
-        NSArray *peopleWithoutCreationDate = [_allContacts filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"created = nil"]];
+        NSArray *contacts = [_addressbook people];
+        NSArray *peopleWithoutCreationDate = [contacts filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"created = nil"]];
         for (RHPerson  *person in peopleWithoutCreationDate) {
             NSParameterAssert(!person.created);
             NSDate *lastWeek = [[NSDate date] dateByAddingTimeInterval:-3600*24*30];
             [person setBasicValue:(__bridge CFTypeRef)lastWeek forPropertyID:kABPersonCreationDateProperty error:nil];
             DDLogInfo(@"Set created for person %@", person.name);
         }
+        
+        if (MERGE_LINKED_PERSON) {
+            //group linked user
+            NSMutableDictionary *personMapping = [NSMutableDictionary new];
+            for (RHPerson *person in contacts) {
+                if (personMapping[@(person.recordID)]) {
+                    continue;
+                }
+                NSArray *linked = person.linkedPeople;
+                if (linked.count > 1) {
+                    RHPerson *originalPerson = [linked sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]]].firstObject;
+                    for (RHPerson *linkedPerson in linked) {
+                        personMapping[@(linkedPerson.recordID)] = originalPerson;
+                        //TODO: need to figure out how to merge person info
+                    }
+                }else{
+                    personMapping[@(person.recordID)] = person;
+                }
+            }
+            //remove duplicates
+            _allContacts = [NSSet setWithArray:personMapping.allValues].allObjects;
+        }else{
+            _allContacts = contacts;
+        }
     }
+    
     return _allContacts;
 }
 
-#pragma mark - Perspective
+
 //contacts added since last updates, used as default view
 - (NSArray *)recentContacts{
 	NSDate *chekDate = [self.lastOpenedOld isEarlierThan:self.lastUpdated] ? self.lastOpenedOld : self.lastUpdated;
 	DDLogVerbose(@"Searching for recent contacts since %@", chekDate.string);
-    NSArray *recents = [[_addressbook people] bk_select:^BOOL(RHPerson *person) {
+    NSArray *recents = [self.allContacts bk_select:^BOOL(RHPerson *person) {
         return [person.created timeIntervalSinceDate:chekDate] > 0;
 	}];
-	NSArray *newContacts = [self filterOutExistingContactsFromNewContacts:recents withDate:chekDate];
+    NSArray *newContacts;
+    if (MERGE_LINKED_PERSON) {
+        newContacts = recents;
+    } else {
+        newContacts = [self filterOutExistingContactsFromNewContacts:recents withDate:chekDate];
+    }
 	
     return [newContacts sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:NO]]];
 }
@@ -114,11 +147,52 @@
 
 - (NSArray *)newContactsSinceLastCheck{
     NSDate *lastChecked = self.lastChecked;
-    NSArray *contacts = [[_addressbook people] bk_select:^BOOL(RHPerson *person) {
+    NSArray *contacts = [self.allContacts bk_select:^BOOL(RHPerson *person) {
         return [person.created timeIntervalSinceDate:lastChecked] > 0;
     }];
-	
-	NSArray *newContacts = [self filterOutExistingContactsFromNewContacts:contacts withDate:_lastChecked];
+    
+    NSMutableArray *newContacts = [NSMutableArray array];
+    if (!MERGE_LINKED_PERSON) {
+        contacts = [self filterOutExistingContactsFromNewContacts:contacts withDate:_lastChecked];
+    }
+    
+    //also check if there are contacts that has the same phone/email
+    for (RHPerson *person in contacts) {
+        //check email
+        //TODO: use dictionary
+        NSMutableSet *peopleWithSameEmail = [NSMutableSet new];
+        for (NSString *email in person.emails.values) {
+            NSArray *people = [_addressbook peopleWithEmail:email];
+            [peopleWithSameEmail addObjectsFromArray:people];
+        }
+        [peopleWithSameEmail removeObject:person];
+        DDLogInfo(@"Found %ld person with same email for person %@", (long)peopleWithSameEmail.count, person.name);
+        
+        //check phone
+        //TODO: use dictionary
+        NSMutableSet *peopleWithSamePhoneNumber = [NSMutableSet new];
+        NSArray *numbers = person.phoneNumbers.values;
+        for(RHPerson *person in _addressbook.people) {
+            NSArray *phoneNumbers = [person.phoneNumbers values];
+            for (NSString *phoneNumber in numbers) {
+                if ([phoneNumbers containsObject:phoneNumber]){
+                    [peopleWithSamePhoneNumber addObject:person];
+                }
+            }
+        }
+        [peopleWithSamePhoneNumber removeObject:person];
+        DDLogInfo(@"Found %ld person with same email for person %@", (long)peopleWithSamePhoneNumber.count, person.name);
+        //TODO: link person
+        
+        //order
+        NSSet *possibleLinked = [peopleWithSameEmail setByAddingObjectsFromSet:peopleWithSamePhoneNumber];
+        RHPerson *oldestPerson = [possibleLinked sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]]].firstObject;
+        if ([oldestPerson.created timeIntervalSinceDate:lastChecked] > 0) {
+            [newContacts addObject:person];
+        } else {
+            DDLogInfo(@"Person %@ has linked person that was already created: %@", person.name, [possibleLinked valueForKey:@"name"]);
+        }
+    }
 	
 	return newContacts;
 }
@@ -137,7 +211,7 @@
 		}
 	}
 	[newContacts removeObjectsInArray:existingPerson];
-	DDLogInfo(@"Out of %ld contacts, found %ld exisitng contacts, resulting %ld new contacts", contacts.count, existingPerson.count, newContacts.count);
+	DDLogInfo(@"Out of %ld contacts, found %ld exisitng contacts, resulting %ld new contacts", (long)contacts.count, (long)existingPerson.count, (long)newContacts.count);
 	
 	return newContacts.copy;
 }
@@ -177,17 +251,25 @@
 		NSArray *names = [newContacts valueForKey:@"name"];
 		NSString *reminderStr;
 		if (names.count > 1) {
-			reminderStr = [NSString stringWithFormat:@"You recently met %@ and %ld other people. Add a quick note?", names.firstObject, names.count-1];
+			reminderStr = [NSString stringWithFormat:@"You recently met %@ and %ld other people. Add a quick note?", names.firstObject, (long)names.count-1];
 		} else {
 			reminderStr = [NSString stringWithFormat:@"You recently met %@. Add a quick note?", names.firstObject];
 		}
+        
+        //remove old notification
+        for (UILocalNotification *note in [[UIApplication sharedApplication] scheduledLocalNotifications]) {
+            if ([note.userInfo[@"type"] isEqualToString:@"remember"]) {
+                [[UIApplication sharedApplication] cancelLocalNotification:note];
+            }
+        }
 		
 		//send notification
 		UILocalNotification *note = [UILocalNotification new];
 		note.alertBody = reminderStr;
 		note.soundName = @"reminder.caf";
 		note.category = kReminderCategory;
-		note.fireDate = [NSDate date].nextNoon;//TODO: use created time
+		note.fireDate = oldestCreated.nextNoon;//TODO: use created time
+        note.userInfo = @{@"type": @"remember"};
 
 		[[UIApplication sharedApplication] scheduleLocalNotification:note];
         
@@ -240,17 +322,21 @@
 
 
 - (BOOL)removeContact:(RHPerson *)contact{
-    DDLogInfo(@"Deleting contact %@", contact.name);
+    DDLogInfo(@"Deleting contact %@ with %ul linked person", contact.name, (unsigned long)contact.linkedPeople.count);
+    BOOL success;
     NSError *error;
-    BOOL success = [self.addressbook removePerson:contact error:&error];
-    if (!success) {
-        DDLogError(@"Failed to remove contact: %@ error: %@", contact, error.localizedDescription);
+    for (RHPerson *person in contact.linkedPeople) {
+        success = [person remove];
+        if (!success) {
+            DDLogError(@"Failed to remove contact: %@", person);
+        }
+        
+        self.allContacts = nil;
     }
     success = [self.addressbook saveWithError:&error];
     if (!success) {
         DDLogError(@"Failed to save addressBook: %@", error.localizedDescription);
     }
-    self.allContacts = nil;
     return success;
 }
 

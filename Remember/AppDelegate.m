@@ -35,13 +35,14 @@
 #ifdef DEBUG
 	[application setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
 #else
-    [application setMinimumBackgroundFetchInterval:3600*8];
+    [application setMinimumBackgroundFetchInterval:3600*2];
 #endif
 	
     //manager
     [CRContactsManager sharedManager];
     
     //push
+    /*
     UIUserNotificationType types = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeNone;
 	UIMutableUserNotificationAction *notes = [UIMutableUserNotificationAction new];
 	notes.activationMode = UIUserNotificationActivationModeForeground;
@@ -63,7 +64,7 @@
     UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:[NSSet setWithObjects:category, nil]];
     [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
     [[UIApplication sharedApplication] registerForRemoteNotifications];
-
+     */
     return YES;
 }
 

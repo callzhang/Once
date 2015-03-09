@@ -13,6 +13,26 @@
 #import "DDTTYLogger.h"
 #import "DDFileLogger.h"
 
+#ifndef iPad
+#define iPad (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+#endif
+
+#ifndef NSFoundationVersionNumber_iOS_7_0
+#define NSFoundationVersionNumber_iOS_7_0 1047.20
+#endif
+
+#ifndef NSFoundationVersionNumber_iOS_8_0
+#define NSFoundationVersionNumber_iOS_8_0 1134.10
+#endif
+
+#ifndef iOS7
+#define iOS7 (NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_7_0)
+#endif
+
+#ifndef iOS8
+#define iOS8 (NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_8_0)
+#endif
+
 @interface EWUtil : NSObject
 GCD_SYNTHESIZE_SINGLETON_FOR_CLASS_HEADER(EWUtil)
 + (NSString *)UUID;
@@ -38,4 +58,8 @@ GCD_SYNTHESIZE_SINGLETON_FOR_CLASS_HEADER(EWUtil)
 
 @interface UIView(Extend)
 - (void)rounden;
+@end
+
+@interface NSArray(Sort)
+- (NSArray *)sortedByCreated;
 @end

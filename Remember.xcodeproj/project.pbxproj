@@ -26,6 +26,8 @@
 		9B3F2B681A9FB8F7009D4E7B /* ENPersonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B3F2B671A9FB8F7009D4E7B /* ENPersonCell.m */; };
 		9B7D31301A9DA820000E8A9F /* EWUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B7D312F1A9DA820000E8A9F /* EWUtil.m */; };
 		9B8EADC51AA6A9FE003F2174 /* NSDate+Extend.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B8EADC41AA6A9FE003F2174 /* NSDate+Extend.m */; };
+		9B8EADC81AA827D3003F2174 /* UIView+Extend.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B8EADC61AA827D3003F2174 /* UIView+Extend.m */; };
+		9B8EADCB1AA827E0003F2174 /* EWUIUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B8EADCA1AA827E0003F2174 /* EWUIUtil.m */; };
 		9B9095EC1A105A2100A2FA4A /* CRMainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B9095EB1A105A2000A2FA4A /* CRMainViewController.m */; };
 		9B9095F21A1064FC00A2FA4A /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B9095F01A1064FC00A2FA4A /* AddressBook.framework */; };
 		9B9095F31A1064FC00A2FA4A /* AddressBookUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B9095F11A1064FC00A2FA4A /* AddressBookUI.framework */; };
@@ -73,6 +75,10 @@
 		9B7D312F1A9DA820000E8A9F /* EWUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWUtil.m; sourceTree = "<group>"; };
 		9B8EADC31AA6A9FE003F2174 /* NSDate+Extend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Extend.h"; sourceTree = "<group>"; };
 		9B8EADC41AA6A9FE003F2174 /* NSDate+Extend.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Extend.m"; sourceTree = "<group>"; };
+		9B8EADC61AA827D3003F2174 /* UIView+Extend.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Extend.m"; sourceTree = "<group>"; };
+		9B8EADC71AA827D3003F2174 /* UIView+Extend.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Extend.h"; sourceTree = "<group>"; };
+		9B8EADC91AA827E0003F2174 /* EWUIUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EWUIUtil.h; sourceTree = "<group>"; };
+		9B8EADCA1AA827E0003F2174 /* EWUIUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EWUIUtil.m; sourceTree = "<group>"; };
 		9B9095EA1A105A2000A2FA4A /* CRMainViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRMainViewController.h; sourceTree = "<group>"; };
 		9B9095EB1A105A2000A2FA4A /* CRMainViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRMainViewController.m; sourceTree = "<group>"; };
 		9B9095F01A1064FC00A2FA4A /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = System/Library/Frameworks/AddressBook.framework; sourceTree = SDKROOT; };
@@ -168,6 +174,10 @@
 		9B7D31261A9DA2BA000E8A9F /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				9B8EADC91AA827E0003F2174 /* EWUIUtil.h */,
+				9B8EADCA1AA827E0003F2174 /* EWUIUtil.m */,
+				9B8EADC61AA827D3003F2174 /* UIView+Extend.m */,
+				9B8EADC71AA827D3003F2174 /* UIView+Extend.h */,
 				9B8EADC31AA6A9FE003F2174 /* NSDate+Extend.h */,
 				9B8EADC41AA6A9FE003F2174 /* NSDate+Extend.m */,
 				9B7D312E1A9DA820000E8A9F /* EWUtil.h */,
@@ -466,9 +476,11 @@
 				9B9096131A106E2C00A2FA4A /* CRContact.m in Sources */,
 				9B9095EC1A105A2100A2FA4A /* CRMainViewController.m in Sources */,
 				9BFB23661A102E380012B81C /* Remember.xcdatamodeld in Sources */,
+				9B8EADCB1AA827E0003F2174 /* EWUIUtil.m in Sources */,
 				9B90961B1A10A6AA00A2FA4A /* CRContactsManager.m in Sources */,
 				9B9096111A106E2C00A2FA4A /* _CRUser.m in Sources */,
 				9B8EADC51AA6A9FE003F2174 /* NSDate+Extend.m in Sources */,
+				9B8EADC81AA827D3003F2174 /* UIView+Extend.m in Sources */,
 				9BFB23631A102E380012B81C /* AppDelegate.m in Sources */,
 				9B9096101A106E2C00A2FA4A /* _CRContact.m in Sources */,
 				9BFB23601A102E380012B81C /* main.m in Sources */,

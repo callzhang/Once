@@ -12,13 +12,18 @@
 #import "NSDate+Extend.h"
 #import "ENPersonCell.h"
 #import "RHAddressBook.h"
+#import "EWUIUtil.h"
+#import "NSTimer+BlocksKit.h"
+#import "EWUtil.h"
 
 @interface CRMainViewController ()
 @property (nonatomic, strong) NSMutableArray *contacts_recent;
+@property (nonatomic, strong) NSMutableArray *contacts_week;
 @property (nonatomic, strong) NSMutableArray *contacts_month;
 @property (nonatomic, strong) NSMutableArray *contacts_earlier;
 @property (nonatomic) BOOL showHistory;
 @property (nonatomic, strong) CRContactsManager *manager;
+@property (nonatomic, assign) BOOL addressBookChanged;
 @end
 
 @implementation CRMainViewController
@@ -28,8 +33,10 @@
     
     _manager = [CRContactsManager sharedManager];
     [[NSNotificationCenter defaultCenter] addObserverForName:kAdressbookReady object:nil queue:nil usingBlock:^(NSNotification *note) {
+        [EWUIUtil showWatingHUB];
         DDLogInfo(@"AddressBook ready");
         [self loadData];
+        [EWUIUtil dismissHUD];
     }];
 	
     //tableview
@@ -44,9 +51,17 @@
     
     //observe application state
     [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-        DDLogInfo(@"Application will enter foreground, refresh the view");
-        [self setMode];
-        [self loadData];
+        if (self.addressBookChanged == YES) {
+            self.addressBookChanged = NO;
+            DDLogInfo(@"Application will enter foreground, refresh the view");
+            [self setMode];
+            [self loadData];
+        }
+    }];
+    
+    // start observing
+    [[NSNotificationCenter defaultCenter]  addObserverForName:RHAddressBookExternalChangeNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+        self.addressBookChanged = YES;
     }];
 }
 
@@ -65,29 +80,30 @@
 - (void)loadData{
     
     self.contacts_recent = [NSMutableArray new];
+    self.contacts_week = [NSMutableArray new];
     self.contacts_month = [NSMutableArray new];
     self.contacts_earlier = [NSMutableArray new];
     
-    
-    if (!_showHistory) {
-        self.contacts_recent = _manager.recentContacts.mutableCopy;
-    }
-    else{
-        NSArray *contacts = _manager.allContacts;
-        for (RHPerson *contact in contacts) {
-            if ([[NSDate date] timeIntervalSinceDate:contact.created] < 3600*24*7) {
-                [self.contacts_recent addObject:contact];
-                
-            }
-            else if ([[NSDate date] timeIntervalSinceDate:contact.created] < 3600*24*30) {
-                [self.contacts_month addObject:contact];
-                
-            }
-            else{
-                [self.contacts_earlier addObject:contact];
-            }
+    //data array
+    NSArray *contacts = _manager.allContacts;
+    for (RHPerson *contact in contacts) {
+        if ([[NSDate date] timeIntervalSinceDate:contact.created] < 3600*24*7) {
+            [self.contacts_week addObject:contact];
+        }
+        else if ([[NSDate date] timeIntervalSinceDate:contact.created] < 3600*24*30) {
+            [self.contacts_month addObject:contact];
+            
+        }
+        else{
+            [self.contacts_earlier addObject:contact];
         }
     }
+    
+    self.contacts_recent = _manager.recentContacts.sortedByCreated.mutableCopy;
+    self.contacts_week = _contacts_week.sortedByCreated.mutableCopy;
+    self.contacts_month = _contacts_month.sortedByCreated.mutableCopy;
+    self.contacts_earlier = _contacts_earlier.sortedByCreated.mutableCopy;
+    
     //reload table
     [self.tableView reloadData];
     
@@ -103,7 +119,7 @@
     }else{
         self.navigationItem.rightBarButtonItem.title = @"History";
     }
-    [self loadData];
+    [self.tableView reloadData];
 }
 
 #pragma mark - Table view data source
@@ -128,14 +144,14 @@
     switch (section) {
         case 0:
             if (_showHistory) {
-                title.text = @"Recent Week";
+                title.text = @"Last Week";
             }else{
-                title.text = @"Since last view";
+                title.text = @"New Contacts";
             }
             
             break;
         case 1:
-            title.text = @"Recent Month";
+            title.text = @"Last Month";
             break;
         case 2:
             title.text = @"Earlier";
@@ -150,8 +166,11 @@
     // Return the number of rows in the section.
     switch (section) {
         case 0:
-            //week
-            return self.contacts_recent.count;
+            if (_showHistory) {
+                return self.contacts_week.count;
+            } else {
+                return self.contacts_recent.count;
+            }
             
         case 1:
             return self.contacts_month.count;
@@ -172,8 +191,11 @@
     RHPerson *contact;
     switch (indexPath.section) {
         case 0:
-            //week
-            contact = self.contacts_recent[indexPath.row];
+            if (_showHistory) {
+                contact = self.contacts_week[indexPath.row];
+            } else {
+                contact = self.contacts_recent[indexPath.row];
+            }
             break;
         case 1:
             contact = self.contacts_month[indexPath.row];
@@ -213,7 +235,11 @@
     RHPerson *contact;
     switch (indexPath.section) {
         case 0:
-            contact = self.contacts_recent[indexPath.row];
+            if (_showHistory) {
+                contact = self.contacts_week[indexPath.row];
+            } else {
+                contact = self.contacts_recent[indexPath.row];
+            }
             break;
         case 1:
             contact = self.contacts_month[indexPath.row];
@@ -249,20 +275,27 @@
         RHPerson *contact;
         switch (indexPath.section) {
             case 0:
-                contact = self.contacts_recent[indexPath.row];
+                if (_showHistory) {
+                    contact = self.contacts_week[indexPath.row];
+                    [_contacts_week removeObject:contact];
+                } else {
+                    contact = self.contacts_recent[indexPath.row];
+                    [_contacts_recent removeObject:contact];
+                }
                 break;
             case 1:
                 contact = self.contacts_month[indexPath.row];
+                [_contacts_month removeObject:contact];
                 break;
             case 2:
                 contact = self.contacts_earlier[indexPath.row];
+                [_contacts_earlier removeObject:contact];
                 break;
             default:
                 return;
         }
         //remove from view with animation
         [[CRContactsManager sharedManager] removeContact:contact];
-        [self.contacts_recent removeObject:contact];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
         
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
