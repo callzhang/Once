@@ -23,6 +23,10 @@
 //OriginalCrated
 #define kOriginalCreated	@"CR_created"
 
+
+#define TICK                            NSDate *startTime = [NSDate date];
+#define TOCK                            NSLog(@"Time: %f", -[startTime timeIntervalSinceNow]);
+
 @class RHPerson;
 
 @interface CRContactsManager : NSObject
@@ -59,6 +63,8 @@
  *  @return list of new contacts
  */
 @property (nonatomic, strong) NSArray *newContactsSinceLastCheck;
+
+@property (nonatomic, strong) NSMutableOrderedSet *duplicatedContacts;
 
 #pragma mark - Actions
 - (void)checkNewContactsAndNotifyWithCompletion:(void (^)(NSArray *newContacts))block;

@@ -46,16 +46,20 @@
     
     
     //data
-    [self setMode];
     [self loadData];
+    [self setMode];
     
     //observe application state
     [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
         if (self.addressBookChanged == YES) {
             self.addressBookChanged = NO;
             DDLogInfo(@"Application will enter foreground, refresh the view");
-            [self setMode];
+            
             [self loadData];
+            [self setMode];
+            
+            //reload table
+            [self.tableView reloadData];
         }
     }];
     
@@ -67,7 +71,7 @@
 
 - (void)setMode{
     
-    if ([CRContactsManager sharedManager].recentContacts.count) {
+    if (self.contacts_recent.count) {
         self.showHistory = NO;
         self.navigationItem.rightBarButtonItem.title = @"History";
     } else {
@@ -84,6 +88,10 @@
     self.contacts_month = [NSMutableArray new];
     self.contacts_earlier = [NSMutableArray new];
     
+    
+    //recent
+    self.contacts_recent = _manager.recentContacts.sortedByCreated.mutableCopy;
+    
     //data array
     NSArray *contacts = _manager.allContacts;
     for (RHPerson *contact in contacts) {
@@ -98,17 +106,11 @@
             [self.contacts_earlier addObject:contact];
         }
     }
-    
-    self.contacts_recent = _manager.recentContacts.sortedByCreated.mutableCopy;
     self.contacts_week = _contacts_week.sortedByCreated.mutableCopy;
     self.contacts_month = _contacts_month.sortedByCreated.mutableCopy;
     self.contacts_earlier = _contacts_earlier.sortedByCreated.mutableCopy;
     
-    //reload table
-    [self.tableView reloadData];
-    
 }
-
 
 #pragma mark - UI
 

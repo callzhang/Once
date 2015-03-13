@@ -29,7 +29,7 @@
 	//[MagicalRecord setLoggingLevel:MagicalRecordLoggingLevelWarn];
 	
     //parse
-    [Parse setApplicationId:kParseApplicationId clientKey:kParseClientKey];
+    //[Parse setApplicationId:kParseApplicationId clientKey:kParseClientKey];
     
     //background fetch
 #ifdef DEBUG

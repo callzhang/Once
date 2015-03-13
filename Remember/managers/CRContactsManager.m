@@ -11,9 +11,10 @@
 #import "RHAddressBook.h"
 #import "RHPerson.h"
 #import <AFNetworking/AFNetworking.h>
+#import "EWUIUtil.h"
 
 #define TESTING                 NO
-#define MERGE_LINKED_PERSON     YES
+#define FIND_DUPLICATE          YES
 
 @interface CRContactsManager()
 @property (nonatomic, strong) RHAddressBook *addressbook;
@@ -78,6 +79,9 @@
 		if (TESTING) {
 			[self testCheckNewContacts];
 		}
+        
+        //data
+        _duplicatedContacts = [NSMutableOrderedSet new];
     }
     
     return self;
@@ -91,35 +95,87 @@
         NSArray *contacts = [_addressbook people];
         NSArray *peopleWithoutCreationDate = [contacts filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"created = nil"]];
         for (RHPerson  *person in peopleWithoutCreationDate) {
-            NSParameterAssert(!person.created);
             NSDate *lastWeek = [[NSDate date] dateByAddingTimeInterval:-3600*24*30];
+            DDLogVerbose(@"Found contacts %@ without created, assign %@", person.name, lastWeek.string);
             [person setBasicValue:(__bridge CFTypeRef)lastWeek forPropertyID:kABPersonCreationDateProperty error:nil];
-            DDLogInfo(@"Set created for person %@", person.name);
         }
         
-        if (MERGE_LINKED_PERSON) {
-            //group linked user
-            NSMutableDictionary *personMapping = [NSMutableDictionary new];
-            for (RHPerson *person in contacts) {
-                if (personMapping[@(person.recordID)]) {
+        //group linked user
+        NSMutableDictionary *personMapping = [NSMutableDictionary new];
+        NSMutableDictionary *emailMapping = [NSMutableDictionary new];
+        NSMutableDictionary *phoneMapping = [NSMutableDictionary new];
+        NSMutableSet *others = [NSMutableSet new];
+        for (RHPerson *person in contacts) {
+            if (personMapping[@(person.recordID)]) {
+                continue;
+            }
+            NSArray *linked = person.linkedPeople;
+            if (linked.count > 1) {
+                RHPerson *originalPerson = [linked sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]]].firstObject;
+                for (RHPerson *linkedPerson in linked) {
+                    personMapping[@(linkedPerson.recordID)] = originalPerson;
+                    //TODO: need to figure out how to merge person info
+                }
+            }else{
+                personMapping[@(person.recordID)] = person;
+            }
+        }
+        //remove duplicates
+        _allContacts = [NSSet setWithArray:personMapping.allValues].allObjects;
+        
+        
+        if (FIND_DUPLICATE) {
+            TICK
+            for (RHPerson *person in _allContacts) {
+                if (person.emails.values.count == 0 && person.phoneNumbers.values.count == 0) {
+                    [others addObject:person];
                     continue;
                 }
-                NSArray *linked = person.linkedPeople;
-                if (linked.count > 1) {
-                    RHPerson *originalPerson = [linked sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]]].firstObject;
-                    for (RHPerson *linkedPerson in linked) {
-                        personMapping[@(linkedPerson.recordID)] = originalPerson;
-                        //TODO: need to figure out how to merge person info
+                
+                //find email dup
+                for (NSString *email in person.emails.values) {
+                    RHPerson *duplicated = emailMapping[email];
+                    if (duplicated) {
+                        if ([duplicated.created timeIntervalSinceDate:person.created]>0) {
+                            //this person is older
+                            emailMapping[email] = person;
+                        } else {
+                            DDLogInfo(@"Found duplicated %@ with email %@", person.name, email);
+                            [self.duplicatedContacts addObjectsFromArray:@[duplicated, person]];
+                        }
+                    }else{
+                        emailMapping[email] = person;
                     }
-                }else{
-                    personMapping[@(person.recordID)] = person;
+                }
+                //find phone dup
+                for (NSString *phone in person.phoneNumbers.values) {
+                    //transform to number only
+                    NSCharacterSet *nonNumberSet = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
+                    NSString *phoneNumber = [[phone componentsSeparatedByCharactersInSet:nonNumberSet] componentsJoinedByString:@""];
+                    RHPerson *duplicated = phoneMapping[phoneNumber];
+                    if (duplicated) {
+                        if ([duplicated.created timeIntervalSinceDate:person.created]>0) {
+                            //this person is older
+                            phoneMapping[phoneNumber] = person;
+                        } else {
+                            DDLogInfo(@"Found duplicated %@ with phone %@", person.name, phone);
+                            [self.duplicatedContacts addObjectsFromArray:@[duplicated, person]];
+                        }
+                    }else{
+                        phoneMapping[phoneNumber] = person;
+                    }
                 }
             }
-            //remove duplicates
-            _allContacts = [NSSet setWithArray:personMapping.allValues].allObjects;
-        }else{
-            _allContacts = contacts;
+            
+            //union
+            NSMutableSet *allContacts = [NSMutableSet setWithArray:emailMapping.allValues];
+            [allContacts intersectSet:[NSSet setWithArray:phoneMapping.allValues]];
+            [allContacts unionSet:others];
+            _allContacts = allContacts.allObjects;
+            DDLogInfo(@"Found %lu duplicated person", (unsigned long)_duplicatedContacts.count);
+            TOCK
         }
+        
     }
     
     return _allContacts;
@@ -130,33 +186,29 @@
 - (NSArray *)recentContacts{
 	NSDate *chekDate = [self.lastOpenedOld isEarlierThan:self.lastUpdated] ? self.lastOpenedOld : self.lastUpdated;
 	DDLogVerbose(@"Searching for recent contacts since %@", chekDate.string);
-    NSArray *recents = [self.allContacts bk_select:^BOOL(RHPerson *person) {
+    NSArray *newContacts = [self.allContacts bk_select:^BOOL(RHPerson *person) {
         return [person.created timeIntervalSinceDate:chekDate] > 0;
 	}];
-    NSArray *newContacts;
-    if (MERGE_LINKED_PERSON) {
-        newContacts = recents;
-    } else {
-        newContacts = [self filterOutExistingContactsFromNewContacts:recents withDate:chekDate];
-    }
-	
-    return [newContacts sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:NO]]];
+    
+    return newContacts.sortedByCreated;
 }
 
 
 
 - (NSArray *)newContactsSinceLastCheck{
     NSDate *lastChecked = self.lastChecked;
-    NSArray *contacts = [self.allContacts bk_select:^BOOL(RHPerson *person) {
+    NSArray *newContacts = [self.allContacts bk_select:^BOOL(RHPerson *person) {
         return [person.created timeIntervalSinceDate:lastChecked] > 0;
     }];
-    
-    NSMutableArray *newContacts = [NSMutableArray array];
-    if (!MERGE_LINKED_PERSON) {
-        contacts = [self filterOutExistingContactsFromNewContacts:contacts withDate:_lastChecked];
-    }
-    
-    //also check if there are contacts that has the same phone/email
+	
+	return newContacts;
+}
+
+#pragma mark - Tools
+- (NSArray *)findDuplicates:(NSArray *)contacts{
+    DDLogVerbose(@"Checking contacts with same phone or email....");
+    TICK
+    NSMutableArray *unrelatedContacts = [NSMutableArray array];
     for (RHPerson *person in contacts) {
         //check email
         //TODO: use dictionary
@@ -187,14 +239,14 @@
         //order
         NSSet *possibleLinked = [peopleWithSameEmail setByAddingObjectsFromSet:peopleWithSamePhoneNumber];
         RHPerson *oldestPerson = [possibleLinked sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]]].firstObject;
-        if ([oldestPerson.created timeIntervalSinceDate:lastChecked] > 0) {
-            [newContacts addObject:person];
+        if ([oldestPerson.created timeIntervalSinceDate:self.lastChecked] > 0) {
+            [unrelatedContacts addObject:person];
         } else {
             DDLogInfo(@"Person %@ has linked person that was already created: %@", person.name, [possibleLinked valueForKey:@"name"]);
         }
     }
-	
-	return newContacts;
+    TOCK
+    return unrelatedContacts.copy;
 }
 
 - (NSArray *)filterOutExistingContactsFromNewContacts:(NSArray *)contacts withDate:(NSDate *)time{
@@ -322,7 +374,7 @@
 
 
 - (BOOL)removeContact:(RHPerson *)contact{
-    DDLogInfo(@"Deleting contact %@ with %ul linked person", contact.name, (unsigned long)contact.linkedPeople.count);
+    DDLogInfo(@"Deleting contact %@ with %lul linked person", contact.name, (unsigned long)contact.linkedPeople.count);
     BOOL success;
     NSError *error;
     for (RHPerson *person in contact.linkedPeople) {
