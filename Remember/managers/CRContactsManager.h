@@ -22,6 +22,8 @@
 #define kReminderCategory	@"quick_memo"
 //OriginalCrated
 #define kOriginalCreated	@"CR_created"
+//notification
+#define kCRAddressBookChangeCompleted	@"addressbook_change_completed"
 
 
 #define TICK                            NSDate *startTime = [NSDate date];
@@ -68,6 +70,6 @@
 
 #pragma mark - Actions
 - (void)checkNewContactsAndNotifyWithCompletion:(void (^)(NSArray *newContacts))block;
-- (BOOL)removeContact:(RHPerson *)contact;
-
+- (BOOL)removeAllLinkedContact:(RHPerson *)contact;
+- (BOOL)deleteContact:(RHPerson *)contact;
 @end

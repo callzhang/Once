@@ -15,15 +15,24 @@
 #import "EWUIUtil.h"
 #import "NSTimer+BlocksKit.h"
 #import "EWUtil.h"
+#import "UIActionSheet+BlocksKit.h"
+
+typedef NS_ENUM(NSInteger, CRContactsViewType){
+	CRContactsViewTypeRecent,
+	CRContactsViewTypeHistory,
+	CRContactsViewTypeDuplicated
+};
 
 @interface CRMainViewController ()
 @property (nonatomic, strong) NSMutableArray *contacts_recent;
 @property (nonatomic, strong) NSMutableArray *contacts_week;
 @property (nonatomic, strong) NSMutableArray *contacts_month;
 @property (nonatomic, strong) NSMutableArray *contacts_earlier;
-@property (nonatomic) BOOL showHistory;
+@property (nonatomic, strong) NSMutableArray *duplicated;
+//@property (nonatomic) BOOL showHistory;
 @property (nonatomic, strong) CRContactsManager *manager;
 @property (nonatomic, assign) BOOL addressBookChanged;
+@property (nonatomic, assign) CRContactsViewType contactsViewType;
 @end
 
 @implementation CRMainViewController
@@ -50,33 +59,34 @@
     [self setMode];
     
     //observe application state
-    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-        if (self.addressBookChanged == YES) {
-            self.addressBookChanged = NO;
-            DDLogInfo(@"Application will enter foreground, refresh the view");
-            
-            [self loadData];
-            [self setMode];
-            
-            //reload table
-            [self.tableView reloadData];
-        }
-    }];
-    
+//    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
+//        if (self.addressBookChanged == YES) {
+//            self.addressBookChanged = NO;
+//            DDLogInfo(@"Application will enter foreground, refresh the view");
+//            
+//            [self loadData];
+//			//[self setMode];
+//            
+//            //reload table
+//            [self.tableView reloadData];
+//        }
+//    }];
+	
     // start observing
-    [[NSNotificationCenter defaultCenter]  addObserverForName:RHAddressBookExternalChangeNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-        self.addressBookChanged = YES;
+    [[NSNotificationCenter defaultCenter]  addObserverForName:kCRAddressBookChangeCompleted object:nil queue:nil usingBlock:^(NSNotification *note) {
+		//self.addressBookChanged = YES;
+		[self loadData];
+		[EWUIUtil dismissHUD];
+		[self.tableView reloadData];
     }];
 }
 
 - (void)setMode{
     
     if (self.contacts_recent.count) {
-        self.showHistory = NO;
-        self.navigationItem.rightBarButtonItem.title = @"History";
+        self.contactsViewType = CRContactsViewTypeRecent;
     } else {
-        self.showHistory = YES;
-        self.navigationItem.rightBarButtonItem.title = @"Recent";
+        self.contactsViewType = CRContactsViewTypeHistory;
     }
 }
 
@@ -87,10 +97,11 @@
     self.contacts_week = [NSMutableArray new];
     self.contacts_month = [NSMutableArray new];
     self.contacts_earlier = [NSMutableArray new];
-    
-    
+	
     //recent
     self.contacts_recent = _manager.recentContacts.sortedByCreated.mutableCopy;
+	//duplicated
+	self.duplicated = _manager.duplicatedContacts.mutableCopy;
     
     //data array
     NSArray *contacts = _manager.allContacts;
@@ -115,13 +126,29 @@
 #pragma mark - UI
 
 - (IBAction)showHistory:(id)sender{
-    self.showHistory = !self.showHistory;
-    if (_showHistory) {
-        self.navigationItem.rightBarButtonItem.title = @"Recent";
-    }else{
-        self.navigationItem.rightBarButtonItem.title = @"History";
-    }
-    [self.tableView reloadData];
+	UIActionSheet *sheet = [UIActionSheet bk_actionSheetWithTitle:@"More"];
+	if (self.contactsViewType != CRContactsViewTypeRecent) {
+		[sheet bk_addButtonWithTitle:@"Recent" handler:^{
+			self.contactsViewType = CRContactsViewTypeRecent;
+			[self.tableView reloadData];
+		}];
+	}
+	if (self.contactsViewType != CRContactsViewTypeHistory) {
+		[sheet bk_addButtonWithTitle:@"History" handler:^{
+			self.contactsViewType = CRContactsViewTypeHistory;
+			[self.tableView reloadData];
+		}];
+	}
+	if (self.contactsViewType != CRContactsViewTypeDuplicated) {
+		[sheet bk_addButtonWithTitle:@"Duplicated" handler:^{
+			self.contactsViewType = CRContactsViewTypeDuplicated;
+			[self.tableView reloadData];
+		}];
+	}
+	[sheet bk_setCancelButtonWithTitle:@"Cancel" handler:^{
+		//
+	}];
+	[sheet showInView:self.view];
 }
 
 #pragma mark - Table view data source
@@ -129,7 +156,15 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     // Return the number of sections.
     // 1 week, 1 month, 3 months, 1 year, 1yr+
-    return self.showHistory?3:1;
+	switch (_contactsViewType) {
+		case CRContactsViewTypeRecent:
+			return 1;
+		case CRContactsViewTypeHistory:
+			return 3;
+		case CRContactsViewTypeDuplicated:
+			return 1;
+	}
+	return 0;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -145,11 +180,20 @@
     UILabel *title = (UILabel *)[secionHeader viewWithTag:89];
     switch (section) {
         case 0:
-            if (_showHistory) {
-                title.text = @"Last Week";
-            }else{
-                title.text = @"New Contacts";
-            }
+			switch (_contactsViewType) {
+				case CRContactsViewTypeRecent:
+					title.text = @"Recent";
+					break;
+				case CRContactsViewTypeHistory:
+					title.text = @"Last Week";
+					break;
+				case CRContactsViewTypeDuplicated:
+					title.text = @"Duplicated";
+					break;
+				default:
+					title.text = @"???";
+					break;
+			}
             
             break;
         case 1:
@@ -168,11 +212,14 @@
     // Return the number of rows in the section.
     switch (section) {
         case 0:
-            if (_showHistory) {
-                return self.contacts_week.count;
-            } else {
-                return self.contacts_recent.count;
-            }
+			switch (_contactsViewType) {
+				case CRContactsViewTypeRecent:
+					return self.contacts_recent.count;
+				case CRContactsViewTypeHistory:
+					return self.contacts_week.count;
+				case CRContactsViewTypeDuplicated:
+					return self.duplicated.count;
+			}
             
         case 1:
             return self.contacts_month.count;
@@ -193,11 +240,17 @@
     RHPerson *contact;
     switch (indexPath.section) {
         case 0:
-            if (_showHistory) {
-                contact = self.contacts_week[indexPath.row];
-            } else {
-                contact = self.contacts_recent[indexPath.row];
-            }
+			switch (_contactsViewType) {
+				case CRContactsViewTypeRecent:
+					contact = self.contacts_recent[indexPath.row];
+					break;
+				case CRContactsViewTypeHistory:
+					contact = self.contacts_week[indexPath.row];
+					break;
+				case CRContactsViewTypeDuplicated:
+					contact = self.duplicated[indexPath.row];
+					break;
+			}
             break;
         case 1:
             contact = self.contacts_month[indexPath.row];
@@ -237,11 +290,17 @@
     RHPerson *contact;
     switch (indexPath.section) {
         case 0:
-            if (_showHistory) {
-                contact = self.contacts_week[indexPath.row];
-            } else {
-                contact = self.contacts_recent[indexPath.row];
-            }
+			switch (_contactsViewType) {
+				case CRContactsViewTypeRecent:
+					contact = self.contacts_recent[indexPath.row];
+					break;
+				case CRContactsViewTypeHistory:
+					contact = self.contacts_week[indexPath.row];
+					break;
+				case CRContactsViewTypeDuplicated:
+					contact = self.duplicated[indexPath.row];
+					break;
+			}
             break;
         case 1:
             contact = self.contacts_month[indexPath.row];
@@ -267,9 +326,9 @@
     }
 }
 
-- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
-    //
-}
+//- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
+//    //
+//}
 
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -277,13 +336,20 @@
         RHPerson *contact;
         switch (indexPath.section) {
             case 0:
-                if (_showHistory) {
-                    contact = self.contacts_week[indexPath.row];
-                    [_contacts_week removeObject:contact];
-                } else {
-                    contact = self.contacts_recent[indexPath.row];
-                    [_contacts_recent removeObject:contact];
-                }
+				switch (_contactsViewType) {
+					case CRContactsViewTypeRecent:
+						contact = self.contacts_recent[indexPath.row];
+						[self.contacts_recent removeObject:contact];
+						break;
+					case CRContactsViewTypeHistory:
+						contact = self.contacts_week[indexPath.row];
+						[self.contacts_week removeObject:contact];
+						break;
+					case CRContactsViewTypeDuplicated:
+						contact = self.duplicated[indexPath.row];
+						[self.duplicated removeObject:contact];
+						break;
+				}
                 break;
             case 1:
                 contact = self.contacts_month[indexPath.row];
@@ -297,11 +363,15 @@
                 return;
         }
         //remove from view with animation
-        [[CRContactsManager sharedManager] removeContact:contact];
+		if (_contactsViewType == CRContactsViewTypeDuplicated) {
+			[_manager deleteContact:contact];
+		}else{
+			[_manager removeAllLinkedContact:contact];
+		}
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self loadData];
+		[EWUIUtil showWatingHUB];
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+			[EWUIUtil dismissHUD];
         });
     }
 }

@@ -140,7 +140,7 @@
                                 <constraint firstAttribute="trailing" secondItem="aYR-sL-OcE" secondAttribute="trailing" id="tyQ-KI-U3F"/>
                             </constraints>
                         </view>
-                        <barButtonItem key="rightBarButtonItem" title="History" id="1mJ-cg-oJD">
+                        <barButtonItem key="rightBarButtonItem" title="More" id="1mJ-cg-oJD">
                             <connections>
                                 <action selector="showHistory:" destination="cYj-4O-Vuh" id="FJq-FO-DkP"/>
                             </connections>

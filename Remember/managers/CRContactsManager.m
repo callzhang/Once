@@ -59,7 +59,13 @@
         [[NSNotificationCenter defaultCenter]  addObserverForName:RHAddressBookExternalChangeNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
 			DDLogInfo(@"Observed changes to AddressBook");
             _allContacts = nil;
-			//[self checkNewContactsAndNotifyWithCompletion:nil];
+			_duplicatedContacts = [NSMutableOrderedSet new];
+			//delay sending notification
+			static NSTimer *timer;
+			[timer invalidate];
+			timer = [NSTimer bk_scheduledTimerWithTimeInterval:1.5 block:^(NSTimer *timer) {
+				[[NSNotificationCenter defaultCenter] postNotificationName:kCRAddressBookChangeCompleted object:nil];
+			} repeats:NO];
         }];
 		
 		//time stamp
@@ -140,7 +146,7 @@
                             //this person is older
                             emailMapping[email] = person;
                         } else {
-                            DDLogInfo(@"Found duplicated %@ with email %@", person.name, email);
+							//DDLogVerbose(@"Found duplicated %@ with email %@", person.name, email);
                             [self.duplicatedContacts addObjectsFromArray:@[duplicated, person]];
                         }
                     }else{
@@ -158,7 +164,7 @@
                             //this person is older
                             phoneMapping[phoneNumber] = person;
                         } else {
-                            DDLogInfo(@"Found duplicated %@ with phone %@", person.name, phone);
+							//DDLogVerbose(@"Found duplicated %@ with phone %@", person.name, phone);
                             [self.duplicatedContacts addObjectsFromArray:@[duplicated, person]];
                         }
                     }else{
@@ -373,8 +379,8 @@
 }
 
 
-- (BOOL)removeContact:(RHPerson *)contact{
-    DDLogInfo(@"Deleting contact %@ with %lul linked person", contact.name, (unsigned long)contact.linkedPeople.count);
+- (BOOL)removeAllLinkedContact:(RHPerson *)contact{
+    DDLogInfo(@"Deleting contact %@ with %lu linked person", contact.name, (unsigned long)contact.linkedPeople.count);
     BOOL success;
     NSError *error;
     for (RHPerson *person in contact.linkedPeople) {
@@ -390,6 +396,21 @@
         DDLogError(@"Failed to save addressBook: %@", error.localizedDescription);
     }
     return success;
+}
+
+- (BOOL)deleteContact:(RHPerson *)contact{
+	DDLogInfo(@"Deleting contact %@", contact.name);
+	BOOL success;
+	NSError *error;
+	success = [contact remove];
+	if (!success) {
+		DDLogError(@"Failed to remove contact: %@", contact);
+	}
+	success = [self.addressbook saveWithError:&error];
+	if (!success) {
+		DDLogError(@"Failed to save addressBook: %@", error.localizedDescription);
+	}
+	return success;
 }
 
 #pragma mark - time stamp
