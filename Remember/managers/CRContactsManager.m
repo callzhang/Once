@@ -12,9 +12,9 @@
 #import "RHPerson.h"
 #import <AFNetworking/AFNetworking.h>
 #import "EWUIUtil.h"
+#import "RHSource.h"
 
 #define TESTING                 NO
-#define FIND_DUPLICATE          YES
 
 @interface CRContactsManager()
 @property (nonatomic, strong) RHAddressBook *addressbook;
@@ -43,12 +43,16 @@
         // load addressbook
         _addressbook = [[RHAddressBook alloc] init];
         
+        //setting
+        self.useDefaultSource = YES;
+        
         //check addressbook access
         //query current status, pre iOS6 always returns Authorized
         if ([RHAddressBook authorizationStatus] == RHAuthorizationStatusNotDetermined){
             
             //request authorization
             [_addressbook requestAuthorizationWithCompletion:^(bool granted, NSError *error) {
+                _allContacts = nil;
                 [[NSNotificationCenter defaultCenter] postNotificationName:kAdressbookReady object:nil];
             }];
 		}else if ([RHAddressBook authorizationStatus] == RHAuthorizationStatusAuthorized){
@@ -98,10 +102,17 @@
 #pragma mark - Perspective
 - (NSArray *)allContacts{
     if (!_allContacts) {
-        NSArray *contacts = [_addressbook people];
+        NSArray *contacts;
+        if (self.useDefaultSource) {
+            contacts = _addressbook.defaultSource.people;
+        }
+        else{
+            contacts = [_addressbook people];
+        }
+        
         NSArray *peopleWithoutCreationDate = [contacts filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"created = nil"]];
         for (RHPerson  *person in peopleWithoutCreationDate) {
-            NSDate *lastWeek = [[NSDate date] dateByAddingTimeInterval:-3600*24*30];
+            NSDate *lastWeek = [[NSDate date] dateByAddingTimeInterval:-3600*24*30*6];
             DDLogVerbose(@"Found contacts %@ without created, assign %@", person.name, lastWeek.string);
             [person setBasicValue:(__bridge CFTypeRef)lastWeek forPropertyID:kABPersonCreationDateProperty error:nil];
         }
@@ -130,7 +141,7 @@
         _allContacts = [NSSet setWithArray:personMapping.allValues].allObjects;
         
         
-        if (FIND_DUPLICATE) {
+        if (self.findDuplicates) {
             TICK
             for (RHPerson *person in _allContacts) {
                 if (person.emails.values.count == 0 && person.phoneNumbers.values.count == 0) {
@@ -317,7 +328,9 @@
         //remove old notification
         for (UILocalNotification *note in [[UIApplication sharedApplication] scheduledLocalNotifications]) {
             if ([note.userInfo[@"type"] isEqualToString:@"remember"]) {
-                [[UIApplication sharedApplication] cancelLocalNotification:note];
+                if ([note.fireDate isEqualToDate:oldestCreated.nextNoon]) {
+                    [[UIApplication sharedApplication] cancelLocalNotification:note];
+                }
             }
         }
 		

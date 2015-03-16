@@ -79,6 +79,13 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 		[EWUIUtil dismissHUD];
 		[self.tableView reloadData];
     }];
+    
+    [[NSNotificationCenter defaultCenter]  addObserverForName:kAdressbookReady object:nil queue:nil usingBlock:^(NSNotification *note) {
+        //self.addressBookChanged = YES;
+        [self loadData];
+        [EWUIUtil dismissHUD];
+        [self.tableView reloadData];
+    }];
 }
 
 - (void)setMode{
@@ -365,11 +372,12 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
         //remove from view with animation
 		if (_contactsViewType == CRContactsViewTypeDuplicated) {
 			[_manager deleteContact:contact];
+            [EWUIUtil showWatingHUB];
 		}else{
 			[_manager removeAllLinkedContact:contact];
 		}
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-		[EWUIUtil showWatingHUB];
+		
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
 			[EWUIUtil dismissHUD];
         });
