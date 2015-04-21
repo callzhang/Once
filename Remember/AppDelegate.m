@@ -20,7 +20,6 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    
     //logging
     [EWUtil initLogging];
     
@@ -174,7 +173,7 @@
 	
 	// REGISTER THE CATEGORY
 	NSSet *categorySet = [NSSet setWithObjects:postCategory, nil];
-	UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert
+	UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert|UIUserNotificationTypeBadge|UIUserNotificationTypeSound
 																			 categories:categorySet];
 	
 	[[UIApplication sharedApplication] registerUserNotificationSettings:settings];

@@ -287,7 +287,8 @@
 
 - (void)testCheckNewContacts{
     DDLogInfo(@"Start testing checking new contacts");
-	self.lastChecked = [NSDate dateWithTimeIntervalSinceNow:-3600*8];
+	//self.lastChecked = [NSDate dateWithTimeIntervalSinceNow:-3600*8];
+    self.lastChecked = [NSDate dateWithTimeIntervalSinceNow:-60];
 	NSArray *newContacts = [self newContactsSinceLastCheck];
 	DDLogDebug(@"Found new contacts from 8 hours ago: %@", [newContacts valueForKey:@"name"]);
 }
@@ -346,6 +347,7 @@
         
         //schedule on server push
         [self sendNewContactsReminderPush:reminderStr];
+        
         
         
 	}
