@@ -45,6 +45,7 @@
 		9B9096181A1079D900A2FA4A /* NSDate+Extend.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B9096171A1079D900A2FA4A /* NSDate+Extend.m */; };
 		9B90961B1A10A6AA00A2FA4A /* CRContactsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B90961A1A10A6AA00A2FA4A /* CRContactsManager.m */; };
 		9BA1F4301A12B25E00A9E12C /* reminder.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9BA1F42F1A12B25E00A9E12C /* reminder.caf */; };
+		9BF18E561AED9F7F0087764B /* CRNotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BF18E551AED9F7F0087764B /* CRNotificationsViewController.m */; };
 		9BFB23601A102E380012B81C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB235F1A102E380012B81C /* main.m */; };
 		9BFB23631A102E380012B81C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23621A102E380012B81C /* AppDelegate.m */; };
 		9BFB23661A102E380012B81C /* Remember.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23641A102E380012B81C /* Remember.xcdatamodeld */; };
@@ -94,6 +95,8 @@
 		9B9096191A10A6AA00A2FA4A /* CRContactsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRContactsManager.h; sourceTree = "<group>"; };
 		9B90961A1A10A6AA00A2FA4A /* CRContactsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRContactsManager.m; sourceTree = "<group>"; };
 		9BA1F42F1A12B25E00A9E12C /* reminder.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = reminder.caf; path = Recources/reminder.caf; sourceTree = "<group>"; };
+		9BF18E541AED9F7F0087764B /* CRNotificationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRNotificationsViewController.h; sourceTree = "<group>"; };
+		9BF18E551AED9F7F0087764B /* CRNotificationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRNotificationsViewController.m; sourceTree = "<group>"; };
 		9BFB235A1A102E380012B81C /* Remember.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Remember.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BFB235E1A102E380012B81C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9BFB235F1A102E380012B81C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -171,6 +174,8 @@
 		9B7D31271A9DA2C2000E8A9F /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				9BF18E541AED9F7F0087764B /* CRNotificationsViewController.h */,
+				9BF18E551AED9F7F0087764B /* CRNotificationsViewController.m */,
 				9B9095EA1A105A2000A2FA4A /* CRMainViewController.h */,
 				9B9095EB1A105A2000A2FA4A /* CRMainViewController.m */,
 			);
@@ -409,6 +414,7 @@
 				9B8EADCB1AA827E0003F2174 /* EWUIUtil.m in Sources */,
 				9B90961B1A10A6AA00A2FA4A /* CRContactsManager.m in Sources */,
 				9B9096111A106E2C00A2FA4A /* _CRUser.m in Sources */,
+				9BF18E561AED9F7F0087764B /* CRNotificationsViewController.m in Sources */,
 				9B8EADC51AA6A9FE003F2174 /* NSDate+Extend.m in Sources */,
 				9B8EADC81AA827D3003F2174 /* UIView+Extend.m in Sources */,
 				9BFB23631A102E380012B81C /* AppDelegate.m in Sources */,

@@ -16,6 +16,7 @@
 #import "NSTimer+BlocksKit.h"
 #import "EWUtil.h"
 #import "UIActionSheet+BlocksKit.h"
+#import "CRNotificationsViewController.h"
 
 typedef NS_ENUM(NSInteger, CRContactsViewType){
 	CRContactsViewTypeRecent,
@@ -74,6 +75,7 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 	
     // start observing
     [[NSNotificationCenter defaultCenter]  addObserverForName:kCRAddressBookChangeCompleted object:nil queue:nil usingBlock:^(NSNotification *note) {
+        DDLogVerbose(@"Addressbook change completed");
 		//self.addressBookChanged = YES;
 		[self loadData];
 		[EWUIUtil dismissHUD];
@@ -152,6 +154,14 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 			[self.tableView reloadData];
 		}];
 	}
+#ifdef DEBUG
+    if (!self.presentedViewController) {
+        [sheet bk_addButtonWithTitle:@"Local Notifications" handler:^{
+            CRNotificationsViewController *VC = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"CRNotificationsViewController"];
+            [self.navigationController pushViewController:VC animated:YES];
+        }];
+    }
+#endif
 	[sheet bk_setCancelButtonWithTitle:@"Cancel" handler:^{
 		//
 	}];

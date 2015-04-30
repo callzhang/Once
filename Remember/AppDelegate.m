@@ -89,7 +89,7 @@
 
 
 #pragma mark - Background fetch method (this is called periodocially
--(void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     DDLogInfo(@"======== Launched in background due to background fetch event ==========");
     CRContactsManager *manager = [CRContactsManager sharedManager];
