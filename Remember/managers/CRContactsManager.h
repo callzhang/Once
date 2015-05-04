@@ -12,10 +12,10 @@
 #define kParseClientKey		@"NOT06QA8LdXXLQjUmGKBHs6RWO1qPvrEyJUURxOI"
 #define kParseRestAPIId		@"NTWLFE2HunWRIeGGKjBwT29Gm4QahR6Gpztiugxt"
 //time
-#define kLastChecked		@"last_checked"
-#define kLastUpdated		@"last_updated"
-#define kLastOpened			@"last_opened"
-#define kLastOpenedOld		@"last_opened_old"
+#define kLastChecked		@"last_checked"//Last checked time
+#define kLastUpdated		@"last_updated"//Last checked and had result time
+#define kLastOpened			@"last_opened"//Last time app opened
+#define kLastOpenedOld		@"last_opened_old"//Last second time app opened
 //event
 #define kAdressbookReady	@"addressbook_ready"
 //notification category

@@ -314,7 +314,6 @@
 		
         //move the lastOpened old time to real last opened time, so the user will see newly updated contacts
         self.lastOpenedOld = self.lastOpened;
-        [[NSUserDefaults standardUserDefaults] synchronize];
         
 		//name
 		NSArray *names = [newContacts valueForKey:@"name"];
@@ -327,7 +326,7 @@
         
         //remove old notification
         for (UILocalNotification *note in [[UIApplication sharedApplication] scheduledLocalNotifications]) {
-            if ([note.userInfo[@"type"] isEqualToString:@"remember"]) {
+            if ([note.userInfo[@"type"] isEqualToString:@"reminder"]) {
                 if ([note.fireDate isEqualToDate:oldestCreated.nextNoon]) {
                     [[UIApplication sharedApplication] cancelLocalNotification:note];
                 }
@@ -336,17 +335,17 @@
 		
 		//send notification
 		UILocalNotification *note = [UILocalNotification new];
+		note.alertTitle = names.count > 1 ? @"New Contacts" : @"New Contact";
 		note.alertBody = reminderStr;
 		note.soundName = @"reminder.caf";
 		note.category = kReminderCategory;
 		note.fireDate = oldestCreated.nextNoon;//TODO: use created time
-        note.userInfo = @{@"type": @"remember"};
+        note.userInfo = @{@"type": @"reminder", @"names": names};
 
 		[[UIApplication sharedApplication] scheduleLocalNotification:note];
         
         //schedule on server push
         [self sendNewContactsReminderPush:reminderStr];
-        
         
 	}
     
@@ -383,11 +382,11 @@
     [manager POST:@"https://api.parse.com/1/push" parameters:dic
           success:^(AFHTTPRequestOperation *operation,id responseObject) {
               
-              NSLog(@"SCHEDULED reminder PUSH success for time %@", nextNoon.string);
+              DDLogVerbose(@"SCHEDULED reminder PUSH success for time %@", nextNoon.string);
               
           }failure:^(AFHTTPRequestOperation *operation,NSError *error) {
               
-              NSLog(@"Schedule Push Error: %@", error);
+              DDLogError(@"Schedule Push Error: %@", error);
           }];
 }
 

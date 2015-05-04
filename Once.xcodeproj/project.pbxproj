@@ -108,7 +108,7 @@
 		9BA1F42F1A12B25E00A9E12C /* reminder.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = reminder.caf; path = Recources/reminder.caf; sourceTree = "<group>"; };
 		9BF18E541AED9F7F0087764B /* CRNotificationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRNotificationsViewController.h; sourceTree = "<group>"; };
 		9BF18E551AED9F7F0087764B /* CRNotificationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRNotificationsViewController.m; sourceTree = "<group>"; };
-		9BFB235A1A102E380012B81C /* Remember.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Remember.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9BFB235A1A102E380012B81C /* Once.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Once.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9BFB235E1A102E380012B81C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9BFB235F1A102E380012B81C /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		9BFB23611A102E380012B81C /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -270,7 +270,7 @@
 		9BFB235B1A102E380012B81C /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				9BFB235A1A102E380012B81C /* Remember.app */,
+				9BFB235A1A102E380012B81C /* Once.app */,
 				9BFB23761A102E380012B81C /* RememberTests.xctest */,
 			);
 			name = Products;
@@ -321,9 +321,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		9BFB23591A102E380012B81C /* Remember */ = {
+		9BFB23591A102E380012B81C /* Once */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9BFB23801A102E380012B81C /* Build configuration list for PBXNativeTarget "Remember" */;
+			buildConfigurationList = 9BFB23801A102E380012B81C /* Build configuration list for PBXNativeTarget "Once" */;
 			buildPhases = (
 				570C31B4D113161F5826C11B /* Check Pods Manifest.lock */,
 				9BFB23561A102E380012B81C /* Sources */,
@@ -335,9 +335,9 @@
 			);
 			dependencies = (
 			);
-			name = Remember;
+			name = Once;
 			productName = "Contacts Reminder";
-			productReference = 9BFB235A1A102E380012B81C /* Remember.app */;
+			productReference = 9BFB235A1A102E380012B81C /* Once.app */;
 			productType = "com.apple.product-type.application";
 		};
 		9BFB23751A102E380012B81C /* RememberTests */ = {
@@ -385,7 +385,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 9BFB23551A102E380012B81C /* Build configuration list for PBXProject "Remember" */;
+			buildConfigurationList = 9BFB23551A102E380012B81C /* Build configuration list for PBXProject "Once" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -398,7 +398,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				9BFB23591A102E380012B81C /* Remember */,
+				9BFB23591A102E380012B81C /* Once */,
 				9BFB23751A102E380012B81C /* RememberTests */,
 				9B9095FE1A106D4E00A2FA4A /* mogenerator */,
 			);
@@ -512,7 +512,7 @@
 /* Begin PBXTargetDependency section */
 		9BFB23781A102E380012B81C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 9BFB23591A102E380012B81C /* Remember */;
+			target = 9BFB23591A102E380012B81C /* Once */;
 			targetProxy = 9BFB23771A102E380012B81C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -568,8 +568,8 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Derek Zhang (SRS98HY45T)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -589,6 +589,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "f49ce07c-a8c1-4ae8-b273-07dcd7662582";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -624,6 +625,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PROVISIONING_PROFILE = "f49ce07c-a8c1-4ae8-b273-07dcd7662582";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -637,12 +639,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PREFIX_HEADER = "$(SOURCE_ROOT)/Remember/prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/Remember/Info.plist";
 				INFOPLIST_PREFIX_HEADER = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = Remember;
+				PRODUCT_NAME = Once;
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -653,12 +657,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PREFIX_HEADER = "$(SOURCE_ROOT)/Remember/prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/Remember/Info.plist";
 				INFOPLIST_PREFIX_HEADER = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_NAME = Remember;
+				PRODUCT_NAME = Once;
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -708,7 +714,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9BFB23551A102E380012B81C /* Build configuration list for PBXProject "Remember" */ = {
+		9BFB23551A102E380012B81C /* Build configuration list for PBXProject "Once" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9BFB237E1A102E380012B81C /* Debug */,
@@ -717,7 +723,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9BFB23801A102E380012B81C /* Build configuration list for PBXNativeTarget "Remember" */ = {
+		9BFB23801A102E380012B81C /* Build configuration list for PBXNativeTarget "Once" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9BFB23811A102E380012B81C /* Debug */,

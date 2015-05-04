@@ -29,7 +29,7 @@
 	//[MagicalRecord setLoggingLevel:MagicalRecordLoggingLevelWarn];
 	
     //parse
-    //[Parse setApplicationId:kParseApplicationId clientKey:kParseClientKey];
+    [Parse setApplicationId:kParseApplicationId clientKey:kParseClientKey];
     
     //background fetch
 #ifdef DEBUG
@@ -42,29 +42,8 @@
     [CRContactsManager sharedManager];
     
     //push
-    /*
-    UIUserNotificationType types = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeNone;
-	UIMutableUserNotificationAction *notes = [UIMutableUserNotificationAction new];
-	notes.activationMode = UIUserNotificationActivationModeForeground;
-	notes.authenticationRequired = NO;
-    notes.title = @"Notes";
-	//this button doesn't bring the app to theh foreground but activates the app in background
-	UIMutableUserNotificationAction *later = [UIMutableUserNotificationAction new];
-	later.activationMode = UIUserNotificationActivationModeBackground;
-	later.authenticationRequired = NO;
-    later.title = @"Later";
-	UIMutableUserNotificationAction *cancel = [UIMutableUserNotificationAction new];
-	cancel.activationMode = UIUserNotificationActivationModeBackground;
-	cancel.authenticationRequired = NO;
-	cancel.destructive = YES;
-    cancel.title = @"Cancel";
-	UIMutableUserNotificationCategory *category = [UIMutableUserNotificationCategory new];
-	[category setActions:@[notes, later, cancel] forContext:UIUserNotificationActionContextDefault];
-	[category setActions:@[notes, cancel] forContext:UIUserNotificationActionContextMinimal];
-    UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:[NSSet setWithObjects:category, nil]];
-    [[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
-    [[UIApplication sharedApplication] registerForRemoteNotifications];
-     */
+	[self setupInteractiveNotifications];
+     
     return YES;
 }
 
@@ -78,7 +57,7 @@
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error{
-    DDLogInfo(@"Failed to register push: %@", error.description);
+    DDLogError(@"Failed to register push: %@", error.description);
 }
 
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
@@ -86,10 +65,7 @@
     [PFPush handlePush:userInfo];
 }
 
-#pragma mark - Background fetch
-
-
-#pragma mark - Background fetch method (this is called periodocially
+#pragma mark - Background fetch method (this is called periodocially)
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     DDLogInfo(@"======== Launched in background due to background fetch event ==========");
@@ -139,45 +115,35 @@
 - (void)setupInteractiveNotifications {
 	
 	//CREATE THE ACTION
+	UIUserNotificationType types = UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeNone;
+	// take notes action
+	UIMutableUserNotificationAction *takeNotesAction = [UIMutableUserNotificationAction new];
+	takeNotesAction.identifier = @"TAKE_NOTE_ACTION_ID";
+	takeNotesAction.activationMode = UIUserNotificationActivationModeForeground;
+	takeNotesAction.title = @"Take Notes";
 	
-	//instantiate the action
-	UIMutableUserNotificationAction *likeAction = [UIMutableUserNotificationAction new];
-	
+	//later action
+	UIMutableUserNotificationAction *later = [UIMutableUserNotificationAction new];
 	// set an identifier for the action, this is used to differentiate actions from eachother when the notifiaction action handler method is called
-	likeAction.identifier = @"LIKE_ACTION_IDENTIFIER";
-	
-	// Set the Title.. here we find the unicode value of the "thumbs up" emoji that the will appear inside the button corresponding to this action inside the push notification
-	likeAction.title = @"\U0001F44D";
-	
-	// If this is set to destructive, the background color of the button corresponding to this action will be red, otherwise it will be blue
-	likeAction.destructive = NO;
-	
+	later.identifier = @"LATER_ACTION_ID";
 	// UIUserActivationMode is used to tell the system whether it should bring your app into the foregroudn, or leave it in the background, in this case, the app can complete the request to update our backed in the background, so we don't have to open the app
-	likeAction.activationMode = UIUserNotificationActivationModeBackground;
+	later.activationMode = UIUserNotificationActivationModeBackground;
+	later.title = @"Later";
 	
-	
+//	UIMutableUserNotificationAction *cancel = [UIMutableUserNotificationAction new];
+//	cancel.activationMode = UIUserNotificationActivationModeBackground;
+//	cancel.destructive = YES;
+//	cancel.title = @"Cancel";
 	
 	// CREATE THE CATEGORY
-	
-	// instantiate the category
-	UIMutableUserNotificationCategory *postCategory = [UIMutableUserNotificationCategory new];
-	
+	UIMutableUserNotificationCategory *category = [UIMutableUserNotificationCategory new];
 	// set its identifier. The APS dictionary you send for your push notifications must have a key named 'category' whose object is set to a string that matches this identifier in order for you actions to appear.
-	postCategory.identifier = @"POST_CATEGORY";
-	
-	// set the actions that are associated with this type of push notification category
-	// you can use the UIUserNotificationActionContext to determine which actions will show up in different
-	// push notification presentation contexts, for example, on the lock screen, as a banner notification, or as an alert view notification
-	[postCategory setActions:@[likeAction]
-				  forContext:UIUserNotificationActionContextDefault];
-	
-	
-	// REGISTER THE CATEGORY
-	NSSet *categorySet = [NSSet setWithObjects:postCategory, nil];
-	UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert
-																			 categories:categorySet];
-	
-	[[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+	category.identifier = @"ONCE_CATEGORY";
+	[category setActions:@[takeNotesAction, later] forContext:UIUserNotificationActionContextDefault];
+	[category setActions:@[takeNotesAction] forContext:UIUserNotificationActionContextMinimal];
+	UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:[NSSet setWithObjects:category, nil]];
+	[[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
+	[[UIApplication sharedApplication] registerForRemoteNotifications];
 }
 
 
@@ -185,10 +151,15 @@
 - (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void (^)())completionHandler
 {
  
-	if ([identifier isEqualToString:@"LIKE_ACTION_IDENTIFIER"]){
+	if ([identifier isEqualToString:@"TAKE_NOTE_ACTION_ID"]){
 		
-		
+		//open note view
 	}
+	else if ([identifier isEqualToString:@"LATER_ACTION_ID"]) {
+			  
+		//reschedule a notification
+	}
+	
 	if(completionHandler)    //Finally call completion handler if its not nil
 		completionHandler();
 }
@@ -199,6 +170,10 @@
 	
 	if(completionHandler)    //Finally call completion handler if its not nil
 		completionHandler();
+}
+
+- (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings{
+	
 }
 
 @end
