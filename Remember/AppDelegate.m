@@ -50,7 +50,7 @@
 
 #pragma Push notification
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken{
-    DDLogInfo(@"Push token: %@", deviceToken);
+    DDLogInfo(@"Push token received: %@", deviceToken);
     PFInstallation *currentInstallation = [PFInstallation currentInstallation];
     [currentInstallation setDeviceTokenFromData:deviceToken];
     [currentInstallation saveInBackground];
