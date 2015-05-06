@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "NSDate+Extend.h"
+#import "CRContactsManager.h"
 //#import <MagicalRecord/CoreData+MagicalRecord.h>
 //#import "CRContactsManager.h"
 
@@ -48,22 +49,6 @@
 }
 
 
-#pragma Push notification
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken{
-    DDLogInfo(@"Push token received: %@", deviceToken);
-    PFInstallation *currentInstallation = [PFInstallation currentInstallation];
-    [currentInstallation setDeviceTokenFromData:deviceToken];
-    [currentInstallation saveInBackground];
-}
-
-- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error{
-    DDLogError(@"Failed to register push: %@", error.description);
-}
-
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-    DDLogInfo(@"Received push notification: %@", userInfo);
-    [PFPush handlePush:userInfo];
-}
 
 #pragma mark - Background fetch method (this is called periodocially)
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
@@ -138,7 +123,7 @@
 	// CREATE THE CATEGORY
 	UIMutableUserNotificationCategory *category = [UIMutableUserNotificationCategory new];
 	// set its identifier. The APS dictionary you send for your push notifications must have a key named 'category' whose object is set to a string that matches this identifier in order for you actions to appear.
-	category.identifier = @"ONCE_CATEGORY";
+	category.identifier = kReminderCategory;
 	[category setActions:@[takeNotesAction, later] forContext:UIUserNotificationActionContextDefault];
 	[category setActions:@[takeNotesAction] forContext:UIUserNotificationActionContextMinimal];
 	UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:[NSSet setWithObjects:category, nil]];
@@ -173,7 +158,25 @@
 }
 
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings{
-	
+	DDLogVerbose(@"Registered user notification");
+}
+
+
+#pragma Push notification
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken{
+	DDLogInfo(@"Push token received: %@", deviceToken);
+	PFInstallation *currentInstallation = [PFInstallation currentInstallation];
+	[currentInstallation setDeviceTokenFromData:deviceToken];
+	[currentInstallation saveInBackground];
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error{
+	DDLogError(@"Failed to register push: %@", error.description);
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
+	DDLogInfo(@"Received push notification: %@", userInfo);
+	[PFPush handlePush:userInfo];
 }
 
 @end

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>40A09156-D597-46E1-ABED-6735301649AE</string>
+	<key>IDESourceControlProjectName</key>
+	<string>Once</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>EA4BC292AEDB55CE448A6BE6A409B11198AFE2E1</key>
+		<string>https://github.com/callzhang/Contacts-Reminder.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>Once.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>EA4BC292AEDB55CE448A6BE6A409B11198AFE2E1</key>
+		<string>..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/callzhang/Contacts-Reminder.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>EA4BC292AEDB55CE448A6BE6A409B11198AFE2E1</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>EA4BC292AEDB55CE448A6BE6A409B11198AFE2E1</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Once</string>
+		</dict>
+	</array>
+</dict>
+</plist>

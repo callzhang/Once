@@ -39,7 +39,7 @@
 @property (nonatomic, strong) NSDate *lastChecked;//last checked time, keep updating
 @property (nonatomic, strong) NSDate *lastUpdated;//last time checked and found new contacts. 
 @property (nonatomic, strong) NSDate *lastOpened;//last app opened time (at app going to background)
-@property (nonatomic, assign) BOOL useDefaultSource;
+												 //@property (nonatomic, assign) BOOL useDefaultSource;
 @property (nonatomic, assign) BOOL findDuplicates;
 /**
  *  Lagging last opened time, it is updated on founding new contacts

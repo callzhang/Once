@@ -17,6 +17,8 @@
 #import "EWUtil.h"
 #import "UIActionSheet+BlocksKit.h"
 #import "CRNotificationsViewController.h"
+#import "BlocksKit+UIKit.h"
+#import "CRNotesViewController.h"
 
 typedef NS_ENUM(NSInteger, CRContactsViewType){
 	CRContactsViewTypeRecent,
@@ -289,7 +291,14 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
     cell.detail.text = notes ?: [NSString stringWithFormat:@"Met on %@", contact.created.date2dayString];
     cell.profile.image = contact.thumbnail ?: [UIImage imageNamed:@"profileImage"];
 	[cell.disclosure addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
-    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+	UIButton *addNotesButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
+	[addNotesButton bk_addEventHandler:^(id sender) {
+		//handle touch
+		CRNotesViewController *vc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"CRNotesViewController"];
+		vc.person = contact;
+		[self presentViewController:vc animated:YES completion:nil];
+	} forControlEvents:UIControlEventTouchUpInside];
+	cell.accessoryView = addNotesButton;
     return cell;
 }
 

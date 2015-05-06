@@ -13,6 +13,7 @@
 #import <AFNetworking/AFNetworking.h>
 #import "EWUIUtil.h"
 #import "RHSource.h"
+#import "AppDelegate.h"
 
 #define TESTING                 NO
 
@@ -42,9 +43,7 @@
     if (self) {
         // load addressbook
         _addressbook = [[RHAddressBook alloc] init];
-        
-        //setting
-        self.useDefaultSource = YES;
+		self.findDuplicates = YES;
         
         //check addressbook access
         //query current status, pre iOS6 always returns Authorized
@@ -102,19 +101,17 @@
 #pragma mark - Perspective
 - (NSArray *)allContacts{
     if (!_allContacts) {
-        NSArray *contacts;
-        if (self.useDefaultSource) {
-            contacts = _addressbook.defaultSource.people;
-        }
-        else{
+        NSArray *contacts = _addressbook.defaultSource.people;
+        if (contacts.count == 0){
+			DDLogWarn(@"Got zero contact, try using all people");
             contacts = [_addressbook people];
         }
         
         NSArray *peopleWithoutCreationDate = [contacts filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"created = nil"]];
         for (RHPerson  *person in peopleWithoutCreationDate) {
-            NSDate *lastWeek = [[NSDate date] dateByAddingTimeInterval:-3600*24*30*6];
-            DDLogVerbose(@"Found contacts %@ without created, assign %@", person.name, lastWeek.string);
-            [person setBasicValue:(__bridge CFTypeRef)lastWeek forPropertyID:kABPersonCreationDateProperty error:nil];
+            NSDate *lastMonth = [[NSDate date] dateByAddingTimeInterval:-3600*24*30];
+            DDLogWarn(@"Found contacts %@ without created, assign %@", person.name, lastMonth.string);
+            [person setBasicValue:(__bridge CFTypeRef)lastMonth forPropertyID:kABPersonCreationDateProperty error:nil];
         }
         
         //group linked user
@@ -124,12 +121,14 @@
         NSMutableSet *others = [NSMutableSet new];
         for (RHPerson *person in contacts) {
             if (personMapping[@(person.recordID)]) {
+				//linked person already mapped, skip
                 continue;
             }
             NSArray *linked = person.linkedPeople;
             if (linked.count > 1) {
                 RHPerson *originalPerson = [linked sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]]].firstObject;
                 for (RHPerson *linkedPerson in linked) {
+					//Mapp all linked person id to oldest person
                     personMapping[@(linkedPerson.recordID)] = originalPerson;
                     //TODO: need to figure out how to merge person info
                 }
@@ -137,7 +136,7 @@
                 personMapping[@(person.recordID)] = person;
             }
         }
-        //remove duplicates
+        //set all contacts
         _allContacts = [NSSet setWithArray:personMapping.allValues].allObjects;
         
         
@@ -152,12 +151,12 @@
                 //find email dup
                 for (NSString *email in person.emails.values) {
                     RHPerson *duplicated = emailMapping[email];
-                    if (duplicated) {
+					if (duplicated) {
+						DDLogVerbose(@"Found duplicated %@ with email %@", person.name, email);
                         if ([duplicated.created timeIntervalSinceDate:person.created]>0) {
                             //this person is older
                             emailMapping[email] = person;
                         } else {
-							//DDLogVerbose(@"Found duplicated %@ with email %@", person.name, email);
                             [self.duplicatedContacts addObjectsFromArray:@[duplicated, person]];
                         }
                     }else{
@@ -170,12 +169,12 @@
                     NSCharacterSet *nonNumberSet = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
                     NSString *phoneNumber = [[phone componentsSeparatedByCharactersInSet:nonNumberSet] componentsJoinedByString:@""];
                     RHPerson *duplicated = phoneMapping[phoneNumber];
-                    if (duplicated) {
+					if (duplicated) {
+						DDLogVerbose(@"Found duplicated %@ with phone %@", person.name, phone);
                         if ([duplicated.created timeIntervalSinceDate:person.created]>0) {
                             //this person is older
                             phoneMapping[phoneNumber] = person;
                         } else {
-							//DDLogVerbose(@"Found duplicated %@ with phone %@", person.name, phone);
                             [self.duplicatedContacts addObjectsFromArray:@[duplicated, person]];
                         }
                     }else{
@@ -186,7 +185,7 @@
             
             //union
             NSMutableSet *allContacts = [NSMutableSet setWithArray:emailMapping.allValues];
-            [allContacts intersectSet:[NSSet setWithArray:phoneMapping.allValues]];
+            [allContacts unionSet:[NSSet setWithArray:phoneMapping.allValues]];
             [allContacts unionSet:others];
             _allContacts = allContacts.allObjects;
             DDLogInfo(@"Found %lu duplicated person", (unsigned long)_duplicatedContacts.count);
@@ -339,13 +338,17 @@
 		note.alertBody = reminderStr;
 		note.soundName = @"reminder.caf";
 		note.category = kReminderCategory;
-		note.fireDate = oldestCreated.nextNoon;//TODO: use created time
+		note.fireDate = [NSDate date].nextNoon;//TODO: use created time
         note.userInfo = @{@"type": @"reminder", @"names": names};
-
 		[[UIApplication sharedApplication] scheduleLocalNotification:note];
+		
+#ifdef DEBUG
+		note.fireDate = [[NSDate date] dateByAddingTimeInterval:10];
+		[[UIApplication sharedApplication] scheduleLocalNotification:note];
+#endif
         
         //schedule on server push
-        [self sendNewContactsReminderPush:reminderStr];
+		//[self sendNewContactsReminderPush:reminderStr];
         
 	}
     
@@ -357,6 +360,7 @@
 - (void)sendNewContactsReminderPush:(NSString *)string{
     //schedule server push
     if (![PFInstallation currentInstallation].objectId) {
+		[[PFInstallation currentInstallation] save];
         return;
     }
     
@@ -378,7 +382,7 @@
                                     @"sound": @"reminder.caf",
                                     @"bedge": @"Incremental"},
                           };
-    
+	DDLogVerbose(@"Schedule push with data: %@", dic);
     [manager POST:@"https://api.parse.com/1/push" parameters:dic
           success:^(AFHTTPRequestOperation *operation,id responseObject) {
               
