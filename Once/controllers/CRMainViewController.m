@@ -19,20 +19,17 @@
 #import "CRNotificationsViewController.h"
 #import "BlocksKit+UIKit.h"
 #import "CRNotesViewController.h"
+#import "NSDate+MTDates.h"
 
 typedef NS_ENUM(NSInteger, CRContactsViewType){
-	CRContactsViewTypeRecent,
 	CRContactsViewTypeHistory,
 	CRContactsViewTypeDuplicated
 };
 
 @interface CRMainViewController ()
-@property (nonatomic, strong) NSMutableArray *contacts_recent;
-@property (nonatomic, strong) NSMutableArray *contacts_week;
-@property (nonatomic, strong) NSMutableArray *contacts_month;
-@property (nonatomic, strong) NSMutableArray *contacts_earlier;
+@property (nonatomic, strong) NSMutableDictionary *contactsMonthly;
+@property (nonatomic, strong) NSMutableOrderedSet *orderedMonths;
 @property (nonatomic, strong) NSMutableArray *duplicated;
-//@property (nonatomic) BOOL showHistory;
 @property (nonatomic, strong) CRContactsManager *manager;
 @property (nonatomic, assign) BOOL addressBookChanged;
 @property (nonatomic, assign) CRContactsViewType contactsViewType;
@@ -59,8 +56,8 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
     
     //data
     [self loadData];
-    [self setMode];
-    
+	self.contactsViewType = CRContactsViewTypeHistory;
+	
     //observe application state
 //    [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationWillEnterForegroundNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
 //        if (self.addressBookChanged == YES) {
@@ -92,58 +89,27 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
     }];
 }
 
-- (void)setMode{
-    
-    if (self.contacts_recent.count) {
-        self.contactsViewType = CRContactsViewTypeRecent;
-    } else {
-        self.contactsViewType = CRContactsViewTypeHistory;
-    }
-}
-
 
 - (void)loadData{
-    
-    self.contacts_recent = [NSMutableArray new];
-    self.contacts_week = [NSMutableArray new];
-    self.contacts_month = [NSMutableArray new];
-    self.contacts_earlier = [NSMutableArray new];
-	
-    //recent
-    self.contacts_recent = _manager.recentContacts.sortedByCreated.mutableCopy;
-	//duplicated
+    self.contactsMonthly = [NSMutableDictionary new];
 	self.duplicated = _manager.duplicatedContacts.mutableCopy;
-    
+	self.orderedMonths = [NSMutableOrderedSet new];
     //data array
     NSArray *contacts = _manager.allContacts;
     for (RHPerson *contact in contacts) {
-        if ([[NSDate date] timeIntervalSinceDate:contact.created] < 3600*24*7) {
-            [self.contacts_week addObject:contact];
-        }
-        else if ([[NSDate date] timeIntervalSinceDate:contact.created] < 3600*24*30) {
-            [self.contacts_month addObject:contact];
-            
-        }
-        else{
-            [self.contacts_earlier addObject:contact];
-        }
+		NSDate *startOfMonth = contact.created.mt_startOfCurrentMonth;
+		NSMutableArray *contactsOfMonth = self.contactsMonthly[startOfMonth] ?: [NSMutableArray array];
+		[contactsOfMonth addObject:contact];
+		self.contactsMonthly[startOfMonth] = contactsOfMonth;
+		[self.orderedMonths addObject:startOfMonth];
     }
-    self.contacts_week = _contacts_week.sortedByCreated.mutableCopy;
-    self.contacts_month = _contacts_month.sortedByCreated.mutableCopy;
-    self.contacts_earlier = _contacts_earlier.sortedByCreated.mutableCopy;
-    
-}
+	
+	[self.orderedMonths sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"SELF" ascending:NO]]];
 
 #pragma mark - UI
 
 - (IBAction)showHistory:(id)sender{
 	UIActionSheet *sheet = [UIActionSheet bk_actionSheetWithTitle:@"More"];
-	if (self.contactsViewType != CRContactsViewTypeRecent) {
-		[sheet bk_addButtonWithTitle:@"Recent" handler:^{
-			self.contactsViewType = CRContactsViewTypeRecent;
-			[self.tableView reloadData];
-		}];
-	}
 	if (self.contactsViewType != CRContactsViewTypeHistory) {
 		[sheet bk_addButtonWithTitle:@"History" handler:^{
 			self.contactsViewType = CRContactsViewTypeHistory;
@@ -164,9 +130,7 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
         }];
     }
 #endif
-	[sheet bk_setCancelButtonWithTitle:@"Cancel" handler:^{
-		//
-	}];
+	[sheet bk_setCancelButtonWithTitle:@"Cancel" handler:nil];
 	[sheet showInView:self.view];
 }
 
@@ -176,10 +140,8 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
     // Return the number of sections.
     // 1 week, 1 month, 3 months, 1 year, 1yr+
 	switch (_contactsViewType) {
-		case CRContactsViewTypeRecent:
-			return 1;
 		case CRContactsViewTypeHistory:
-			return 3;
+			return self.contactsMonthly.count;
 		case CRContactsViewTypeDuplicated:
 			return 1;
 	}
@@ -197,58 +159,35 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
     UITableViewCell *secionHeader = [tableView dequeueReusableCellWithIdentifier:@"sectionHeader"];
     UILabel *title = (UILabel *)[secionHeader viewWithTag:89];
-    switch (section) {
-        case 0:
-			switch (_contactsViewType) {
-				case CRContactsViewTypeRecent:
-					title.text = @"Recent";
-					break;
-				case CRContactsViewTypeHistory:
-					title.text = @"Last Week";
-					break;
-				case CRContactsViewTypeDuplicated:
-					title.text = @"Duplicated";
-					break;
-				default:
-					title.text = @"???";
-					break;
-			}
-            
-            break;
-        case 1:
-            title.text = @"Last Month";
-            break;
-        case 2:
-            title.text = @"Earlier";
-            break;
-        default:
-            break;
-    }
+	switch (_contactsViewType) {
+		case CRContactsViewTypeHistory:{
+			NSDate *month = _orderedMonths[section];
+			title.text = [NSString stringWithFormat:@"%@ %ld", month.mt_stringFromDateWithFullMonth, (long)month.mt_year];
+			break;
+		}
+		case CRContactsViewTypeDuplicated:
+			title.text = @"Duplicated";
+			break;
+		default:
+			title.text = @"???";
+			break;
+	}
     return secionHeader;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    switch (section) {
-        case 0:
+
 			switch (_contactsViewType) {
-				case CRContactsViewTypeRecent:
-					return self.contacts_recent.count;
-				case CRContactsViewTypeHistory:
-					return self.contacts_week.count;
+				case CRContactsViewTypeHistory:{
+					NSDate *month = _orderedMonths[section];
+					NSArray *contactsOfMonth = _contactsMonthly[month];
+					return contactsOfMonth.count;
+				}
+					
 				case CRContactsViewTypeDuplicated:
 					return self.duplicated.count;
 			}
-            
-        case 1:
-            return self.contacts_month.count;
-            
-        case 2:
-            return self.contacts_earlier.count;
-            
-        default:
-            break;
-    }
     return 0;
 }
 
@@ -257,47 +196,33 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 	ENPersonCell *cell = [tableView dequeueReusableCellWithIdentifier:@"personCell"];
 	//UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MainViewCellIdentifier"];
     RHPerson *contact;
-    switch (indexPath.section) {
-        case 0:
 			switch (_contactsViewType) {
-				case CRContactsViewTypeRecent:
-					contact = self.contacts_recent[indexPath.row];
+				case CRContactsViewTypeHistory:{
+					NSDate *month = _orderedMonths[indexPath.section];
+					NSArray *contactsOfMonth = _contactsMonthly[month];
+					contact = contactsOfMonth[indexPath.row];
 					break;
-				case CRContactsViewTypeHistory:
-					contact = self.contacts_week[indexPath.row];
-					break;
+				}
 				case CRContactsViewTypeDuplicated:
 					contact = self.duplicated[indexPath.row];
 					break;
 			}
-            break;
-        case 1:
-            contact = self.contacts_month[indexPath.row];
-            break;
-        case 2:
-            contact = self.contacts_earlier[indexPath.row];
-            break;
-        default:
-            return cell;
-    }
     
     NSString *notes = contact.note;
-    
-//    cell.textLabel.text = contact.compositeName ?: [NSString stringWithFormat:@"%@", contact.name];
-//    cell.detailTextLabel.text = [NSString stringWithFormat:@"Met on %@", contact.created.date2dayString];
-//	cell.imageView.image = contact.thumbnail ?: [UIImage imageNamed:@"profileImage"];
     
     cell.title.text = contact.compositeName ?: [NSString stringWithFormat:@"%@", contact.name];
     cell.detail.text = notes ?: [NSString stringWithFormat:@"Met on %@", contact.created.date2dayString];
     cell.profile.image = contact.thumbnail ?: [UIImage imageNamed:@"profileImage"];
 	[cell.disclosure addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
 	UIButton *addNotesButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
+#ifdef DEBUG
 	[addNotesButton bk_addEventHandler:^(id sender) {
 		//handle touch
 		CRNotesViewController *vc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"CRNotesViewController"];
 		vc.person = contact;
 		[self presentViewController:vc animated:YES completion:nil];
 	} forControlEvents:UIControlEventTouchUpInside];
+#endif
 	cell.accessoryView = addNotesButton;
     return cell;
 }
@@ -314,29 +239,17 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     RHPerson *contact;
-    switch (indexPath.section) {
-        case 0:
-			switch (_contactsViewType) {
-				case CRContactsViewTypeRecent:
-					contact = self.contacts_recent[indexPath.row];
-					break;
-				case CRContactsViewTypeHistory:
-					contact = self.contacts_week[indexPath.row];
-					break;
-				case CRContactsViewTypeDuplicated:
-					contact = self.duplicated[indexPath.row];
-					break;
-			}
-            break;
-        case 1:
-            contact = self.contacts_month[indexPath.row];
-            break;
-        case 2:
-            contact = self.contacts_earlier[indexPath.row];
-            break;
-        default:
-            return;
-    }
+	switch (_contactsViewType) {
+		case CRContactsViewTypeHistory:{
+			NSDate *month = _orderedMonths[indexPath.section];
+			NSArray *contactsOfMonth = _contactsMonthly[month];
+			contact = contactsOfMonth[indexPath.row];
+			break;
+		}
+		case CRContactsViewTypeDuplicated:
+			contact = self.duplicated[indexPath.row];
+			break;
+	}
     ABRecordRef personRef = contact.recordRef;
     if (personRef) {
         ABPersonViewController *picker = [[ABPersonViewController alloc] init];
@@ -360,34 +273,18 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         RHPerson *contact;
-        switch (indexPath.section) {
-            case 0:
-				switch (_contactsViewType) {
-					case CRContactsViewTypeRecent:
-						contact = self.contacts_recent[indexPath.row];
-						[self.contacts_recent removeObject:contact];
-						break;
-					case CRContactsViewTypeHistory:
-						contact = self.contacts_week[indexPath.row];
-						[self.contacts_week removeObject:contact];
-						break;
-					case CRContactsViewTypeDuplicated:
-						contact = self.duplicated[indexPath.row];
-						[self.duplicated removeObject:contact];
-						break;
-				}
-                break;
-            case 1:
-                contact = self.contacts_month[indexPath.row];
-                [_contacts_month removeObject:contact];
-                break;
-            case 2:
-                contact = self.contacts_earlier[indexPath.row];
-                [_contacts_earlier removeObject:contact];
-                break;
-            default:
-                return;
-        }
+		switch (_contactsViewType) {
+			case CRContactsViewTypeHistory:{
+				NSDate *month = _orderedMonths[indexPath.section];
+				NSMutableArray *contactsOfMonth = _contactsMonthly[month];
+				[contactsOfMonth removeObjectAtIndex:indexPath.row];
+				break;
+			}
+			case CRContactsViewTypeDuplicated:
+				contact = self.duplicated[indexPath.row];
+				[self.duplicated removeObject:contact];
+				break;
+		}
         //remove from view with animation
 		if (_contactsViewType == CRContactsViewTypeDuplicated) {
 			[_manager deleteContact:contact];

@@ -16,6 +16,8 @@
 #import "AppDelegate.h"
 
 #define TESTING                 NO
+#define REDUCE_LINKED			NO
+#define FIND_DUPLICATED			YES
 
 @interface CRContactsManager()
 @property (nonatomic, strong) RHAddressBook *addressbook;
@@ -43,7 +45,6 @@
     if (self) {
         // load addressbook
         _addressbook = [[RHAddressBook alloc] init];
-		self.findDuplicates = YES;
         
         //check addressbook access
         //query current status, pre iOS6 always returns Authorized
@@ -106,42 +107,51 @@
 			DDLogWarn(@"Got zero contact, try using all people");
             contacts = [_addressbook people];
         }
-        
-        NSArray *peopleWithoutCreationDate = [contacts filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"created = nil"]];
-        for (RHPerson  *person in peopleWithoutCreationDate) {
-            NSDate *lastMonth = [[NSDate date] dateByAddingTimeInterval:-3600*24*30];
-            DDLogWarn(@"Found contacts %@ without created, assign %@", person.name, lastMonth.string);
-            [person setBasicValue:(__bridge CFTypeRef)lastMonth forPropertyID:kABPersonCreationDateProperty error:nil];
-        }
-        
-        //group linked user
-        NSMutableDictionary *personMapping = [NSMutableDictionary new];
-        NSMutableDictionary *emailMapping = [NSMutableDictionary new];
-        NSMutableDictionary *phoneMapping = [NSMutableDictionary new];
-        NSMutableSet *others = [NSMutableSet new];
-        for (RHPerson *person in contacts) {
-            if (personMapping[@(person.recordID)]) {
-				//linked person already mapped, skip
-                continue;
-            }
-            NSArray *linked = person.linkedPeople;
-            if (linked.count > 1) {
-                RHPerson *originalPerson = [linked sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]]].firstObject;
-                for (RHPerson *linkedPerson in linked) {
-					//Mapp all linked person id to oldest person
-                    personMapping[@(linkedPerson.recordID)] = originalPerson;
-                    //TODO: need to figure out how to merge person info
-                }
-            }else{
-                personMapping[@(person.recordID)] = person;
-            }
-        }
-        //set all contacts
-        _allContacts = [NSSet setWithArray:personMapping.allValues].allObjects;
-        
-        
-        if (self.findDuplicates) {
-            TICK
+		
+		if (REDUCE_LINKED) {
+			NSArray *peopleWithoutCreationDate = [contacts filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"created = nil"]];
+			for (RHPerson  *person in peopleWithoutCreationDate) {
+				NSDate *lastMonth = [[NSDate date] dateByAddingTimeInterval:-3600*24*30];
+				DDLogWarn(@"Found contacts %@ without created, assign %@", person.name, lastMonth.string);
+				[person setBasicValue:(__bridge CFTypeRef)lastMonth forPropertyID:kABPersonCreationDateProperty error:nil];
+			}
+			
+			//group linked user
+			NSMutableDictionary *personMapping = [NSMutableDictionary new];
+			for (RHPerson *person in contacts) {
+				if (personMapping[@(person.recordID)]) {
+					//linked person already mapped, skip
+					continue;
+				}
+				NSArray *linked = person.linkedPeople;
+				if (linked.count > 1) {
+					RHPerson *originalPerson = [linked sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]]].firstObject;
+					for (RHPerson *linkedPerson in linked) {
+						//check if that contact is in the same source
+						if (linkedPerson.inSource == self.addressbook.defaultSource) {
+							//Mapp all linked person id to oldest person
+							personMapping[@(linkedPerson.recordID)] = originalPerson;
+							//TODO: need to figure out how to merge person info
+							//
+						}
+					}
+				}else{
+					personMapping[@(person.recordID)] = person;
+				}
+			}
+			//set all contacts
+			_allContacts = [NSSet setWithArray:personMapping.allValues].allObjects;
+		} else {
+			_allContacts = contacts;
+		}
+		
+		
+		
+        if (FIND_DUPLICATED) {
+			
+			NSMutableDictionary *emailMapping = [NSMutableDictionary new];
+			NSMutableDictionary *phoneMapping = [NSMutableDictionary new];
+			NSMutableSet *others = [NSMutableSet new];
             for (RHPerson *person in _allContacts) {
                 if (person.emails.values.count == 0 && person.phoneNumbers.values.count == 0) {
                     [others addObject:person];
@@ -189,9 +199,7 @@
             [allContacts unionSet:others];
             _allContacts = allContacts.allObjects;
             DDLogInfo(@"Found %lu duplicated person", (unsigned long)_duplicatedContacts.count);
-            TOCK
         }
-        
     }
     
     return _allContacts;
@@ -400,12 +408,11 @@
     BOOL success;
     NSError *error;
     for (RHPerson *person in contact.linkedPeople) {
-        success = [person remove];
-        if (!success) {
-            DDLogError(@"Failed to remove contact: %@", person);
-        }
-        
-        self.allContacts = nil;
+		if (person.inSource == self.addressbook.defaultSource) {
+			success = [person remove];
+			if (!success) DDLogError(@"Failed to remove contact: %@", person);
+			self.allContacts = nil;
+		}
     }
     success = [self.addressbook saveWithError:&error];
     if (!success) {
