@@ -21,6 +21,15 @@
 
 @interface CRContactsManager()
 @property (nonatomic, strong) RHAddressBook *addressbook;
+@property (nonatomic, strong) NSDate *lastChecked;
+@property (nonatomic, strong) NSDate *lastUpdated;
+@property (nonatomic, strong) NSDate *lastOpened;
+@property (nonatomic, strong) NSDate *lastOpenedOld;
+@property (nonatomic, strong) NSArray *allContacts;
+@property (nonatomic, strong) NSArray *recentContacts;
+@property (nonatomic, strong) NSArray *newContactsSinceLastCheck;
+@property (nonatomic, strong) NSMutableOrderedSet *duplicatedContacts;
+
 @end
 
 @implementation CRContactsManager
@@ -52,7 +61,7 @@
             
             //request authorization
             [_addressbook requestAuthorizationWithCompletion:^(bool granted, NSError *error) {
-                _allContacts = nil;
+				[self update];
                 [[NSNotificationCenter defaultCenter] postNotificationName:kAdressbookReady object:nil];
             }];
 		}else if ([RHAddressBook authorizationStatus] == RHAuthorizationStatusAuthorized){
@@ -61,13 +70,13 @@
 			
         // start observing
         [[NSNotificationCenter defaultCenter]  addObserverForName:RHAddressBookExternalChangeNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-			DDLogInfo(@"Observed changes to AddressBook");
-            _allContacts = nil;
+			[self update];
 			_duplicatedContacts = [NSMutableOrderedSet new];
 			//delay sending notification
 			static NSTimer *timer;
 			[timer invalidate];
-			timer = [NSTimer bk_scheduledTimerWithTimeInterval:1.5 block:^(NSTimer *timer) {
+			timer = [NSTimer bk_scheduledTimerWithTimeInterval:2 block:^(NSTimer *timer) {
+				DDLogInfo(@"Observed changes to AddressBook");
 				[[NSNotificationCenter defaultCenter] postNotificationName:kCRAddressBookChangeCompleted object:nil];
 			} repeats:NO];
         }];
@@ -208,24 +217,37 @@
 
 //contacts added since last updates, used as default view
 - (NSArray *)recentContacts{
-	NSDate *chekDate = [self.lastOpenedOld isEarlierThan:self.lastUpdated] ? self.lastOpenedOld : self.lastUpdated;
-	DDLogVerbose(@"Searching for recent contacts since %@", chekDate.string);
-    NSArray *newContacts = [self.allContacts bk_select:^BOOL(RHPerson *person) {
-        return [person.created timeIntervalSinceDate:chekDate] > 0;
-	}];
+	if (!_recentContacts) {
+		NSDate *chekDate = [self.lastOpenedOld isEarlierThan:self.lastUpdated] ? self.lastOpenedOld : self.lastUpdated;
+		DDLogVerbose(@"Searching for recent contacts since %@", chekDate.string);
+		NSArray *contacts = [self.allContacts bk_select:^BOOL(RHPerson *person) {
+			return [person.created timeIntervalSinceDate:chekDate] > 0;
+		}];
+		_recentContacts = contacts;
+	}
     
-    return newContacts.sortedByCreated;
+    return _recentContacts;
 }
 
 
 
 - (NSArray *)newContactsSinceLastCheck{
-    NSDate *lastChecked = self.lastChecked;
-    NSArray *newContacts = [self.allContacts bk_select:^BOOL(RHPerson *person) {
-        return [person.created timeIntervalSinceDate:lastChecked] > 0;
-    }];
+	if (!_newContactsSinceLastCheck) {
+		NSDate *lastChecked = self.lastChecked;
+		NSArray *newContacts = [self.allContacts bk_select:^BOOL(RHPerson *person) {
+			return [person.created timeIntervalSinceDate:lastChecked] > 0;
+		}];
+		_newContactsSinceLastCheck = newContacts;
+	}
 	
-	return newContacts;
+	return _newContactsSinceLastCheck;
+}
+
+- (NSMutableSet *)duplicatedContacts{
+	if (!_allContacts) {
+		DDLogWarn(@"Accessed duplicated contacts before all contacts is generated. (%ld)", (long)self.allContacts);
+	}
+	return _duplicatedContacts;
 }
 
 #pragma mark - Tools
@@ -297,6 +319,12 @@
 	self.lastChecked = [NSDate dateWithTimeIntervalSinceNow:-3600*8];
 	NSArray *newContacts = [self newContactsSinceLastCheck];
 	DDLogDebug(@"Found new contacts from 8 hours ago: %@", [newContacts valueForKey:@"name"]);
+}
+
+- (void)update{
+	self.allContacts = nil;
+	self.recentContacts = nil;
+	self.newContactsSinceLastCheck = nil;
 }
 
 
@@ -411,7 +439,7 @@
 		if (person.inSource == self.addressbook.defaultSource) {
 			success = [person remove];
 			if (!success) DDLogError(@"Failed to remove contact: %@", person);
-			self.allContacts = nil;
+			[self update];
 		}
     }
     success = [self.addressbook saveWithError:&error];
