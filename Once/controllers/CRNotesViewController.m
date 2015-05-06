@@ -48,7 +48,11 @@
 //}
 
 - (IBAction)close:(id)sender {
-	self.person.note = self.notesView.text;
+	if ([self.notesView.text isEqualToString:@""]) {
+		self.person.note = nil;
+	} else {
+		self.person.note = self.notesView.text;
+	}
 	[self.person save];
 	[self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }

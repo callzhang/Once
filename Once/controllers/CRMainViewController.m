@@ -73,7 +73,7 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 //    }];
 	
     // start observing
-    [[NSNotificationCenter defaultCenter]  addObserverForName:kCRAddressBookChangeCompleted object:nil queue:nil usingBlock:^(NSNotification *note) {
+    [[NSNotificationCenter defaultCenter] addObserverForName:kCRAddressBookChangeCompleted object:nil queue:nil usingBlock:^(NSNotification *note) {
         DDLogVerbose(@"Addressbook change completed");
 		//self.addressBookChanged = YES;
 		[self loadData];
@@ -81,7 +81,7 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 		[self.tableView reloadData];
     }];
     
-    [[NSNotificationCenter defaultCenter]  addObserverForName:kAdressbookReady object:nil queue:nil usingBlock:^(NSNotification *note) {
+    [[NSNotificationCenter defaultCenter] addObserverForName:kAdressbookReady object:nil queue:nil usingBlock:^(NSNotification *note) {
         //self.addressBookChanged = YES;
         [self loadData];
         [EWUIUtil dismissHUD];
@@ -91,11 +91,11 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 
 
 - (void)loadData{
-    self.contactsMonthly = [NSMutableDictionary new];
+	self.contactsMonthly = [NSMutableDictionary new];
+	NSArray *contacts = _manager.allContacts;
 	self.duplicated = _manager.duplicatedContacts.mutableCopy;
 	self.orderedMonths = [NSMutableOrderedSet new];
     //data array
-    NSArray *contacts = _manager.allContacts;
     for (RHPerson *contact in contacts) {
 		NSDate *startOfMonth = contact.created.mt_startOfCurrentMonth;
 		NSMutableArray *contactsOfMonth = self.contactsMonthly[startOfMonth] ?: [NSMutableArray array];
@@ -104,7 +104,10 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 		[self.orderedMonths addObject:startOfMonth];
     }
 	
-	[self.orderedMonths sortedArrayUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"SELF" ascending:NO]]];
+	[self.orderedMonths sortUsingComparator:^NSComparisonResult(NSDate *obj1, NSDate *obj2) {
+		return -[obj1 compare:obj2];
+	}];
+}
 
 #pragma mark - UI
 
@@ -178,16 +181,16 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
 
-			switch (_contactsViewType) {
-				case CRContactsViewTypeHistory:{
-					NSDate *month = _orderedMonths[section];
-					NSArray *contactsOfMonth = _contactsMonthly[month];
-					return contactsOfMonth.count;
-				}
-					
-				case CRContactsViewTypeDuplicated:
-					return self.duplicated.count;
-			}
+	switch (_contactsViewType) {
+		case CRContactsViewTypeHistory:{
+			NSDate *month = _orderedMonths[section];
+			NSArray *contactsOfMonth = _contactsMonthly[month];
+			return contactsOfMonth.count;
+		}
+			
+		case CRContactsViewTypeDuplicated:
+			return self.duplicated.count;
+	}
     return 0;
 }
 
@@ -209,21 +212,27 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 			}
     
     NSString *notes = contact.note;
+	BOOL recent = [_manager.recentContacts containsObject:contact];
     
     cell.title.text = contact.compositeName ?: [NSString stringWithFormat:@"%@", contact.name];
     cell.detail.text = notes ?: [NSString stringWithFormat:@"Met on %@", contact.created.date2dayString];
     cell.profile.image = contact.thumbnail ?: [UIImage imageNamed:@"profileImage"];
 	[cell.disclosure addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
-	UIButton *addNotesButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
-#ifdef DEBUG
+	UIButton *addNotesButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+	if (recent) {
+		[addNotesButton setImage:[UIImage imageNamed:@"addBtn2"] forState:UIControlStateNormal];
+	} else {
+		[addNotesButton setImage:[UIImage imageNamed:@"addBtn"] forState:UIControlStateNormal];
+	}
+	
 	[addNotesButton bk_addEventHandler:^(id sender) {
 		//handle touch
 		CRNotesViewController *vc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"CRNotesViewController"];
 		vc.person = contact;
 		[self presentViewController:vc animated:YES completion:nil];
 	} forControlEvents:UIControlEventTouchUpInside];
-#endif
 	cell.accessoryView = addNotesButton;
+
     return cell;
 }
 
@@ -263,6 +272,8 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
         picker.allowsEditing = YES;
         [self.navigationController pushViewController:picker animated:YES];
     }
+	
+	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 //- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
