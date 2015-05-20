@@ -53,6 +53,8 @@
 		9B9096181A1079D900A2FA4A /* NSDate+Extend.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B9096171A1079D900A2FA4A /* NSDate+Extend.m */; };
 		9B90961B1A10A6AA00A2FA4A /* CRContactsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B90961A1A10A6AA00A2FA4A /* CRContactsManager.m */; };
 		9BA1F4301A12B25E00A9E12C /* reminder.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9BA1F42F1A12B25E00A9E12C /* reminder.caf */; };
+		9BE9DA041B0D095700438F46 /* CRDateSectionHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BE9DA031B0D095700438F46 /* CRDateSectionHeader.m */; };
+		9BE9DA061B0D097D00438F46 /* CRDateSectionHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9BE9DA051B0D097D00438F46 /* CRDateSectionHeader.xib */; };
 		9BF18E561AED9F7F0087764B /* CRNotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BF18E551AED9F7F0087764B /* CRNotificationsViewController.m */; };
 		9BFB23601A102E380012B81C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB235F1A102E380012B81C /* main.m */; };
 		9BFB23631A102E380012B81C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23621A102E380012B81C /* AppDelegate.m */; };
@@ -120,6 +122,9 @@
 		9B90961A1A10A6AA00A2FA4A /* CRContactsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRContactsManager.m; sourceTree = "<group>"; };
 		9BA1F42F1A12B25E00A9E12C /* reminder.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = reminder.caf; sourceTree = "<group>"; };
 		9BA386C41AF96ED100DEA358 /* Once-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Once-Bridging-Header.h"; path = "../Once-Bridging-Header.h"; sourceTree = "<group>"; };
+		9BE9DA021B0D095700438F46 /* CRDateSectionHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CRDateSectionHeader.h; path = Once/Views/CRDateSectionHeader.h; sourceTree = "<group>"; };
+		9BE9DA031B0D095700438F46 /* CRDateSectionHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CRDateSectionHeader.m; path = Once/Views/CRDateSectionHeader.m; sourceTree = "<group>"; };
+		9BE9DA051B0D097D00438F46 /* CRDateSectionHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = CRDateSectionHeader.xib; path = Once/Views/CRDateSectionHeader.xib; sourceTree = "<group>"; };
 		9BF18E541AED9F7F0087764B /* CRNotificationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRNotificationsViewController.h; sourceTree = "<group>"; };
 		9BF18E551AED9F7F0087764B /* CRNotificationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRNotificationsViewController.m; sourceTree = "<group>"; };
 		9BFB235A1A102E380012B81C /* Once.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Once.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -288,6 +293,9 @@
 		9BFB23511A102E380012B81C = {
 			isa = PBXGroup;
 			children = (
+				9BE9DA021B0D095700438F46 /* CRDateSectionHeader.h */,
+				9BE9DA031B0D095700438F46 /* CRDateSectionHeader.m */,
+				9BE9DA051B0D097D00438F46 /* CRDateSectionHeader.xib */,
 				9BFB235C1A102E380012B81C /* Remember */,
 				9BA1F42E1A12AEC500A9E12C /* Resources */,
 				9BFB23791A102E380012B81C /* RememberTests */,
@@ -447,6 +455,7 @@
 				9BA1F4301A12B25E00A9E12C /* reminder.caf in Resources */,
 				9B346C181AA7DC3900B98E23 /* Entypo.ttf in Resources */,
 				9BFB236E1A102E380012B81C /* Images.xcassets in Resources */,
+				9BE9DA061B0D097D00438F46 /* CRDateSectionHeader.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -528,6 +537,7 @@
 				9B828E3A1AF973C900528B8C /* CustomPresentationAnimationController.swift in Sources */,
 				9B828E3B1AF973C900528B8C /* CustomPresentationController.swift in Sources */,
 				9B9096181A1079D900A2FA4A /* NSDate+Extend.m in Sources */,
+				9BE9DA041B0D095700438F46 /* CRDateSectionHeader.m in Sources */,
 				9B3F2B681A9FB8F7009D4E7B /* ENPersonCell.m in Sources */,
 				9B9096121A106E2C00A2FA4A /* _ServerObject.m in Sources */,
 				9B828E421AF97B2100528B8C /* WJCustomizeView.swift in Sources */,

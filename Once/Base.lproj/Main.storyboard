@@ -291,6 +291,6 @@
     <resources>
         <image name="icon" width="1024" height="1024"/>
         <image name="logo" width="60" height="60"/>
-        <image name="profileImage" width="102" height="102"/>
+        <image name="profileImage" width="101" height="101"/>
     </resources>
 </document>

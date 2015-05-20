@@ -432,6 +432,7 @@
 
 
 - (BOOL)removeAllLinkedContact:(RHPerson *)contact{
+	NSParameterAssert(contact);
     DDLogInfo(@"Deleting contact %@ with %lu linked person", contact.name, (unsigned long)contact.linkedPeople.count);
     BOOL success;
     NSError *error;

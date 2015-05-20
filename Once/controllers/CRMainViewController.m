@@ -175,7 +175,7 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 			title.text = @"???";
 			break;
 	}
-    return secionHeader;
+    return secionHeader.contentView;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -288,6 +288,7 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 			case CRContactsViewTypeHistory:{
 				NSDate *month = _orderedMonths[indexPath.section];
 				NSMutableArray *contactsOfMonth = _contactsMonthly[month];
+				contact = contactsOfMonth[indexPath.row];
 				[contactsOfMonth removeObjectAtIndex:indexPath.row];
 				break;
 			}
