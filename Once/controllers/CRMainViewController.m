@@ -20,6 +20,7 @@
 #import "BlocksKit+UIKit.h"
 #import "CRNotesViewController.h"
 #import "NSDate+MTDates.h"
+#import "TMAlertController.h"
 
 typedef NS_ENUM(NSInteger, CRContactsViewType){
 	CRContactsViewTypeHistory,
@@ -217,8 +218,10 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
     cell.title.text = contact.compositeName ?: [NSString stringWithFormat:@"%@", contact.name];
     cell.detail.text = notes ?: [NSString stringWithFormat:@"Met on %@", contact.created.date2dayString];
     cell.profile.image = contact.thumbnail ?: [UIImage imageNamed:@"profileImage"];
-	[cell.disclosure addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
-	UIButton *addNotesButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 30, 30)];
+	//[cell.disclosure addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
+	
+	
+	UIButton *addNotesButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
 	if (recent) {
 		[addNotesButton setImage:[UIImage imageNamed:@"addBtn2"] forState:UIControlStateNormal];
 	} else {
@@ -226,10 +229,16 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 	}
 	
 	[addNotesButton bk_addEventHandler:^(id sender) {
-		//handle touch
-		CRNotesViewController *vc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"CRNotesViewController"];
-		vc.person = contact;
-		[self presentViewController:vc animated:YES completion:nil];
+		
+		TMAlertController *alertController = [TMAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Write a note for %@", contact.name] message:@"" preferredStyle:TMAlertControllerStyleTextField];
+		
+		[alertController addAction:[TMAlertAction actionWithTitle:@"Done" style:TMAlertActionStyleDefault handler:^(TMAlertAction *action) {
+			[self dismissViewControllerAnimated:YES completion:nil];
+		}]];
+		
+		alertController.iconStyle = TMAlertControllerIconStyleNote;
+		
+		[self presentViewController:alertController animated:YES completion:nil];
 	} forControlEvents:UIControlEventTouchUpInside];
 	cell.accessoryView = addNotesButton;
 
@@ -276,9 +285,22 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 	[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
-//- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
-//    //
-//}
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
+	NSDate *month = _orderedMonths[indexPath.section];
+	NSArray *contactsOfMonth = _contactsMonthly[month];
+	RHPerson *contact = contactsOfMonth[indexPath.row];
+	
+	TMAlertController *alertController = [TMAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Write a note for %@", contact.name] message:@"" preferredStyle:TMAlertControllerStyleTextField];
+	
+	[alertController addAction:[TMAlertAction actionWithTitle:@"Done" style:TMAlertActionStyleDefault handler:^(TMAlertAction *action) {
+		[self dismissViewControllerAnimated:YES completion:nil];
+	}]];
+	
+	alertController.iconStyle = TMAlertControllerIconStyleNote;
+	
+	[self presentViewController:alertController animated:YES completion:nil];
+
+}
 
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {

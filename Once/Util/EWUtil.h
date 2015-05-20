@@ -63,3 +63,7 @@ GCD_SYNTHESIZE_SINGLETON_FOR_CLASS_HEADER(EWUtil)
 @interface NSArray(Sort)
 - (NSArray *)sortedByCreated;
 @end
+
+
+
+CGFloat ENExpectedLabelHeight(UILabel *label, CGFloat width);

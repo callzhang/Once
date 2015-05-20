@@ -51,6 +51,7 @@ PODS:
   - MTDates (1.0.2)
   - Parse (1.6.3):
     - Bolts (~> 1.1)
+  - PureLayout (2.0.6)
   - RHAddressBook (1.1.1)
 
 DEPENDENCIES:
@@ -63,6 +64,7 @@ DEPENDENCIES:
   - MagicalRecord (from `https://github.com/magicalpanda/MagicalRecord`, tag `v2.3.0-beta.5`)
   - MTDates (~> 1.0)
   - Parse
+  - PureLayout (~> 2.0.6)
   - RHAddressBook (~> 1.1)
 
 EXTERNAL SOURCES:
@@ -86,6 +88,7 @@ SPEC CHECKSUMS:
   MagicalRecord: 5b7e807bc07c5d642af1f7d894b7fe0d3c317ca2
   MTDates: aa8006ac046c3fc4f2bb9df95603e9b5bdac9467
   Parse: 26354b8e2d22082f2aa95e7055c3254b91f27437
+  PureLayout: f25f0bb904d5ccfe6e31da3cb869185259f02e0d
   RHAddressBook: 870e9e0b34cb917b9c4c600fc3b7d5b530b23b13
 
 COCOAPODS: 0.36.3

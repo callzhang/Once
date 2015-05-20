@@ -151,6 +151,12 @@
 #define COCOAPODS_VERSION_MINOR_Parse 6
 #define COCOAPODS_VERSION_PATCH_Parse 3
 
+// PureLayout
+#define COCOAPODS_POD_AVAILABLE_PureLayout
+#define COCOAPODS_VERSION_MAJOR_PureLayout 2
+#define COCOAPODS_VERSION_MINOR_PureLayout 0
+#define COCOAPODS_VERSION_PATCH_PureLayout 6
+
 // RHAddressBook
 #define COCOAPODS_POD_AVAILABLE_RHAddressBook
 #define COCOAPODS_VERSION_MAJOR_RHAddressBook 1

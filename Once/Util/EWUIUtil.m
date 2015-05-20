@@ -384,5 +384,13 @@ GCD_SYNTHESIZE_SINGLETON_FOR_CLASS(EWUIUtil)
 	[[EWUIUtil shared].HUDs removeAllObjects];
 }
 
-
 @end
+
+
+CGFloat ENExpectedLabelHeight(UILabel *label, CGFloat width) {
+	CGSize expectedLabelSize = [label.text boundingRectWithSize:CGSizeMake(width, CGFLOAT_MAX)
+														options:NSStringDrawingUsesLineFragmentOrigin
+													 attributes:@{ NSFontAttributeName : label.font }
+														context:nil].size;
+	return expectedLabelSize.height;
+}
