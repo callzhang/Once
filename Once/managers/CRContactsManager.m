@@ -243,7 +243,7 @@
 	return _newContactsSinceLastCheck;
 }
 
-- (NSMutableSet *)duplicatedContacts{
+- (NSMutableOrderedSet *)duplicatedContacts{
 	if (!_allContacts) {
 		DDLogWarn(@"Accessed duplicated contacts before all contacts is generated. (%ld)", (long)self.allContacts);
 	}

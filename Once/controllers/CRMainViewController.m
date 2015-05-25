@@ -94,7 +94,7 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 - (void)loadData{
 	self.contactsMonthly = [NSMutableDictionary new];
 	NSArray *contacts = _manager.allContacts;
-	self.duplicated = _manager.duplicatedContacts.mutableCopy;
+	self.duplicated = _manager.duplicatedContacts.array.mutableCopy;
 	self.orderedMonths = [NSMutableOrderedSet new];
     //data array
     for (RHPerson *contact in contacts) {
@@ -220,14 +220,14 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
     cell.profile.image = contact.thumbnail ?: [UIImage imageNamed:@"profileImage"];
 	//[cell.disclosure addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
 	
-	
+    
+#ifdef DEBUG
 	UIButton *addNotesButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
 	if (recent) {
 		[addNotesButton setImage:[UIImage imageNamed:@"addBtn2"] forState:UIControlStateNormal];
 	} else {
 		[addNotesButton setImage:[UIImage imageNamed:@"addBtn"] forState:UIControlStateNormal];
 	}
-	
 	[addNotesButton bk_addEventHandler:^(id sender) {
 		
 		TMAlertController *alertController = [TMAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Write a note for %@", contact.name] message:@"" preferredStyle:TMAlertControllerStyleTextField];
@@ -240,7 +240,18 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 		
 		[self presentViewController:alertController animated:YES completion:nil];
 	} forControlEvents:UIControlEventTouchUpInside];
-	cell.accessoryView = addNotesButton;
+    cell.accessoryView = addNotesButton;
+#else
+    if (recent) {
+        cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+    }else{
+        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+        
+    }
+    
+#endif
+    
+    
 
     return cell;
 }
@@ -286,6 +297,7 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
+#ifdef DEBUG
 	NSDate *month = _orderedMonths[indexPath.section];
 	NSArray *contactsOfMonth = _contactsMonthly[month];
 	RHPerson *contact = contactsOfMonth[indexPath.row];
@@ -299,7 +311,9 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 	alertController.iconStyle = TMAlertControllerIconStyleNote;
 	
 	[self presentViewController:alertController animated:YES completion:nil];
-
+#else
+    [self tableView:tableView didSelectRowAtIndexPath:indexPath];
+#endif
 }
 
 
