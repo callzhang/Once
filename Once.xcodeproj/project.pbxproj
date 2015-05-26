@@ -22,6 +22,8 @@
 
 /* Begin PBXBuildFile section */
 		47FE71DD2166A0BFA813EDE4 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CCC5B3D1D0A53728B40FF19 /* libPods.a */; };
+		9B2A57451B13DF6100C54035 /* CRTransitionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B2A57441B13DF6100C54035 /* CRTransitionDelegate.m */; };
+		9B2A57481B13DFAF00C54035 /* CRPresentationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B2A57471B13DFAF00C54035 /* CRPresentationController.m */; };
 		9B346C181AA7DC3900B98E23 /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9B346C171AA7DC3900B98E23 /* Entypo.ttf */; };
 		9B3F2B681A9FB8F7009D4E7B /* ENPersonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B3F2B671A9FB8F7009D4E7B /* ENPersonCell.m */; };
 		9B7D31301A9DA820000E8A9F /* EWUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B7D312F1A9DA820000E8A9F /* EWUtil.m */; };
@@ -53,11 +55,6 @@
 		9B9096181A1079D900A2FA4A /* NSDate+Extend.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B9096171A1079D900A2FA4A /* NSDate+Extend.m */; };
 		9B90961B1A10A6AA00A2FA4A /* CRContactsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B90961A1A10A6AA00A2FA4A /* CRContactsManager.m */; };
 		9BA1F4301A12B25E00A9E12C /* reminder.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9BA1F42F1A12B25E00A9E12C /* reminder.caf */; };
-		9BE9DA111B0D132500438F46 /* TMAlertAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BE9DA091B0D132500438F46 /* TMAlertAction.m */; };
-		9BE9DA121B0D132500438F46 /* TMAlertController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BE9DA0B1B0D132500438F46 /* TMAlertController.m */; };
-		9BE9DA131B0D132500438F46 /* TMAlertController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9BE9DA0C1B0D132500438F46 /* TMAlertController.xib */; };
-		9BE9DA141B0D132500438F46 /* TMAlertPresentationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BE9DA0E1B0D132500438F46 /* TMAlertPresentationController.m */; };
-		9BE9DA151B0D132500438F46 /* TMAlertTransitioningDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BE9DA101B0D132500438F46 /* TMAlertTransitioningDelegate.m */; };
 		9BF18E561AED9F7F0087764B /* CRNotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BF18E551AED9F7F0087764B /* CRNotificationsViewController.m */; };
 		9BFB23601A102E380012B81C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB235F1A102E380012B81C /* main.m */; };
 		9BFB23631A102E380012B81C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BFB23621A102E380012B81C /* AppDelegate.m */; };
@@ -79,6 +76,10 @@
 /* Begin PBXFileReference section */
 		2CCC5B3D1D0A53728B40FF19 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C824802E36CCE7014BABC05 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		9B2A57431B13DF6100C54035 /* CRTransitionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRTransitionDelegate.h; sourceTree = "<group>"; };
+		9B2A57441B13DF6100C54035 /* CRTransitionDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRTransitionDelegate.m; sourceTree = "<group>"; };
+		9B2A57461B13DFAF00C54035 /* CRPresentationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRPresentationController.h; sourceTree = "<group>"; };
+		9B2A57471B13DFAF00C54035 /* CRPresentationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRPresentationController.m; sourceTree = "<group>"; };
 		9B346C171AA7DC3900B98E23 /* Entypo.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Entypo.ttf; sourceTree = "<group>"; };
 		9B3F2B661A9FB8F7009D4E7B /* ENPersonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ENPersonCell.h; path = Views/ENPersonCell.h; sourceTree = "<group>"; };
 		9B3F2B671A9FB8F7009D4E7B /* ENPersonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ENPersonCell.m; path = Views/ENPersonCell.m; sourceTree = "<group>"; };
@@ -125,15 +126,6 @@
 		9B90961A1A10A6AA00A2FA4A /* CRContactsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRContactsManager.m; sourceTree = "<group>"; };
 		9BA1F42F1A12B25E00A9E12C /* reminder.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = reminder.caf; sourceTree = "<group>"; };
 		9BA386C41AF96ED100DEA358 /* Once-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Once-Bridging-Header.h"; path = "../Once-Bridging-Header.h"; sourceTree = "<group>"; };
-		9BE9DA081B0D132500438F46 /* TMAlertAction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TMAlertAction.h; sourceTree = "<group>"; };
-		9BE9DA091B0D132500438F46 /* TMAlertAction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TMAlertAction.m; sourceTree = "<group>"; };
-		9BE9DA0A1B0D132500438F46 /* TMAlertController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TMAlertController.h; sourceTree = "<group>"; };
-		9BE9DA0B1B0D132500438F46 /* TMAlertController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TMAlertController.m; sourceTree = "<group>"; };
-		9BE9DA0C1B0D132500438F46 /* TMAlertController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TMAlertController.xib; sourceTree = "<group>"; };
-		9BE9DA0D1B0D132500438F46 /* TMAlertPresentationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TMAlertPresentationController.h; sourceTree = "<group>"; };
-		9BE9DA0E1B0D132500438F46 /* TMAlertPresentationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TMAlertPresentationController.m; sourceTree = "<group>"; };
-		9BE9DA0F1B0D132500438F46 /* TMAlertTransitioningDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TMAlertTransitioningDelegate.h; sourceTree = "<group>"; };
-		9BE9DA101B0D132500438F46 /* TMAlertTransitioningDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TMAlertTransitioningDelegate.m; sourceTree = "<group>"; };
 		9BF18E541AED9F7F0087764B /* CRNotificationsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CRNotificationsViewController.h; sourceTree = "<group>"; };
 		9BF18E551AED9F7F0087764B /* CRNotificationsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CRNotificationsViewController.m; sourceTree = "<group>"; };
 		9BFB235A1A102E380012B81C /* Once.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Once.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -223,6 +215,10 @@
 		9B7D31271A9DA2C2000E8A9F /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				9B2A57461B13DFAF00C54035 /* CRPresentationController.h */,
+				9B2A57471B13DFAF00C54035 /* CRPresentationController.m */,
+				9B2A57431B13DF6100C54035 /* CRTransitionDelegate.h */,
+				9B2A57441B13DF6100C54035 /* CRTransitionDelegate.m */,
 				9B828E351AF9719100528B8C /* CRNotesViewController.h */,
 				9B828E361AF9719100528B8C /* CRNotesViewController.m */,
 				9BF18E541AED9F7F0087764B /* CRNotificationsViewController.h */,
@@ -289,7 +285,6 @@
 		9BA386C31AF96D8D00DEA358 /* Vendors */ = {
 			isa = PBXGroup;
 			children = (
-				9BE9DA071B0D12C500438F46 /* TMAlertViewController */,
 				9B828E3E1AF97B2100528B8C /* TextfieldWithInset.swift */,
 				9B828E3F1AF97B2100528B8C /* WJCustomizeView.swift */,
 				9B828E401AF97B2100528B8C /* ApplicationButton.swift */,
@@ -298,22 +293,6 @@
 				9BA386C41AF96ED100DEA358 /* Once-Bridging-Header.h */,
 			);
 			path = Vendors;
-			sourceTree = "<group>";
-		};
-		9BE9DA071B0D12C500438F46 /* TMAlertViewController */ = {
-			isa = PBXGroup;
-			children = (
-				9BE9DA081B0D132500438F46 /* TMAlertAction.h */,
-				9BE9DA091B0D132500438F46 /* TMAlertAction.m */,
-				9BE9DA0A1B0D132500438F46 /* TMAlertController.h */,
-				9BE9DA0B1B0D132500438F46 /* TMAlertController.m */,
-				9BE9DA0C1B0D132500438F46 /* TMAlertController.xib */,
-				9BE9DA0D1B0D132500438F46 /* TMAlertPresentationController.h */,
-				9BE9DA0E1B0D132500438F46 /* TMAlertPresentationController.m */,
-				9BE9DA0F1B0D132500438F46 /* TMAlertTransitioningDelegate.h */,
-				9BE9DA101B0D132500438F46 /* TMAlertTransitioningDelegate.m */,
-			);
-			path = TMAlertViewController;
 			sourceTree = "<group>";
 		};
 		9BFB23511A102E380012B81C = {
@@ -476,7 +455,6 @@
 				9B828E3D1AF978D800528B8C /* LaunchScreen.xib in Resources */,
 				9B828E3C1AF978D100528B8C /* Main.storyboard in Resources */,
 				9BA1F4301A12B25E00A9E12C /* reminder.caf in Resources */,
-				9BE9DA131B0D132500438F46 /* TMAlertController.xib in Resources */,
 				9B346C181AA7DC3900B98E23 /* Entypo.ttf in Resources */,
 				9BFB236E1A102E380012B81C /* Images.xcassets in Resources */,
 			);
@@ -543,23 +521,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				9B9096131A106E2C00A2FA4A /* CRContact.m in Sources */,
+				9B2A57451B13DF6100C54035 /* CRTransitionDelegate.m in Sources */,
 				9B9095EC1A105A2100A2FA4A /* CRMainViewController.m in Sources */,
 				9BFB23661A102E380012B81C /* Remember.xcdatamodeld in Sources */,
 				9B8EADCB1AA827E0003F2174 /* EWUIUtil.m in Sources */,
 				9B828E371AF9719100528B8C /* CRNotesViewController.m in Sources */,
-				9BE9DA111B0D132500438F46 /* TMAlertAction.m in Sources */,
 				9B90961B1A10A6AA00A2FA4A /* CRContactsManager.m in Sources */,
 				9B9096111A106E2C00A2FA4A /* _CRUser.m in Sources */,
 				9BF18E561AED9F7F0087764B /* CRNotificationsViewController.m in Sources */,
+				9B2A57481B13DFAF00C54035 /* CRPresentationController.m in Sources */,
 				9B8EADC51AA6A9FE003F2174 /* NSDate+Extend.m in Sources */,
-				9BE9DA151B0D132500438F46 /* TMAlertTransitioningDelegate.m in Sources */,
 				9B828E411AF97B2100528B8C /* TextfieldWithInset.swift in Sources */,
 				9B828E431AF97B2100528B8C /* ApplicationButton.swift in Sources */,
 				9B8EADC81AA827D3003F2174 /* UIView+Extend.m in Sources */,
 				9BFB23631A102E380012B81C /* AppDelegate.m in Sources */,
 				9B9096101A106E2C00A2FA4A /* _CRContact.m in Sources */,
 				9BFB23601A102E380012B81C /* main.m in Sources */,
-				9BE9DA141B0D132500438F46 /* TMAlertPresentationController.m in Sources */,
 				9B828E3A1AF973C900528B8C /* CustomPresentationAnimationController.swift in Sources */,
 				9B828E3B1AF973C900528B8C /* CustomPresentationController.swift in Sources */,
 				9B9096181A1079D900A2FA4A /* NSDate+Extend.m in Sources */,
@@ -569,7 +546,6 @@
 				9B9096141A106E2C00A2FA4A /* CRUser.m in Sources */,
 				9B9096151A106E2C00A2FA4A /* ServerObject.m in Sources */,
 				9B7D31301A9DA820000E8A9F /* EWUtil.m in Sources */,
-				9BE9DA121B0D132500438F46 /* TMAlertController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
