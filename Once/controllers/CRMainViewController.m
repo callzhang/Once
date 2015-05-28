@@ -97,7 +97,9 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 	self.orderedMonths = [NSMutableOrderedSet new];
     //data array
     for (RHPerson *contact in contacts) {
-		NSDate *startOfMonth = contact.created.mt_startOfCurrentMonth;
+        //NSDate *randomDate = [[NSDate date] dateByAddingTimeInterval:arc4random_uniform(3600*24*30*4)];
+        //NSDate *startOfMonth = randomDate.mt_startOfNextMonth;
+        NSDate *startOfMonth = contact.created.mt_startOfCurrentMonth;
 		NSMutableArray *contactsOfMonth = self.contactsMonthly[startOfMonth] ?: [NSMutableArray array];
 		[contactsOfMonth addObject:contact];
 		self.contactsMonthly[startOfMonth] = contactsOfMonth;

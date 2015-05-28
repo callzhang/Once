@@ -13,13 +13,12 @@
 
 #define kNotesPlaceholder   @"Add a note..."
 
-@interface CRNotesViewController ()<UITextViewDelegate>{
+@interface CRNotesViewController ()<UITextViewDelegate, UIViewControllerTransitioningDelegate>{
 	id keyboardShowObserver;
 	id keyboardHideObserver;
 }
 @property (weak, nonatomic) IBOutlet UITextView *notesView;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomConstant;
-@property (nonatomic, strong) id transitionDelegate;
 @property (weak, nonatomic) IBOutlet UIImageView *profile;
 @property (weak, nonatomic) IBOutlet UILabel *name;
 @property (weak, nonatomic) IBOutlet UILabel *met;
@@ -30,8 +29,7 @@
 - (void)awakeFromNib{
     [super awakeFromNib];
     self.modalPresentationStyle = UIModalPresentationCustom;
-    self.transitionDelegate = [[CRTransitionDelegate alloc] init];
-    self.transitioningDelegate = self.transitionDelegate;
+    self.transitioningDelegate = self;
 }
 
 - (void)viewDidLoad {
@@ -42,6 +40,24 @@
     if (self.person.originalImage) self.profile.image = self.person.originalImage;
     self.met.text = [NSString stringWithFormat:@"Met on %@", self.person.created.date2dayString];
     self.name.text = self.person.name;
+    //initial state
+    self.profile.layer.cornerRadius = self.profile.bounds.size.height/2;
+}
+
+- (void)viewDidLayoutSubviews{
+    [super viewDidLayoutSubviews];
+    //initial state
+    //self.profile.layer.cornerRadius = self.profile.bounds.size.height/2;
+}
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator{
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    if (size.height > size.width) {
+        self.profile.layer.cornerRadius = 40;
+    }else{
+        self.profile.layer.cornerRadius = 15;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -85,10 +101,10 @@
 - (IBAction)close:(id)sender {
 	if ([self.notesView.text isEqualToString:@""] || [self.notesView.text isEqualToString:kNotesPlaceholder]) {
 		self.person.note = nil;
-	} else {
-		self.person.note = self.notesView.text;
+	} else if(![self.person.note isEqualToString:self.notesView.text]){
+        self.person.note = self.notesView.text;
+        [self.person save];
 	}
-	[self.person save];
 	[self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 

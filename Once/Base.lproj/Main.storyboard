@@ -237,7 +237,7 @@
                                                 <action selector="close:" destination="bqD-3L-tI8" eventType="touchUpInside" id="veq-hM-A2Z"/>
                                             </connections>
                                         </button>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="profileImage" translatesAutoresizingMaskIntoConstraints="NO" id="xeM-uu-IlT">
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="profileImage" translatesAutoresizingMaskIntoConstraints="NO" id="xeM-uu-IlT">
                                             <rect key="frame" x="8" y="9" width="80" height="80"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="80" id="GK1-S1-r9I">

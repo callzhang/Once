@@ -13,6 +13,7 @@
 #import <AFNetworking/AFNetworking.h>
 #import "EWUIUtil.h"
 #import "RHSource.h"
+#import "NSDate+Extend.h"
 #import "AppDelegate.h"
 
 #define TESTING                 NO
@@ -175,9 +176,9 @@
                         if ([duplicated.created timeIntervalSinceDate:person.created]>0) {
                             //this person is older
                             emailMapping[email] = person;
-                        } else {
-                            [self.duplicatedContacts addObjectsFromArray:@[duplicated, person]];
                         }
+                        [self.duplicatedContacts addObjectsFromArray:@[duplicated, person]];
+                        
                     }else{
                         emailMapping[email] = person;
                     }
@@ -193,9 +194,9 @@
                         if ([duplicated.created timeIntervalSinceDate:person.created]>0) {
                             //this person is older
                             phoneMapping[phoneNumber] = person;
-                        } else {
-                            [self.duplicatedContacts addObjectsFromArray:@[duplicated, person]];
                         }
+                        [self.duplicatedContacts addObjectsFromArray:@[duplicated, person]];
+                        
                     }else{
                         phoneMapping[phoneNumber] = person;
                     }
@@ -203,11 +204,11 @@
             }
             
             //union
-            NSMutableSet *allContacts = [NSMutableSet setWithArray:emailMapping.allValues];
-            [allContacts unionSet:[NSSet setWithArray:phoneMapping.allValues]];
-            [allContacts unionSet:others];
-            _allContacts = allContacts.allObjects;
-            DDLogInfo(@"Found %lu duplicated person", (unsigned long)_duplicatedContacts.count);
+//            NSMutableSet *allContacts = [NSMutableSet setWithArray:emailMapping.allValues];
+//            [allContacts unionSet:[NSSet setWithArray:phoneMapping.allValues]];
+//            [allContacts unionSet:others];
+//            _allContacts = allContacts.allObjects;
+            DDLogInfo(@"Found %lu duplicated person", (unsigned long)self.duplicatedContacts.count);
         }
     }
     
