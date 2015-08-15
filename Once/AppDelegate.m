@@ -44,6 +44,10 @@
     
     //push
 	[self setupInteractiveNotifications];
+    
+    
+    //TESTING
+    //[self scheduleLocalNotificationWithUserInfo:@{@"type": @"reminder", @"names": @[@"tsing"]} inDate:[[NSDate date] dateByAddingTimeInterval:15]];
      
     return YES;
 }
@@ -114,18 +118,25 @@
 	// UIUserActivationMode is used to tell the system whether it should bring your app into the foregroudn, or leave it in the background, in this case, the app can complete the request to update our backed in the background, so we don't have to open the app
 	later.activationMode = UIUserNotificationActivationModeBackground;
 	later.title = @"Later";
-	
-//	UIMutableUserNotificationAction *cancel = [UIMutableUserNotificationAction new];
-//	cancel.activationMode = UIUserNotificationActivationModeBackground;
-//	cancel.destructive = YES;
-//	cancel.title = @"Cancel";
-	
+    
+    // Remind in 3 days action
+    UIMutableUserNotificationAction *remindInThreeDaysAction = [UIMutableUserNotificationAction new];
+    remindInThreeDaysAction.identifier = @"REMIND_IN_3_DAYS_ACTION_ID";
+    remindInThreeDaysAction.activationMode = UIUserNotificationActivationModeBackground;
+    remindInThreeDaysAction.title = @"Remind me in 3 days";
+    
+    // Remind in a week action
+    UIMutableUserNotificationAction *remindInAWeekAction = [UIMutableUserNotificationAction new];
+    remindInAWeekAction.identifier = @"REMIND_IN_A_WEEK_ACTION_ID";
+    remindInAWeekAction.activationMode = UIUserNotificationActivationModeBackground;
+    remindInAWeekAction.title = @"Remind me in a week";
+
 	// CREATE THE CATEGORY
 	UIMutableUserNotificationCategory *category = [UIMutableUserNotificationCategory new];
 	// set its identifier. The APS dictionary you send for your push notifications must have a key named 'category' whose object is set to a string that matches this identifier in order for you actions to appear.
 	category.identifier = kReminderCategory;
-	[category setActions:@[takeNotesAction, later] forContext:UIUserNotificationActionContextDefault];
-	[category setActions:@[takeNotesAction] forContext:UIUserNotificationActionContextMinimal];
+	[category setActions:@[takeNotesAction, remindInThreeDaysAction, remindInAWeekAction] forContext:UIUserNotificationActionContextDefault];
+	[category setActions:@[takeNotesAction, later] forContext:UIUserNotificationActionContextMinimal];
 	UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:[NSSet setWithObjects:category, nil]];
 	[[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
 	[[UIApplication sharedApplication] registerForRemoteNotifications];
@@ -141,9 +152,23 @@
 		//open note view
 	}
 	else if ([identifier isEqualToString:@"LATER_ACTION_ID"]) {
-			  
+        
+        DDLogInfo(@"Schedule later");
 		//reschedule a notification
+        [self scheduleLocalNotificationWithUserInfo:userInfo inDate:[[NSDate new] nextOccurTime]];
 	}
+    else if ([identifier isEqualToString:@"REMIND_IN_3_DAYS_ACTION_ID"])
+    {
+        DDLogInfo(@"Scheduled in 3 days");
+        NSDate *threeDaysLater = [[NSDate new] timeByAddingMinutes: 3 * 24 * 60];
+        [self scheduleLocalNotificationWithUserInfo:userInfo inDate:threeDaysLater];
+    }
+    else if ([identifier isEqualToString:@"REMIND_IN_A_WEEK_ACTION_ID"])
+    {
+        DDLogInfo(@"Scheduled in a week");
+        NSDate *weekLater = [[NSDate new] timeByAddingMinutes: 7 * 24 * 60];
+        [self scheduleLocalNotificationWithUserInfo:userInfo inDate:weekLater];
+    }
 	
 	if(completionHandler)    //Finally call completion handler if its not nil
 		completionHandler();
@@ -177,6 +202,30 @@
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
 	DDLogInfo(@"Received push notification: %@", userInfo);
 	[PFPush handlePush:userInfo];
+}
+
+#pragma mark - Local notification actions
+
+- (void)scheduleLocalNotificationWithUserInfo:(NSDictionary *)userInfo inDate:(NSDate *)fireDate
+{
+    NSArray *names = [userInfo valueForKey:@"names"];
+    NSString *reminderStr;
+    if (names.count > 1) {
+        reminderStr = [NSString stringWithFormat:@"You recently met %@ and %ld other people. Add a quick note?", names.firstObject, (long)names.count-1];
+    } else {
+        reminderStr = [NSString stringWithFormat:@"You recently met %@. Add a quick note?", names.firstObject];
+    }
+    
+    UILocalNotification *note = [UILocalNotification new];
+    note.alertTitle = @"New Contacts";
+    note.alertBody = reminderStr;
+    note.soundName = @"reminder.caf";
+    note.category = kReminderCategory;
+    note.fireDate = fireDate;
+    note.userInfo = userInfo;
+    //note.repeatInterval = 0;
+    
+    [[UIApplication sharedApplication] scheduleLocalNotification:note];
 }
 
 @end
