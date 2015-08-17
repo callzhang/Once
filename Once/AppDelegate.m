@@ -63,9 +63,8 @@
     [manager checkNewContactsAndNotifyWithCompletion:^(NSArray *newContacts) {
 		//log info
         NSMutableString *str = [NSMutableString stringWithFormat:@"=====> Remember checked new contact at %@.", [NSDate date].string];
-        if (newContacts.count > 0) {
-            [str appendFormat:@" And found %ld new contacts", (long)newContacts.count];
-        }
+
+        [str appendFormat:@" And found %ld new contacts", (long)newContacts.count];
 		DDLogInfo(str);
 
         if (newContacts.count) {

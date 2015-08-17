@@ -62,7 +62,7 @@
             
             //request authorization
             [_addressbook requestAuthorizationWithCompletion:^(bool granted, NSError *error) {
-				[self update];
+				[self clear];
                 [[NSNotificationCenter defaultCenter] postNotificationName:kAdressbookReady object:nil];
             }];
 		}else if ([RHAddressBook authorizationStatus] == RHAuthorizationStatusAuthorized){
@@ -71,7 +71,7 @@
 			
         // start observing
         [[NSNotificationCenter defaultCenter]  addObserverForName:RHAddressBookExternalChangeNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-			[self update];
+			[self clear];
 			_duplicatedContacts = [NSMutableOrderedSet new];
 			//delay sending notification
 			static NSTimer *timer;
@@ -233,13 +233,13 @@
 
 
 - (NSArray *)newContactsSinceLastCheck{
-	if (!_newContactsSinceLastCheck) {
-		NSDate *lastChecked = self.lastChecked;
-		NSArray *newContacts = [self.allContacts bk_select:^BOOL(RHPerson *person) {
-			return [person.created timeIntervalSinceDate:lastChecked] > 0;
-		}];
-		_newContactsSinceLastCheck = newContacts;
-	}
+	//if (!_newContactsSinceLastCheck) {
+    NSDate *lastChecked = self.lastChecked;
+    NSArray *newContacts = [self.allContacts bk_select:^BOOL(RHPerson *person) {
+        return [person.created timeIntervalSinceDate:lastChecked] > 0;
+    }];
+    _newContactsSinceLastCheck = newContacts;
+	//}
 	
 	return _newContactsSinceLastCheck;
 }
@@ -322,7 +322,7 @@
 	DDLogDebug(@"Found new contacts from 8 hours ago: %@", [newContacts valueForKey:@"name"]);
 }
 
-- (void)update{
+- (void)clear{
 	self.allContacts = nil;
 	self.recentContacts = nil;
 	self.newContactsSinceLastCheck = nil;
@@ -331,6 +331,8 @@
 
 #pragma mark - Actions
 - (void)checkNewContactsAndNotifyWithCompletion:(void (^)(NSArray *newContacts))block{
+    //clear first
+    [self clear];
     //check
 	NSArray *newContacts = [self newContactsSinceLastCheck];
     //update time
@@ -441,7 +443,7 @@
 		if (person.inSource == self.addressbook.defaultSource) {
 			success = [person remove];
 			if (!success) DDLogError(@"Failed to remove contact: %@", person);
-			[self update];
+			[self clear];
 		}
     }
     success = [self.addressbook saveWithError:&error];

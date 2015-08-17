@@ -222,7 +222,7 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
 	//[cell.disclosure addTarget:self action:nil forControlEvents:UIControlEventTouchUpInside];
 	
     
-#ifdef DEBUG
+//#ifdef DEBUG
 	UIButton *addNotesButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
 	if (recent) {
 		[addNotesButton setImage:[UIImage imageNamed:@"addBtn2"] forState:UIControlStateNormal];
@@ -236,15 +236,15 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
         [self presentViewController:vc animated:YES completion:nil];
 	} forControlEvents:UIControlEventTouchUpInside];
     cell.accessoryView = addNotesButton;
-#else
-    if (recent) {
-        cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
-    }else{
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        
-    }
-    
-#endif
+//#else
+//    if (recent) {
+//        cell.accessoryType = UITableViewCellAccessoryDetailDisclosureButton;
+//    }else{
+//        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+//        
+//    }
+//    
+//#endif
     return cell;
 }
 
