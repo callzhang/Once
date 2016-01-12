@@ -87,6 +87,23 @@ typedef NS_ENUM(NSInteger, CRContactsViewType){
         [EWUIUtil dismissHUD];
         [self.tableView reloadData];
     }];
+    
+    //TODO:fixed:by geng
+    [[NSNotificationCenter defaultCenter] addObserverForName:kShowActionNote object:nil queue:nil usingBlock:^(NSNotification *note) {
+        //self.addressBookChanged = YES;
+        
+        NSString *timeString = note.userInfo[@"created"];
+        for (RHPerson *person in _manager.allContacts) {
+            NSString * personTimeString = [EWUIUtil getTimeString:person.created];
+            if ([timeString isEqualToString:personTimeString]) {
+                CRNotesViewController *vc = [[UIStoryboard storyboardWithName:@"Main" bundle:nil] instantiateViewControllerWithIdentifier:@"CRNotesViewController"];
+                vc.person = person;
+                [self presentViewController:vc animated:YES completion:nil];
+
+                break;
+            }
+        }
+    }];
 }
 
 

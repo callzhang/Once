@@ -38,17 +38,14 @@
 #else
     [application setMinimumBackgroundFetchInterval:3600*2];
 #endif
-	
     //manager
     [CRContactsManager sharedManager];
-    
     //push
 	[self setupInteractiveNotifications];
     
-    
     //TESTING
-    //[self scheduleLocalNotificationWithUserInfo:@{@"type": @"reminder", @"names": @[@"tsing"]} inDate:[[NSDate date] dateByAddingTimeInterval:15]];
-     
+//    [self scheduleLocalNotificationWithUserInfo:@{@"type": @"reminder", @"names": @[@"tsing"]} inDate:[[NSDate date] dateByAddingTimeInterval:15]];
+    
     return YES;
 }
 
@@ -134,8 +131,9 @@
 	UIMutableUserNotificationCategory *category = [UIMutableUserNotificationCategory new];
 	// set its identifier. The APS dictionary you send for your push notifications must have a key named 'category' whose object is set to a string that matches this identifier in order for you actions to appear.
 	category.identifier = kReminderCategory;
-	[category setActions:@[takeNotesAction, remindInThreeDaysAction, remindInAWeekAction] forContext:UIUserNotificationActionContextDefault];
-	[category setActions:@[takeNotesAction, later] forContext:UIUserNotificationActionContextMinimal];
+//	[category setActions:@[takeNotesAction, remindInThreeDaysAction, remindInAWeekAction] forContext:UIUserNotificationActionContextDefault];
+    [category setActions:@[takeNotesAction, remindInAWeekAction] forContext:UIUserNotificationActionContextDefault];
+//	[category setActions:@[takeNotesAction, later] forContext:UIUserNotificationActionContextMinimal];
 	UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:[NSSet setWithObjects:category, nil]];
 	[[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
 	[[UIApplication sharedApplication] registerForRemoteNotifications];
@@ -176,7 +174,41 @@
 - (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forLocalNotification:(UILocalNotification *)notification completionHandler:(void(^)())completionHandler {
 	
 	// Handle actions of location notifications here. You can identify the action by using "identifier" and perform appropriate operations
-	
+//    TODO:fixed by geng
+//    created
+    if ([identifier isEqualToString:@"TAKE_NOTE_ACTION_ID"]){
+       
+        static NSTimer *timer;
+        [timer invalidate];
+        timer = [NSTimer bk_scheduledTimerWithTimeInterval:1.5 block:^(NSTimer *timer) {
+            DDLogInfo(@"Observed take notes");
+         [[NSNotificationCenter defaultCenter]postNotificationName:kShowActionNote object:nil userInfo:notification.userInfo];
+        } repeats:NO];
+
+       
+        //open note view
+    }
+    else if ([identifier isEqualToString:@"LATER_ACTION_ID"]) {
+        
+        DDLogInfo(@"Schedule later");
+        //reschedule a notification
+        [self scheduleLocalNotificationWithUserInfo:notification.userInfo inDate:[[NSDate new] nextOccurTime]];
+    }
+    else if ([identifier isEqualToString:@"REMIND_IN_3_DAYS_ACTION_ID"])
+    {
+        DDLogInfo(@"Scheduled in 3 days");
+        NSDate *threeDaysLater = [[NSDate new] timeByAddingMinutes: 3 * 24 * 60];
+        [self scheduleLocalNotificationWithUserInfo:notification.userInfo inDate:threeDaysLater];
+    }
+    else if ([identifier isEqualToString:@"REMIND_IN_A_WEEK_ACTION_ID"])
+    {
+        DDLogInfo(@"Scheduled in a week");
+        NSDate *weekLater = [[NSDate new] timeByAddingMinutes: 7 * 24 * 60];
+        [self scheduleLocalNotificationWithUserInfo:notification.userInfo inDate:weekLater];
+    }
+    
+
+    
 	if(completionHandler)    //Finally call completion handler if its not nil
 		completionHandler();
 }
@@ -220,10 +252,12 @@
     note.alertBody = reminderStr;
     note.soundName = @"reminder.caf";
     note.category = kReminderCategory;
+    
+//    NSDate * date1 = [NSDate dateWithTimeIntervalSince1970:60*60*(-8)+60*60*18+60*1];
     note.fireDate = fireDate;
     note.userInfo = userInfo;
     //note.repeatInterval = 0;
-    
+//    note.repeatInterval=kCFCalendarUnitDay;
     [[UIApplication sharedApplication] scheduleLocalNotification:note];
 }
 

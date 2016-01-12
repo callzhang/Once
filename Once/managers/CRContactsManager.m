@@ -71,7 +71,10 @@
 			
         // start observing
         [[NSNotificationCenter defaultCenter]  addObserverForName:RHAddressBookExternalChangeNotification object:nil queue:nil usingBlock:^(NSNotification *note) {
-			[self clear];
+//			[self clear];
+            //TODO:fixed by geng
+            [self checkNewContactsAndNotifyWithCompletion:nil];
+            
 			_duplicatedContacts = [NSMutableOrderedSet new];
 			//delay sending notification
 			static NSTimer *timer;
@@ -342,9 +345,13 @@
 	if (newContacts.count) {
 		DDLogInfo(@"Found %ld new contacts since last checked %@", (unsigned long)newContacts.count, _lastChecked.string);
 		NSDate *oldestCreated = [NSDate date];
+        
+        NSString*createdTimeString; //timeString
 		for (RHPerson *person in newContacts) {
 			if ([person.created isEarlierThan:oldestCreated]) {
 				oldestCreated = person.created;
+                createdTimeString = [EWUIUtil getTimeString:person.created];
+                break;
 			}
 		}
 		
@@ -378,11 +385,11 @@
 		note.soundName = @"reminder.caf";
 		note.category = kReminderCategory;
 		note.fireDate = [NSDate date].nextNoon;//TODO: use created time
-        note.userInfo = @{@"type": @"reminder", @"names": names};
+        note.userInfo = @{@"type": @"reminder", @"names": names, @"created":createdTimeString};
 		[[UIApplication sharedApplication] scheduleLocalNotification:note];
 		
 #ifdef DEBUG
-		note.fireDate = [[NSDate date] dateByAddingTimeInterval:10];
+		note.fireDate = [[NSDate date] dateByAddingTimeInterval:20];
 		[[UIApplication sharedApplication] scheduleLocalNotification:note];
 #endif
         

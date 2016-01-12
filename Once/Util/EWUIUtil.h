@@ -72,4 +72,7 @@ GCD_SYNTHESIZE_SINGLETON_FOR_CLASS_HEADER(EWUIUtil)
 + (void)dismissHUD;
 + (UIView *)topView;
 + (UIViewController *)topViewController;
+
+//by geng
++ (NSString *)getTimeString:(NSDate *)date;
 @end

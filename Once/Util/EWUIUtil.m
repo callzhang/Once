@@ -384,6 +384,13 @@ GCD_SYNTHESIZE_SINGLETON_FOR_CLASS(EWUIUtil)
 	[[EWUIUtil shared].HUDs removeAllObjects];
 }
 
+
+#pragma mark - by geng
+//TODO: getTimeString
++ (NSString *)getTimeString:(NSDate *)date{
+    NSString *timeSp = [NSString stringWithFormat:@"%ld", (long)[date timeIntervalSince1970]];
+    return timeSp;
+}
 @end
 
 

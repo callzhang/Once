@@ -20,7 +20,7 @@ import UIKit
 
     // ---- UIViewControllerAnimatedTransitioning methods
 
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning) -> NSTimeInterval {
+    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
         return self.duration
     }
 
@@ -43,13 +43,13 @@ import UIKit
 
         // Position the presented view off the top of the container view
         presentedControllerView.frame = transitionContext.finalFrameForViewController(presentedController)
-        presentedControllerView.center.y -= containerView.bounds.size.height
+        presentedControllerView.center.y -= containerView!.bounds.size.height
 
-        containerView.addSubview(presentedControllerView)
+        containerView!.addSubview(presentedControllerView)
 
         // Animate the presented view to it's final position
         UIView.animateWithDuration(self.duration, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 0.0, options: .AllowUserInteraction, animations: {
-            presentedControllerView.center.y += containerView.bounds.size.height
+            presentedControllerView.center.y += containerView!.bounds.size.height
         }, completion: {(completed: Bool) -> Void in
             transitionContext.completeTransition(completed)
         })
@@ -61,7 +61,7 @@ import UIKit
 
         // Animate the presented view off the bottom of the view
         UIView.animateWithDuration(self.duration, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 0.0, options: .AllowUserInteraction, animations: {
-            presentedControllerView.center.y += containerView.bounds.size.height
+            presentedControllerView.center.y += containerView!.bounds.size.height
         }, completion: {(completed: Bool) -> Void in
                 transitionContext.completeTransition(completed)
         })

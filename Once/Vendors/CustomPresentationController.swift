@@ -17,9 +17,9 @@ import UIKit
 
     override func presentationTransitionWillBegin() {
         // Add the dimming view and the presented view to the heirarchy
-        self.dimmingView.frame = self.containerView.bounds
-        self.containerView.addSubview(self.dimmingView)
-        self.containerView.addSubview(self.presentedView())
+        self.dimmingView.frame = self.containerView!.bounds
+        self.containerView!.addSubview(self.dimmingView)
+        self.containerView!.addSubview(self.presentedView()!)
 
         // Fade in the dimming view alongside the transition
         if let transitionCoordinator = self.presentingViewController.transitionCoordinator() {
@@ -54,7 +54,7 @@ import UIKit
 
     override func frameOfPresentedViewInContainerView() -> CGRect {
         // We don't want the presented view to fill the whole container view, so inset it's frame
-        var frame = self.containerView.bounds;
+        var frame = self.containerView!.bounds;
         frame = CGRectInset(frame, 50.0, 50.0)
 
         return frame
@@ -67,7 +67,7 @@ import UIKit
         super.viewWillTransitionToSize(size, withTransitionCoordinator: transitionCoordinator)
 
         transitionCoordinator.animateAlongsideTransition({(context: UIViewControllerTransitionCoordinatorContext!) -> Void in
-            self.dimmingView.frame = self.containerView.bounds
+            self.dimmingView.frame = self.containerView!.bounds
         }, completion:nil)
     }
 }

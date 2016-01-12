@@ -24,7 +24,8 @@
 #define kOriginalCreated	@"CR_created"
 //notification
 #define kCRAddressBookChangeCompleted	@"addressbook_change_completed"
-
+//TAKE_NOTE_ACTION_ID
+#define kShowActionNote                 @"SHOW_TAKE_NOTE_ACTION_ID"
 
 #define TICK                            NSDate *startTime = [NSDate date];
 #define TOCK                            NSLog(@"Time: %f", -[startTime timeIntervalSinceNow]);

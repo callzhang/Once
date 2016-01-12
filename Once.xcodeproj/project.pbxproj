@@ -52,7 +52,6 @@
 		9B9096131A106E2C00A2FA4A /* CRContact.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B90960B1A106E2C00A2FA4A /* CRContact.m */; };
 		9B9096141A106E2C00A2FA4A /* CRUser.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B90960D1A106E2C00A2FA4A /* CRUser.m */; };
 		9B9096151A106E2C00A2FA4A /* ServerObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B90960F1A106E2C00A2FA4A /* ServerObject.m */; };
-		9B9096181A1079D900A2FA4A /* NSDate+Extend.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B9096171A1079D900A2FA4A /* NSDate+Extend.m */; };
 		9B90961B1A10A6AA00A2FA4A /* CRContactsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B90961A1A10A6AA00A2FA4A /* CRContactsManager.m */; };
 		9BA1F4301A12B25E00A9E12C /* reminder.caf in Resources */ = {isa = PBXBuildFile; fileRef = 9BA1F42F1A12B25E00A9E12C /* reminder.caf */; };
 		9BF18E561AED9F7F0087764B /* CRNotificationsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9BF18E551AED9F7F0087764B /* CRNotificationsViewController.m */; };
@@ -348,7 +347,8 @@
 		9BFB23521A102E380012B81C /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastSwiftUpdateCheck = 0720;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = Lee;
 				TargetAttributes = {
 					9B9095FE1A106D4E00A2FA4A = {
@@ -469,7 +469,6 @@
 				9BFB23601A102E380012B81C /* main.m in Sources */,
 				9B828E3A1AF973C900528B8C /* CustomPresentationAnimationController.swift in Sources */,
 				9B828E3B1AF973C900528B8C /* CustomPresentationController.swift in Sources */,
-				9B9096181A1079D900A2FA4A /* NSDate+Extend.m in Sources */,
 				9B3F2B681A9FB8F7009D4E7B /* ENPersonCell.m in Sources */,
 				9B9096121A106E2C00A2FA4A /* _ServerObject.m in Sources */,
 				9B828E421AF97B2100528B8C /* WJCustomizeView.swift in Sources */,
@@ -538,6 +537,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEFINES_MODULE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -605,16 +605,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Chaowang Ye (N2GD7B4247)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Chaowang Ye (N2GD7B4247)";
 				DEFINES_MODULE = YES;
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "$(SOURCE_ROOT)/$(PRODUCT_NAME)/prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/Once/Info.plist";
 				INFOPLIST_PREFIX_HEADER = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ceshi.Once;
 				PRODUCT_NAME = Once;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "de32b125-61a6-4e07-875e-35d8795290e9";
 				SWIFT_OBJC_BRIDGING_HEADER = "Once/Once-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -626,16 +628,18 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Chaowang Ye (N2GD7B4247)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Chaowang Ye (N2GD7B4247)";
 				DEFINES_MODULE = YES;
+				ENABLE_BITCODE = NO;
 				GCC_PREFIX_HEADER = "$(SOURCE_ROOT)/$(PRODUCT_NAME)/prefix.pch";
 				INFOPLIST_FILE = "$(SRCROOT)/Once/Info.plist";
 				INFOPLIST_PREFIX_HEADER = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ceshi.Once;
 				PRODUCT_NAME = Once;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "de32b125-61a6-4e07-875e-35d8795290e9";
 				SWIFT_OBJC_BRIDGING_HEADER = "Once/Once-Bridging-Header.h";
 			};
 			name = Release;
