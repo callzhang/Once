@@ -104,7 +104,11 @@
 	// take notes action
 	UIMutableUserNotificationAction *takeNotesAction = [UIMutableUserNotificationAction new];
 	takeNotesAction.identifier = @"TAKE_NOTE_ACTION_ID";
-	takeNotesAction.activationMode = UIUserNotificationActivationModeForeground;
+	takeNotesAction.activationMode = UIUserNotificationActivationModeBackground;
+#ifdef __IPHONE_9_0
+    [takeNotesAction setBehavior:UIUserNotificationActionBehaviorTextInput];
+#endif
+    
 	takeNotesAction.title = @"Take Notes";
 	
 	//later action
@@ -131,9 +135,9 @@
 	UIMutableUserNotificationCategory *category = [UIMutableUserNotificationCategory new];
 	// set its identifier. The APS dictionary you send for your push notifications must have a key named 'category' whose object is set to a string that matches this identifier in order for you actions to appear.
 	category.identifier = kReminderCategory;
-//	[category setActions:@[takeNotesAction, remindInThreeDaysAction, remindInAWeekAction] forContext:UIUserNotificationActionContextDefault];
-    [category setActions:@[takeNotesAction, remindInAWeekAction] forContext:UIUserNotificationActionContextDefault];
-//	[category setActions:@[takeNotesAction, later] forContext:UIUserNotificationActionContextMinimal];
+	[category setActions:@[takeNotesAction, remindInThreeDaysAction, remindInAWeekAction] forContext:UIUserNotificationActionContextDefault];
+//    [category setActions:@[takeNotesAction, remindInAWeekAction] forContext:UIUserNotificationActionContextDefault];
+	[category setActions:@[takeNotesAction, later] forContext:UIUserNotificationActionContextMinimal];
 	UIUserNotificationSettings *mySettings = [UIUserNotificationSettings settingsForTypes:types categories:[NSSet setWithObjects:category, nil]];
 	[[UIApplication sharedApplication] registerUserNotificationSettings:mySettings];
 	[[UIApplication sharedApplication] registerForRemoteNotifications];
@@ -171,11 +175,14 @@
 		completionHandler();
 }
 
+//#ifdef __IPHONE_8_0
+
 - (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forLocalNotification:(UILocalNotification *)notification completionHandler:(void(^)())completionHandler {
 	
 	// Handle actions of location notifications here. You can identify the action by using "identifier" and perform appropriate operations
 //    TODO:fixed by geng
 //    created
+
     if ([identifier isEqualToString:@"TAKE_NOTE_ACTION_ID"]){
        
         static NSTimer *timer;
@@ -184,7 +191,7 @@
             DDLogInfo(@"Observed take notes");
          [[NSNotificationCenter defaultCenter]postNotificationName:kShowActionNote object:nil userInfo:notification.userInfo];
         } repeats:NO];
-
+//NSNotificationSuspensionBehaviorDrop
        
         //open note view
     }
@@ -208,10 +215,58 @@
     }
     
 
-    
 	if(completionHandler)    //Finally call completion handler if its not nil
 		completionHandler();
 }
+//#endif
+
+#ifdef __IPHONE_9_0
+
+- (void)application:(UIApplication *)application handleActionWithIdentifier:(nullable NSString *)identifier forLocalNotification:(UILocalNotification *)notification withResponseInfo:(NSDictionary *)responseInfo completionHandler:(void(^)())completionHandler {
+
+    // Handle actions of location notifications here. You can identify the action by using "identifier" and perform appropriate operations
+    //    TODO:fixed by geng
+    //    created
+    
+    if ([identifier isEqualToString:@"TAKE_NOTE_ACTION_ID"]){
+        NSDictionary*dataInfo = [NSDictionary dictionaryWithObjectsAndKeys:responseInfo[UIUserNotificationActionResponseTypedTextKey],@"TAKE_NOTE",notification.userInfo,@"USER_INFO", nil];
+        static NSTimer *timer;
+        [timer invalidate];
+        timer = [NSTimer bk_scheduledTimerWithTimeInterval:1.5 block:^(NSTimer *timer) {
+            DDLogInfo(@"Observed take notes");
+            [[NSNotificationCenter defaultCenter]postNotificationName:kShowActionNote object:nil userInfo:dataInfo];
+        } repeats:NO];
+        //open note view
+    }
+    else if ([identifier isEqualToString:@"LATER_ACTION_ID"]) {
+        
+        DDLogInfo(@"Schedule later");
+        //reschedule a notification
+        [self scheduleLocalNotificationWithUserInfo:notification.userInfo inDate:[[NSDate new] nextOccurTime]];
+    }
+    else if ([identifier isEqualToString:@"REMIND_IN_3_DAYS_ACTION_ID"])
+    {
+        DDLogInfo(@"Scheduled in 3 days");
+        NSDate *threeDaysLater = [[NSDate new] timeByAddingMinutes: 3 * 24 * 60];
+        [self scheduleLocalNotificationWithUserInfo:notification.userInfo inDate:threeDaysLater];
+    }
+    else if ([identifier isEqualToString:@"REMIND_IN_A_WEEK_ACTION_ID"])
+    {
+        DDLogInfo(@"Scheduled in a week");
+        NSDate *weekLater = [[NSDate new] timeByAddingMinutes: 7 * 24 * 60];
+        [self scheduleLocalNotificationWithUserInfo:notification.userInfo inDate:weekLater];
+    }
+    
+    
+    if(completionHandler)    //Finally call completion handler if its not nil
+        completionHandler();
+         completionHandler();
+}
+
+
+#endif
+
+
 
 - (void)application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings{
 	DDLogVerbose(@"Registered user notification");

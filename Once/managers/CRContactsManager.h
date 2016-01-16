@@ -74,4 +74,5 @@
 - (void)checkNewContactsAndNotifyWithCompletion:(void (^)(NSArray *newContacts))block;
 - (BOOL)removeAllLinkedContact:(RHPerson *)contact;
 - (BOOL)deleteContact:(RHPerson *)contact;
+- (void)cancelTakeNotesNotification:(NSDate*)oldestCreated;
 @end

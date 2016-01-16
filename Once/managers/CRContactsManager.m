@@ -389,7 +389,7 @@
 		[[UIApplication sharedApplication] scheduleLocalNotification:note];
 		
 #ifdef DEBUG
-		note.fireDate = [[NSDate date] dateByAddingTimeInterval:20];
+		note.fireDate = [[NSDate date] dateByAddingTimeInterval:15];
 		[[UIApplication sharedApplication] scheduleLocalNotification:note];
 #endif
         
@@ -402,6 +402,19 @@
         block(newContacts);
     }
 }
+
+//TODO:fixed by geng
+- (void)cancelTakeNotesNotification:(NSDate*)oldestCreated
+{
+    for (UILocalNotification *note in [[UIApplication sharedApplication] scheduledLocalNotifications]) {
+        if ([note.userInfo[@"type"] isEqualToString:@"reminder"]) {
+            if ([note.fireDate isEqualToDate:oldestCreated.nextNoon]) {
+                [[UIApplication sharedApplication] cancelLocalNotification:note];
+            }
+        }
+    }
+}
+
 
 - (void)sendNewContactsReminderPush:(NSString *)string{
     //schedule server push
