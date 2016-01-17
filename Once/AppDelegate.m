@@ -104,8 +104,10 @@
 	// take notes action
 	UIMutableUserNotificationAction *takeNotesAction = [UIMutableUserNotificationAction new];
 	takeNotesAction.identifier = @"TAKE_NOTE_ACTION_ID";
-	takeNotesAction.activationMode = UIUserNotificationActivationModeBackground;
+	takeNotesAction.activationMode = UIUserNotificationActivationModeForeground;
 #ifdef __IPHONE_9_0
+    takeNotesAction.activationMode = UIUserNotificationActivationModeBackground;
+    takeNotesAction.parameters = [NSDictionary dictionaryWithObject:@"ok" forKey:UIUserNotificationTextInputActionButtonTitleKey];
     [takeNotesAction setBehavior:UIUserNotificationActionBehaviorTextInput];
 #endif
     
