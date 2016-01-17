@@ -54,7 +54,7 @@
 #pragma mark - Background fetch method (this is called periodocially)
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-    DDLogInfo(@"======== Launched in background due to background fetch event ==========");
+    DDLogDebug(@"======== Launched in background due to background fetch event ==========");
     CRContactsManager *manager = [CRContactsManager sharedManager];
 	//[manager scheduleReactivateLocalNotification];
     [manager checkNewContactsAndNotifyWithCompletion:^(NSArray *newContacts) {
@@ -104,8 +104,10 @@
 	// take notes action
 	UIMutableUserNotificationAction *takeNotesAction = [UIMutableUserNotificationAction new];
 	takeNotesAction.identifier = @"TAKE_NOTE_ACTION_ID";
-	takeNotesAction.activationMode = UIUserNotificationActivationModeBackground;
+	takeNotesAction.activationMode = UIUserNotificationActivationModeForeground;
 #ifdef __IPHONE_9_0
+    takeNotesAction.parameters = [NSDictionary dictionaryWithObject:@"Done" forKey:UIUserNotificationTextInputActionButtonTitleKey];
+    takeNotesAction.activationMode = UIUserNotificationActivationModeBackground;
     [takeNotesAction setBehavior:UIUserNotificationActionBehaviorTextInput];
 #endif
     
@@ -117,7 +119,7 @@
 	later.identifier = @"LATER_ACTION_ID";
 	// UIUserActivationMode is used to tell the system whether it should bring your app into the foregroudn, or leave it in the background, in this case, the app can complete the request to update our backed in the background, so we don't have to open the app
 	later.activationMode = UIUserNotificationActivationModeBackground;
-	later.title = @"Later";
+	later.title = @"Remind me in 3 days";
     
     // Remind in 3 days action
     UIMutableUserNotificationAction *remindInThreeDaysAction = [UIMutableUserNotificationAction new];
@@ -148,28 +150,7 @@
 - (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forRemoteNotification:(NSDictionary *)userInfo completionHandler:(void (^)())completionHandler
 {
  
-	if ([identifier isEqualToString:@"TAKE_NOTE_ACTION_ID"]){
-		
-		//open note view
-	}
-	else if ([identifier isEqualToString:@"LATER_ACTION_ID"]) {
-        
-        DDLogInfo(@"Schedule later");
-		//reschedule a notification
-        [self scheduleLocalNotificationWithUserInfo:userInfo inDate:[[NSDate new] nextOccurTime]];
-	}
-    else if ([identifier isEqualToString:@"REMIND_IN_3_DAYS_ACTION_ID"])
-    {
-        DDLogInfo(@"Scheduled in 3 days");
-        NSDate *threeDaysLater = [[NSDate new] timeByAddingMinutes: 3 * 24 * 60];
-        [self scheduleLocalNotificationWithUserInfo:userInfo inDate:threeDaysLater];
-    }
-    else if ([identifier isEqualToString:@"REMIND_IN_A_WEEK_ACTION_ID"])
-    {
-        DDLogInfo(@"Scheduled in a week");
-        NSDate *weekLater = [[NSDate new] timeByAddingMinutes: 7 * 24 * 60];
-        [self scheduleLocalNotificationWithUserInfo:userInfo inDate:weekLater];
-    }
+    [self handleNotificationInfo:userInfo WithActionIdentifier:identifier];
 	
 	if(completionHandler)    //Finally call completion handler if its not nil
 		completionHandler();
@@ -178,42 +159,8 @@
 //#ifdef __IPHONE_8_0
 
 - (void)application:(UIApplication *)application handleActionWithIdentifier:(NSString *)identifier forLocalNotification:(UILocalNotification *)notification completionHandler:(void(^)())completionHandler {
-	
-	// Handle actions of location notifications here. You can identify the action by using "identifier" and perform appropriate operations
-//    TODO:fixed by geng
-//    created
-
-    if ([identifier isEqualToString:@"TAKE_NOTE_ACTION_ID"]){
-       
-        static NSTimer *timer;
-        [timer invalidate];
-        timer = [NSTimer bk_scheduledTimerWithTimeInterval:1.5 block:^(NSTimer *timer) {
-            DDLogInfo(@"Observed take notes");
-         [[NSNotificationCenter defaultCenter]postNotificationName:kShowActionNote object:nil userInfo:notification.userInfo];
-        } repeats:NO];
-//NSNotificationSuspensionBehaviorDrop
-       
-        //open note view
-    }
-    else if ([identifier isEqualToString:@"LATER_ACTION_ID"]) {
-        
-        DDLogInfo(@"Schedule later");
-        //reschedule a notification
-        [self scheduleLocalNotificationWithUserInfo:notification.userInfo inDate:[[NSDate new] nextOccurTime]];
-    }
-    else if ([identifier isEqualToString:@"REMIND_IN_3_DAYS_ACTION_ID"])
-    {
-        DDLogInfo(@"Scheduled in 3 days");
-        NSDate *threeDaysLater = [[NSDate new] timeByAddingMinutes: 3 * 24 * 60];
-        [self scheduleLocalNotificationWithUserInfo:notification.userInfo inDate:threeDaysLater];
-    }
-    else if ([identifier isEqualToString:@"REMIND_IN_A_WEEK_ACTION_ID"])
-    {
-        DDLogInfo(@"Scheduled in a week");
-        NSDate *weekLater = [[NSDate new] timeByAddingMinutes: 7 * 24 * 60];
-        [self scheduleLocalNotificationWithUserInfo:notification.userInfo inDate:weekLater];
-    }
     
+    [self handleNotificationInfo:notification.userInfo WithActionIdentifier:identifier];
 
 	if(completionHandler)    //Finally call completion handler if its not nil
 		completionHandler();
@@ -224,43 +171,51 @@
 
 - (void)application:(UIApplication *)application handleActionWithIdentifier:(nullable NSString *)identifier forLocalNotification:(UILocalNotification *)notification withResponseInfo:(NSDictionary *)responseInfo completionHandler:(void(^)())completionHandler {
 
-    // Handle actions of location notifications here. You can identify the action by using "identifier" and perform appropriate operations
-    //    TODO:fixed by geng
-    //    created
-    
+    NSDictionary *dataInfo;
     if ([identifier isEqualToString:@"TAKE_NOTE_ACTION_ID"]){
-        NSDictionary*dataInfo = [NSDictionary dictionaryWithObjectsAndKeys:responseInfo[UIUserNotificationActionResponseTypedTextKey],@"TAKE_NOTE",notification.userInfo,@"USER_INFO", nil];
+        dataInfo = [NSDictionary dictionaryWithObjectsAndKeys:responseInfo[UIUserNotificationActionResponseTypedTextKey],@"TAKE_NOTE",notification.userInfo,@"USER_INFO", nil];
+    }else{
+        dataInfo = notification.userInfo;
+    }
+    
+    [self handleNotificationInfo:dataInfo WithActionIdentifier:identifier];
+    
+    if(completionHandler)    //Finally call completion handler if its not nil
+        completionHandler();
+         completionHandler();
+}
+
+- (void)handleNotificationInfo:(NSDictionary *)userInfo WithActionIdentifier:(nullable NSString *)identifier{
+    NSDate *threeDaysLater = [[NSDate new] timeByAddingMinutes: 3 * 24 * 60];
+    NSDate *weekLater = [[NSDate new] timeByAddingMinutes: 7 * 24 * 60];
+    if ([identifier isEqualToString:@"TAKE_NOTE_ACTION_ID"]){
+        
         static NSTimer *timer;
         [timer invalidate];
         timer = [NSTimer bk_scheduledTimerWithTimeInterval:1.5 block:^(NSTimer *timer) {
             DDLogInfo(@"Observed take notes");
-            [[NSNotificationCenter defaultCenter]postNotificationName:kShowActionNote object:nil userInfo:dataInfo];
+            [[NSNotificationCenter defaultCenter]postNotificationName:kShowActionNote object:nil userInfo:userInfo];
         } repeats:NO];
+        //NSNotificationSuspensionBehaviorDrop
+        
         //open note view
     }
     else if ([identifier isEqualToString:@"LATER_ACTION_ID"]) {
         
         DDLogInfo(@"Schedule later");
         //reschedule a notification
-        [self scheduleLocalNotificationWithUserInfo:notification.userInfo inDate:[[NSDate new] nextOccurTime]];
+        [self scheduleLocalNotificationWithUserInfo:userInfo inDate:threeDaysLater];
     }
     else if ([identifier isEqualToString:@"REMIND_IN_3_DAYS_ACTION_ID"])
     {
         DDLogInfo(@"Scheduled in 3 days");
-        NSDate *threeDaysLater = [[NSDate new] timeByAddingMinutes: 3 * 24 * 60];
-        [self scheduleLocalNotificationWithUserInfo:notification.userInfo inDate:threeDaysLater];
+        [self scheduleLocalNotificationWithUserInfo:userInfo inDate:threeDaysLater];
     }
     else if ([identifier isEqualToString:@"REMIND_IN_A_WEEK_ACTION_ID"])
     {
         DDLogInfo(@"Scheduled in a week");
-        NSDate *weekLater = [[NSDate new] timeByAddingMinutes: 7 * 24 * 60];
-        [self scheduleLocalNotificationWithUserInfo:notification.userInfo inDate:weekLater];
+        [self scheduleLocalNotificationWithUserInfo:userInfo inDate:weekLater];
     }
-    
-    
-    if(completionHandler)    //Finally call completion handler if its not nil
-        completionHandler();
-         completionHandler();
 }
 
 
