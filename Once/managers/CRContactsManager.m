@@ -112,7 +112,7 @@
 
 
 
-#pragma mark - Perspective
+#pragma mark - Views of contacts
 - (NSArray *)allContacts{
     if (!_allContacts) {
         NSArray *contacts = _addressbook.defaultSource.people;
@@ -343,7 +343,7 @@
     
     
 	if (newContacts.count) {
-		DDLogInfo(@"Found %ld new contacts since last checked %@", (unsigned long)newContacts.count, _lastChecked.string);
+		DDLogWarn(@"Found %ld new contacts since last checked %@", (unsigned long)newContacts.count, _lastChecked.string);
 		NSDate *oldestCreated = [NSDate date];
         
         NSString*createdTimeString; //timeString
@@ -384,8 +384,10 @@
 		note.alertBody = reminderStr;
 		note.soundName = @"reminder.caf";
 		note.category = kReminderCategory;
+
 		note.fireDate = [NSDate date].nextNoon;//TODO: use created time
         note.userInfo = @{@"type": @"reminder", @"names": names, @"created":createdTimeString};
+
 		[[UIApplication sharedApplication] scheduleLocalNotification:note];
 		
 #ifdef DEBUG
